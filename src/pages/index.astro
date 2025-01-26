@@ -9,21 +9,14 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 	<h1>Hi</h1>
 	<p>Products</p>
 
-	{menus}
-
 	<ul>
-		<li>
-			<a href="#"> coffee 1 </a>
-		</li>
-		<li>
-			<a href="#"> coffee 2 </a>
-		</li>
-		<li>
-			<a href="#"> coffee 3 </a>
-		</li><li>
-			<a href="#"> coffee 4 </a>
-		</li><li>
-			<a href="#"> coffee 5 </a>
-		</li>
+		{
+			menus.map((menu) => (
+				<li>
+					<a href={`/menu/${menu.id}`}>{menu.name}</a>-
+					<span>{menu.description}</span>
+				</li>
+			))
+		}
 	</ul>
 </Layout>

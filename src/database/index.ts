@@ -1,6 +1,8 @@
-import { Pool, type PoolConfig } from "pg"
+import { type PoolConfig } from "pg"
 import { PostgresDialect, Kysely } from "kysely"
 import type { DB } from "./database.types"
+import pg from "pg"
+const { Pool } = pg
 
 const databaseEnvVariables = {
 	user: import.meta.env.DB_USER,
