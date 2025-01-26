@@ -1,11 +1,29 @@
 ---
-import Welcome from "../components/Welcome.astro"
 import Layout from "../layouts/Layout.astro"
+import { db } from "@/database"
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout>
-	<Welcome />
+	<h1>Hi</h1>
+	<p>Products</p>
+
+	{menus}
+
+	<ul>
+		<li>
+			<a href="#"> coffee 1 </a>
+		</li>
+		<li>
+			<a href="#"> coffee 2 </a>
+		</li>
+		<li>
+			<a href="#"> coffee 3 </a>
+		</li><li>
+			<a href="#"> coffee 4 </a>
+		</li><li>
+			<a href="#"> coffee 5 </a>
+		</li>
+	</ul>
 </Layout>

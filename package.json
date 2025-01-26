@@ -7,7 +7,8 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"db gen types": "kysely-codegen --dialect postgres --out-file=src/database/database.types.d.ts"
 	},
 	"dependencies": {
 		"@astrojs/ts-plugin": "^1.10.4",
