@@ -17,4 +17,4 @@ export const dialect = new PostgresDialect({
 	pool: new Pool(databaseEnvVariables as PoolConfig),
 })
 
-export const db = new Kysely({ dialect })
+export const db = new Kysely({ dialect, log: ["error"] })
