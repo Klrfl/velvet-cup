@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+
 const emit = defineEmits(["menuAdded"])
 
 async function handleAddMenu(form: HTMLFormElement) {
@@ -21,10 +25,15 @@ async function handleAddMenu(form: HTMLFormElement) {
 <template>
 	<form
 		@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
+		class="grid gap-4 max-w-xl"
 	>
-		<input type="text" placeholder="nama" name="menu_name" required />
-		<textarea placeholder="nama" name="menu_description" required></textarea>
+		<Input type="text" name="menu_name" placeholder="nama" required />
+		<Textarea
+			placeholder="deskripsi"
+			name="menu_description"
+			required
+		></Textarea>
 
-		<button type="submit">tambahkan menu baru</button>
+		<Button type="submit">tambahkan menu baru</Button>
 	</form>
 </template>

@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
 	return new Response(
 		JSON.stringify({
 			message: "added a new menu successfully.",
-			data: inputMenu,
+			data: menu,
 		})
 	)
 }

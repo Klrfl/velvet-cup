@@ -6,12 +6,12 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout>
-	<header class="col-start-2 col-span-6 md:col-end-12">
+	<header class="main-section">
 		<h1 class="text-4xl">Hi</h1>
 		<p>Products</p>
 	</header>
 
-	<section class="col-start-2 col-span-6 md:col-end-12 row-span-4">
+	<section class="main-section row-span-4">
 		<ul>
 			{
 				menus.map((menu) => (

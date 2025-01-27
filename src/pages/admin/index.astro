@@ -7,6 +7,11 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout>
-	<h1>Menus</h1>
-	<MenuList menu={menus} client:load />
+	<header class="main-section">
+		<h1>Menus</h1>
+	</header>
+
+	<section class="main-section">
+		<MenuList menu={menus} client:load />
+	</section>
 </Layout>
