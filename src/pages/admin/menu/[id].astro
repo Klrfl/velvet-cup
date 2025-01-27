@@ -22,9 +22,11 @@ if (!menu) {
 ---
 
 <Layout>
-	<h1>Sunting "{menu.name}"</h1>
+	<header class="main-section">
+		<h1>Sunting "{menu.name}"</h1>
+	</header>
 
-	<p id="message"></p>
-
-	<MenuEdit menu={menu} client:load />
+	<section class="main-section">
+		<MenuEdit menu={menu} client:load />
+	</section>
 </Layout>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+
 import type { Menu } from "@/database/database.types"
 import type { Selectable } from "kysely"
 
@@ -25,17 +30,26 @@ async function handleEditMenu(e: Event, id: number) {
 
 <template>
 	<form @submit.prevent="(e) => handleEditMenu(e, menu.id)">
-		<input
+		<Label for="menu_name">Nama</Label>
+		<Input
 			type="text"
 			placeholder="nama"
 			:value="menu.name"
 			name="menu_name"
+			id="menu_name"
 			required
 		/>
-		<textarea placeholder="deskripsi" name="menu_description" required>
-      {{ menu.description }}</textarea
+
+		<Label for="menu_description">Deskripsi</Label>
+		<Textarea
+			placeholder="deskripsi"
+			name="menu_description"
+			id="menu_description"
+			required
+		>
+			{{ menu.description }}</Textarea
 		>
 
-		<button type="submit">Sunting</button>
+		<Button type="submit">Sunting</Button>
 	</form>
 </template>
