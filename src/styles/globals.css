@@ -77,7 +77,7 @@
 	}
 
 	.main-section {
-		@apply col-start-2 col-span-6 md:col-end-12;
+		@apply col-start-2 col-end-[-2];
 	}
 }
 

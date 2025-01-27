@@ -11,7 +11,7 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 		<h1>Menus</h1>
 	</header>
 
-	<section class="main-section">
+	<section class="main-section grid grid-cols-subgrid">
 		<MenuList menu={menus} client:load />
 	</section>
 </Layout>

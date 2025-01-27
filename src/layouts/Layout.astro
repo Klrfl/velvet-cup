@@ -27,11 +27,15 @@ import "@/styles/globals.css"
 
 	body {
 		display: grid;
-		grid-template-columns: minmax(1rem, 1fr) repeat(6, 1fr) minmax(1rem, 1fr);
+		grid-template-columns: minmax(0, 1fr) repeat(6, 1fr) minmax(0, 1fr);
 		gap: 2rem;
 
 		@media screen and (min-width: 768px) {
-			grid-template-columns: minmax(2rem, 1fr) repeat(12, 1fr) minmax(2rem, 1fr);
+			grid-template-columns: minmax(0, 1fr) repeat(12, minmax(0, 7rem)) minmax(
+					0,
+					1fr
+				);
+			gap: 1rem;
 		}
 	}
 </style>

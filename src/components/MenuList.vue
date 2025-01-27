@@ -19,9 +19,17 @@ function handleAddMenu(newMenu: Selectable<Menu>) {
 </script>
 
 <template>
-	<ul id="menu-list">
+	<ul
+		class="col-span-full md:col-span-8 lg:col-span-9 lg:grid lg:gap-8 lg:grid-cols-2"
+	>
 		<MenuItem v-for="item in menuList" :menu="item" />
 	</ul>
 
-	<MenuAdd @menuAdded="handleAddMenu" />
+	<aside
+		class="order-first col-span-full md:col-span-4 lg:col-span-3 sticky top-0"
+	>
+		<h2 class="text-lg">Tambahkan menu baru</h2>
+
+		<MenuAdd @menuAdded="handleAddMenu" />
+	</aside>
 </template>
