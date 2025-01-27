@@ -1,17 +1,20 @@
 // @ts-check
 import { defineConfig } from "astro/config"
 
-import node from "@astrojs/node";
+import node from "@astrojs/node"
 
-import vue from "@astrojs/vue";
+import vue from "@astrojs/vue"
+
+import tailwind from "@astrojs/tailwind"
 
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
+	output: "server",
 
-  adapter: node({
-    mode: "standalone",
-  }),
+	adapter: node({
+		mode: "standalone",
+	}),
 
-  integrations: [vue()],
+	integrations: [vue(), tailwind({ applyBaseStyles: false })],
 })
+
