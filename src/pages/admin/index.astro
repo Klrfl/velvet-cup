@@ -1,0 +1,41 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { db } from "@/database"
+
+function formatDate(date: Date, opts?: Intl.DateTimeFormatOptions) {
+	if (!opts) {
+		opts = {
+			dateStyle: "long",
+			timeStyle: "long",
+		}
+	}
+
+	return Intl.DateTimeFormat("id-ID", opts).format(date)
+}
+
+const menus = await db.selectFrom("menu").selectAll().execute()
+---
+
+<Layout>
+	<h1>Menus</h1>
+
+	<ul>
+		{
+			menus.map((menu) => (
+				<li>
+					<p>
+						{menu.name} - {menu.description}
+					</p>
+					{menu.created_at && <p>{formatDate(new Date(menu.created_at))}</p>}
+				</li>
+			))
+		}
+	</ul>
+
+	<form action="/api/admin/menu" method="post">
+		<input type="text" placeholder="nama" name="menu_name" required />
+		<textarea placeholder="nama" name="menu_description" required></textarea>
+
+		<button type="submit">tambahkan menu baru</button>
+	</form>
+</Layout>
