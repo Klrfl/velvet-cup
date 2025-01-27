@@ -6,17 +6,23 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout>
-	<h1>Hi</h1>
-	<p>Products</p>
+	<header class="col-start-2 col-span-6 md:col-end-12">
+		<h1 class="text-4xl">Hi</h1>
+		<p>Products</p>
+	</header>
 
-	<ul>
-		{
-			menus.map((menu) => (
-				<li>
-					<a href={`/menu/${menu.id}`}>{menu.name}</a>-
-					<span>{menu.description}</span>
-				</li>
-			))
-		}
-	</ul>
+	<section class="col-start-2 col-span-6 md:col-end-12 row-span-4">
+		<ul>
+			{
+				menus.map((menu) => (
+					<li>
+						<a class="underline decoration-black" href={`/menu/${menu.id}`}>
+							{menu.name}
+						</a>
+						-<span>{menu.description}</span>
+					</li>
+				))
+			}
+		</ul>
+	</section>
 </Layout>

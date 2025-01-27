@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Menu } from "@/database/database.types"
-import { formatDate } from "@/utils"
+import { formatDate } from "@/utils/index.ts"
 import type { Selectable } from "kysely"
 
 interface Props {
