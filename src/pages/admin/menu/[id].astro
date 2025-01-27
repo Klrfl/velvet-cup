@@ -23,10 +23,13 @@ if (!menu) {
 <Layout>
 	<h1>Sunting "{menu.name}"</h1>
 
+	<p id="message"></p>
+
 	<form
-		action={`/api/menu/${menu.id}`}
+		action={`/api/admin/menu/${menu.id}`}
 		method="post"
-		hx-put={`/api/menu/${menu.id}`}
+		hx-put={`/api/admin/menu/${menu.id}`}
+		hx-target="#message"
 	>
 		<input
 			type="text"
@@ -41,4 +44,6 @@ if (!menu) {
 
 		<button type="submit">Sunting</button>
 	</form>
+
+	<script src="htmx.org"></script>
 </Layout>

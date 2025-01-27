@@ -1,0 +1,52 @@
+---
+import { db } from "@/database"
+const formData = await Astro.request.formData()
+
+const { id } = Astro.params
+
+if (!id || isNaN(Number(id))) {
+	return new Response(
+		JSON.stringify({
+			message: "invalid menu id.",
+		}),
+		{ status: 401 }
+	)
+}
+
+const name = formData.get("menu_name") as string
+const description = formData.get("menu_description") as string
+
+// TODO: add validation
+
+const newMenu = { name, description }
+const results = await db
+	.updateTable("menu")
+	.set(newMenu)
+	.where("id", "=", Number(id))
+	.returning("id")
+	.execute()
+
+for (const result of results) {
+	console.log(result)
+
+	if (!result.id) {
+		return new Response(
+			JSON.stringify({
+				message: `failed to update menu with id ${id}`,
+			}),
+			{ status: 500 }
+		)
+	}
+}
+
+if (!Astro.request.headers.get("hx-request")) {
+	return new Response(
+		JSON.stringify({
+			message: `successfully edited menu with id ${id}`,
+			data: newMenu,
+		})
+	)
+}
+---
+
+<p>sukses menubah request</p>
