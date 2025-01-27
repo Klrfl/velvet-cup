@@ -27,6 +27,12 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 						{menu.name} - {menu.description}
 					</p>
 					{menu.created_at && <p>{formatDate(new Date(menu.created_at))}</p>}
+
+					<a href={`/admin/menu/${menu.id}`}>edit</a>
+
+					<form action={`/api/menu/${menu.id}`} method="post">
+						<button type="submit">Hapus</button>
+					</form>
 				</li>
 			))
 		}

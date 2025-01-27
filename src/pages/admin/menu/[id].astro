@@ -1,0 +1,44 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { db } from "@/database"
+
+const { id } = Astro.params
+
+const menuId = Number(id)
+if (!id || isNaN(menuId)) {
+	return Astro.rewrite("/404")
+}
+
+const menu = await db
+	.selectFrom("menu")
+	.selectAll()
+	.where("id", "=", menuId)
+	.executeTakeFirst()
+
+if (!menu) {
+	return Astro.rewrite("/404")
+}
+---
+
+<Layout>
+	<h1>Sunting "{menu.name}"</h1>
+
+	<form
+		action={`/api/menu/${menu.id}`}
+		method="post"
+		hx-put={`/api/menu/${menu.id}`}
+	>
+		<input
+			type="text"
+			placeholder="nama"
+			value={menu.name}
+			name="menu_name"
+			required
+		/>
+		<textarea placeholder="deskripsi" name="menu_description" required
+			>{menu.description}</textarea
+		>
+
+		<button type="submit">Sunting</button>
+	</form>
+</Layout>
