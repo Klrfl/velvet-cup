@@ -1,22 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro"
+import MenuList from "@/components/MenuList.vue"
 import { db } from "@/database"
-import MenuItem from "@/components/MenuItem.vue"
 
 const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout>
 	<h1>Menus</h1>
-
-	<ul id="menu-list">
-		{menus.map((menu) => <MenuItem menu={menu} client:visible />)}
-	</ul>
-
-	<form action="/api/admin/menu" method="post">
-		<input type="text" placeholder="nama" name="menu_name" required />
-		<textarea placeholder="nama" name="menu_description" required></textarea>
-
-		<button type="submit">tambahkan menu baru</button>
-	</form>
+	<MenuList menu={menus} client:load />
 </Layout>
