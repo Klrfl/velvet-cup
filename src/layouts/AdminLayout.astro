@@ -1,0 +1,14 @@
+---
+import Layout from "./Layout.astro"
+import Navbar from "@/components/Navbar.astro"
+
+interface Props {
+	title?: string
+}
+
+const { title } = Astro.props
+---
+
+<Layout {title}>
+	<Navbar />
+</Layout>
