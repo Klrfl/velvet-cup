@@ -1,6 +1,9 @@
 ---
+import CoffeeImage from "@/assets/images/guy-basabose-FzdEbrA3Qj0-unsplash.jpg"
+import AnotherCoffeeImage from "@/assets/images/nathan-dumlao-wCJ1WwrAHW0-unsplash.png"
 import Layout from "../layouts/Layout.astro"
 import { db } from "@/database"
+import { Image } from "astro:assets"
 
 const menus = await db.selectFrom("menu").selectAll().execute()
 ---
@@ -27,4 +30,79 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 			}
 		</ul>
 	</section>
+
+	<section class="main-section grid grid-cols-subgrid">
+		<figure class="col-span-6">
+			<Image
+				src={CoffeeImage}
+				width={800}
+				height={450}
+				alt=""
+				class="size-full object-cover aspect-video"
+			/>
+		</figure>
+
+		<div class="col-span-6 order-first">
+			<h2 class="text-4xl">Love coffee? You’re in the right place.</h2>
+			<p>
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Est id eligendi
+				fugit dolores, fuga impedit vel, temporibus sed repudiandae nulla iste
+				cum reprehenderit accusantium? Eaque cum sed recusandae odit esse.
+			</p>
+		</div>
+	</section>
+
+	<section class="main-section grid grid-cols-subgrid">
+		<figure class="col-span-6">
+			<Image
+				src={AnotherCoffeeImage}
+				alt=""
+				class="size-full object-cover aspect-video"
+			/>
+		</figure>
+
+		<div class="col-span-6">
+			<h2 class="text-4xl">Got passion making coffee? Join us!</h2>
+			<p>
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia
+				aliquid, id pariatur laborum ipsam accusantium distinctio dolore
+				debitis. Velit fugit minus possimus nemo tempora debitis inventore
+				dicta. Ipsum, odit itaque.
+			</p>
+		</div>
+	</section>
+
+	<section class="main-section grid grid-cols-subgrid">
+		<div class="col-span-full md:col-span-6">
+			<iframe
+				class="max-w-full"
+				src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d123.77587063505472!2d25.00265413196569!3d60.24007131667421!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sid!4v1738077211428!5m2!1sen!2sid"
+				width="800"
+				height="450"
+				style="border:0;"
+				allowfullscreen=""
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"></iframe>
+		</div>
+
+		<div class="col-span-full md:col-span-6">
+			<h2 class="text-4xl">Our base</h2>
+			<p>
+				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Temporibus
+				doloremque quis quod odio adipisci aliquam unde, reprehenderit dolor
+				minus tenetur asperiores eum vero, veniam rem dignissimos architecto
+				sint. Voluptatem, dolorem.
+			</p>
+		</div>
+	</section>
 </Layout>
+
+<style>
+	section {
+		@apply py-12 gap-8;
+	}
+
+	section img {
+		@apply rounded-lg;
+	}
+</style>
