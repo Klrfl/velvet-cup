@@ -34,7 +34,7 @@ async function handleEditMenu(e: Event, id: number) {
 		<Input
 			type="text"
 			placeholder="nama"
-			:value="menu.name"
+			v-model:model-value="menu.name as string"
 			name="menu_name"
 			id="menu_name"
 			required
@@ -45,10 +45,10 @@ async function handleEditMenu(e: Event, id: number) {
 			placeholder="deskripsi"
 			name="menu_description"
 			id="menu_description"
+			v-model:model-value="menu.description as string"
 			required
 		>
-			{{ menu.description }}</Textarea
-		>
+		</Textarea>
 
 		<Button type="submit">Sunting</Button>
 	</form>
