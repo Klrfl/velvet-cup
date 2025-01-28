@@ -72,6 +72,7 @@
 	* {
 		@apply border-border;
 	}
+
 	body {
 		@apply bg-background text-foreground;
 	}
@@ -79,5 +80,11 @@
 	.main-section {
 		@apply col-start-2 col-end-[-2];
 	}
-}
 
+	.heading,
+	h1,
+	h2,
+	h3 {
+		@apply font-serif;
+	}
+}
