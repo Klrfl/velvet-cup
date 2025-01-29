@@ -40,16 +40,17 @@ const { title = "Velvet Cup" } = Astro.props
 	body {
 		display: grid;
 		grid-template-rows: max-content auto;
-		grid-template-columns: minmax(0, 1fr) repeat(6, 1fr) minmax(0, 1fr);
-		gap: 2rem;
-		grid-auto-columns: max-content;
+		grid-template-columns:
+			2rem repeat(6, 1fr)
+			2rem;
+		grid-auto-rows: auto;
 
 		@media screen and (min-width: 768px) {
 			grid-template-columns: minmax(0, 1fr) repeat(12, minmax(0, 7rem)) minmax(
 					0,
 					1fr
 				);
-			gap: 1rem;
+			gap: 2rem;
 		}
 	}
 </style>

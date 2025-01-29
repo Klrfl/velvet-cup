@@ -1,0 +1,52 @@
+---
+import CoffeeImage from "@/assets/images/nathan-dumlao-nBJHO6wmRWw-unsplash.jpg"
+import Layout from "@/layouts/Layout.astro"
+import { db } from "@/database"
+import { Image } from "astro:assets"
+
+const { id: menuId } = Astro.params
+
+if (isNaN(Number(menuId))) {
+	return Astro.rewrite("/404")
+}
+
+const menu = await db.selectFrom("menu").selectAll().executeTakeFirst()
+
+if (!menu) {
+	return Astro.rewrite("/404")
+}
+---
+
+<Layout title={`${menu.name} - Velvet Cup`}>
+	<header class="col-span-full md:col-start-2 md:col-end-6">
+		<figure>
+			<Image
+				src={CoffeeImage}
+				width={800}
+				height={450}
+				class="size-full object-cover aspect-video"
+				alt=""
+			/>
+		</figure>
+	</header>
+
+	<section
+		class="details auto-rows-min col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid"
+	>
+		<h1 class="text-4xl">{menu.name}</h1>
+		<p>Rp.25.000</p>
+
+		<p>Pilih varian</p>
+		<ul class="flex gap-4">
+			<li class="px-8 py-4">Biasa</li>
+			<li class="px-8 py-4">Panas</li>
+			<li class="px-8 py-4">Dingin</li>
+		</ul>
+	</section>
+</Layout>
+
+<style>
+	.details > * {
+		@apply col-span-full;
+	}
+</style>
