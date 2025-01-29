@@ -10,13 +10,24 @@ import {
 	SelectContent,
 	SelectItem,
 } from "@/components/ui/select"
+import {
+	TagsInput,
+	TagsInputItem,
+	TagsInputInput,
+	TagsInputItemText,
+	TagsInputItemDelete,
+} from "@/components/ui/tags-input"
 
-import type { Menu, MenuCategories } from "@/database/database.types"
+import type { Menu } from "@/database/database.types"
 import type { Selectable } from "kysely"
+import { ref } from "vue"
 
 interface Props {
 	menu: Selectable<Menu>
-	categories: MenuCategories[]
+	categories: {
+		id: number
+		name: string
+	}[]
 }
 
 const { categories } = defineProps<Props>()
@@ -33,6 +44,18 @@ async function handleEditMenu(e: Event, id: number) {
 	if (res.status === 200) {
 		console.log("success")
 	}
+}
+
+const variantOptions = ref(["apa", "kek"])
+
+async function handleAddOption() {
+	const response = await fetch("/api/admin/menu/variants", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(variantOptions),
+	})
+
+	const result = await response.json()
 }
 </script>
 
@@ -71,6 +94,63 @@ async function handleEditMenu(e: Event, id: number) {
 				</SelectItem>
 			</SelectContent>
 		</Select>
+
+		<h2 class="font-bold text-xl font-sans">Variants</h2>
+
+		<div class="grid grid-cols-8 gap-4 items-end">
+			<div class="col-span-3">
+				<Label for="menu_option_name">Option title</Label>
+				<Input
+					type="text"
+					id="menu_option_name"
+					placeholder="option name"
+					required
+				/>
+			</div>
+
+			<div class="col-span-4">
+				<Label for="menu_variation_options">Variant values</Label>
+
+				<TagsInput v-model="variantOptions" id="menu_variant_options">
+					<TagsInputItem
+						v-for="option in variantOptions"
+						:key="option"
+						:value="option"
+					>
+						<TagsInputItemText />
+						<TagsInputItemDelete />
+					</TagsInputItem>
+
+					<TagsInputInput placeholder="L, Spicy, dll..." />
+				</TagsInput>
+			</div>
+
+			<Button
+				class="col-span-1 text-destructive outline outline-1 outline-destructive"
+				variant="ghost"
+			>
+				Delete variant
+			</Button>
+
+			<div class="col-span-3">
+				<Label for="menu_price">Price</Label>
+				<Input
+					type="number"
+					id="menu_price"
+					name="menu_price"
+					placeholder="type price here"
+				/>
+			</div>
+
+			<Button
+				class="col-span-full"
+				type="button"
+				variant="outline"
+				@click="handleAddOption"
+			>
+				add a new variant
+			</Button>
+		</div>
 
 		<Button type="submit">Sunting</Button>
 	</form>
