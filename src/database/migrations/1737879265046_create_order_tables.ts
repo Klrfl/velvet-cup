@@ -14,9 +14,11 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("user_id", "text", (col) => col.references("user.id"))
+		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
 		.addColumn("status_id", "integer", (col) => col.notNull())
-		.addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`))
+		.addColumn("created_at", "timestamptz", (col) =>
+			col.notNull().defaultTo(sql`now()`)
+		)
 		.execute()
 
 	await db.schema
@@ -24,8 +26,12 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("order_id", "integer", (col) => col.references("orders.id"))
-		.addColumn("menu_id", "integer", (col) => col.references("menu.id"))
+		.addColumn("order_id", "integer", (col) =>
+			col.notNull().references("orders.id")
+		)
+		.addColumn("menu_id", "integer", (col) =>
+			col.notNull().references("menu.id")
+		)
 		.addColumn("price", "numeric", (col) => col.notNull())
 		.addColumn("quantity", "integer", (col) => col.notNull())
 		.addColumn("notes", "text")

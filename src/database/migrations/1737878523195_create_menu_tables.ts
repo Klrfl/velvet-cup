@@ -16,11 +16,13 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 		.addColumn("name", "text", (col) => col.notNull())
 		.addColumn("category_id", "integer", (col) =>
-			col.references("menu_categories.id")
+			col.notNull().references("menu_categories.id")
 		)
 		.addColumn("description", "text")
 		.addColumn("image", "text")
-		.addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`))
+		.addColumn("created_at", "timestamptz", (col) =>
+			col.notNull().defaultTo(sql`now()`)
+		)
 		.execute()
 
 	await db.schema
@@ -29,7 +31,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
 		.addColumn("menu_id", "integer", (col) =>
-			col.references("menu.id").onDelete("cascade")
+			col.notNull().references("menu.id").onDelete("cascade")
 		)
 		.addColumn("name", "text", (col) => col.notNull())
 		.addColumn("image", "text")
@@ -60,10 +62,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
 		.addColumn("menu_item_id", "integer", (col) =>
-			col.references("menu_items.id")
+			col.notNull().references("menu_items.id")
 		)
 		.addColumn("variation_id", "integer", (col) =>
-			col.references("menu_variant_values.id")
+			col.notNull().references("menu_variant_values.id")
 		)
 		.addColumn("price", "numeric", (col) => col.notNull())
 		.execute()

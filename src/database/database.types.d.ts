@@ -31,17 +31,17 @@ export interface Account {
 
 export interface BasketItems {
   id: Generated<number>;
-  menu_item_id: number | null;
+  menu_item_id: number;
 }
 
 export interface Baskets {
   id: Generated<number>;
-  user_id: string | null;
+  user_id: string;
 }
 
 export interface Menu {
-  category_id: number | null;
-  created_at: Generated<Timestamp | null>;
+  category_id: number;
+  created_at: Generated<Timestamp>;
   description: string | null;
   id: Generated<number>;
   image: string | null;
@@ -55,15 +55,15 @@ export interface MenuCategories {
 
 export interface MenuConfiguration {
   id: Generated<number>;
-  menu_item_id: number | null;
+  menu_item_id: number;
   price: Numeric;
-  variation_id: number | null;
+  variation_id: number;
 }
 
 export interface MenuItems {
   id: Generated<number>;
   image: string | null;
-  menu_id: number | null;
+  menu_id: number;
   name: string;
 }
 
@@ -80,18 +80,18 @@ export interface MenuVariantValues {
 
 export interface OrderDetail {
   id: Generated<number>;
-  menu_id: number | null;
+  menu_id: number;
   notes: string | null;
-  order_id: number | null;
+  order_id: number;
   price: Numeric;
   quantity: number;
 }
 
 export interface Orders {
-  created_at: Generated<Timestamp | null>;
+  created_at: Generated<Timestamp>;
   id: Generated<number>;
   status_id: number;
-  user_id: string | null;
+  user_id: string;
 }
 
 export interface OrderStatus {

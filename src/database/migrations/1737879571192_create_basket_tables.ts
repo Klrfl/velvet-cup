@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("user_id", "text", (col) => col.references("user.id"))
+		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
 		.execute()
 
 	await db.schema
@@ -15,7 +15,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
 		.addColumn("menu_item_id", "integer", (col) =>
-			col.references("menu_items.id")
+			col.notNull().references("menu_items.id")
 		)
 		.execute()
 }
