@@ -16,13 +16,21 @@ const menuList = ref(props.menu)
 function handleAddMenu(newMenu: Selectable<Menu>) {
 	menuList.value.push(newMenu)
 }
+
+function handleDeleteMenu(targetMenu: Selectable<Menu>) {
+	menuList.value = menuList.value.filter((menu) => menu.id !== targetMenu.id)
+}
 </script>
 
 <template>
 	<ul
 		class="col-span-full md:col-span-8 lg:col-span-9 lg:grid lg:gap-8 lg:grid-cols-2"
 	>
-		<MenuItem v-for="item in menuList" :menu="item" />
+		<MenuItem
+			v-for="item in menuList"
+			:menu="item"
+			@menu-deleted="handleDeleteMenu(item)"
+		/>
 	</ul>
 
 	<aside

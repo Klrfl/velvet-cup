@@ -20,7 +20,6 @@ async function deleteMenu(id: number) {
 
 	if (res.status === 200) {
 		emit("menuDeleted")
-		console.log(data)
 	}
 
 	// TODO: validate response
