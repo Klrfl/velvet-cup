@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button"
 import type { Menu } from "@/database/database.types"
+import type { MenuWithCategories } from "@/types"
 import { formatDate } from "@/utils/index.ts"
 import type { Selectable } from "kysely"
 
 interface Props {
-	menu: Selectable<Menu>
+	menu: MenuWithCategories
 }
 
 defineProps<Props>()
@@ -14,6 +15,10 @@ const emit = defineEmits(["menuDeleted"])
 async function deleteMenu(id: number) {
 	const res = await fetch(`/api/admin/menu/${id}`, {
 		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(id),
 	})
 
 	const data = await res.json()
@@ -30,6 +35,7 @@ async function deleteMenu(id: number) {
 	<li class="p-4 border-b border-b-slate-200">
 		<p>{{ menu.name }}</p>
 		<p>{{ menu.description }}</p>
+		<p v-if="menu.category">{{ menu.category }}</p>
 
 		<p v-if="menu.created_at">{{ formatDate(new Date(menu.created_at)) }}</p>
 

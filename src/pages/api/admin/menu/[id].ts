@@ -1,5 +1,6 @@
 import { db } from "@/database"
 import type { APIRoute } from "astro"
+import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
 	const formData = await request.formData()
@@ -15,12 +16,36 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const name = formData.get("menu_name") as string
-	const description = formData.get("menu_description") as string
+	const name = formData.get("menu_name")
+	const description = formData.get("menu_description")
+	const category_id = formData.get("menu_category")
 
 	// TODO: add validation
+	const schema = z.object({
+		name: z.string(),
+		description: z.string(),
+		category_id: z.number().positive(),
+	})
 
-	const newMenu = { name, description }
+	let newMenu
+	try {
+		newMenu = schema.parse({
+			name,
+			description,
+			category_id: Number(category_id),
+		})
+	} catch (error) {
+		console.error(error)
+
+		return new Response(
+			JSON.stringify({
+				message: "body malformed",
+				data: newMenu,
+			}),
+			{ status: 400 }
+		)
+	}
+
 	const results = await db
 		.updateTable("menu")
 		.set(newMenu)

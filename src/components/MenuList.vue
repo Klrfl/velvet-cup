@@ -3,19 +3,15 @@ import type { Menu } from "@/database/database.types"
 import type { Selectable } from "kysely"
 
 import MenuItem from "@/components/MenuItem.vue"
-import MenuAdd from "@/components/MenuAdd.vue"
 import { ref } from "vue"
+import type { MenuWithCategories } from "@/types"
 
 interface Props {
-	menu: Selectable<Menu>[]
+	menu: MenuWithCategories[]
 }
 
 const props = defineProps<Props>()
 const menuList = ref(props.menu)
-
-function handleAddMenu(newMenu: Selectable<Menu>) {
-	menuList.value.push(newMenu)
-}
 
 function handleDeleteMenu(targetMenu: Selectable<Menu>) {
 	menuList.value = menuList.value.filter((menu) => menu.id !== targetMenu.id)
@@ -32,12 +28,4 @@ function handleDeleteMenu(targetMenu: Selectable<Menu>) {
 			@menu-deleted="handleDeleteMenu(item)"
 		/>
 	</ul>
-
-	<aside
-		class="order-first col-span-full md:col-span-4 lg:col-span-3 sticky top-0"
-	>
-		<h2 class="text-lg">Tambahkan menu baru</h2>
-
-		<MenuAdd @menuAdded="handleAddMenu" />
-	</aside>
 </template>

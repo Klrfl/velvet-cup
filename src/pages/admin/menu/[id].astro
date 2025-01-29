@@ -19,6 +19,8 @@ const menu = await db
 if (!menu) {
 	return Astro.rewrite("/404")
 }
+
+const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
 <Layout>
@@ -27,6 +29,6 @@ if (!menu) {
 	</header>
 
 	<section class="main-section">
-		<MenuEdit menu={menu} client:load />
+		<MenuEdit menu={menu} categories={categories} client:load />
 	</section>
 </Layout>

@@ -3,15 +3,23 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from "@/components/ui/select"
 
-import type { Menu } from "@/database/database.types"
+import type { Menu, MenuCategories } from "@/database/database.types"
 import type { Selectable } from "kysely"
 
 interface Props {
 	menu: Selectable<Menu>
+	categories: MenuCategories[]
 }
 
-defineProps<Props>()
+const { categories } = defineProps<Props>()
 
 async function handleEditMenu(e: Event, id: number) {
 	const form = e.currentTarget as HTMLFormElement
@@ -30,7 +38,7 @@ async function handleEditMenu(e: Event, id: number) {
 
 <template>
 	<form @submit.prevent="(e) => handleEditMenu(e, menu.id)">
-		<Label for="menu_name">Nama</Label>
+		<Label for="menu_name">Name</Label>
 		<Input
 			type="text"
 			placeholder="nama"
@@ -40,7 +48,7 @@ async function handleEditMenu(e: Event, id: number) {
 			required
 		/>
 
-		<Label for="menu_description">Deskripsi</Label>
+		<Label for="menu_description">Description</Label>
 		<Textarea
 			placeholder="deskripsi"
 			name="menu_description"
@@ -49,6 +57,20 @@ async function handleEditMenu(e: Event, id: number) {
 			required
 		>
 		</Textarea>
+
+		<Label for="menu_category">Category</Label>
+
+		<Select id="menu_category" name="menu_category">
+			<SelectTrigger>
+				<SelectValue placeholder="select a category" />
+			</SelectTrigger>
+
+			<SelectContent>
+				<SelectItem v-for="category in categories" :value="String(category.id)">
+					{{ category.name }}
+				</SelectItem>
+			</SelectContent>
+		</Select>
 
 		<Button type="submit">Sunting</Button>
 	</form>
