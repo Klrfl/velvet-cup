@@ -17,6 +17,14 @@ import {
 	TagsInputItemText,
 	TagsInputItemDelete,
 } from "@/components/ui/tags-input"
+import {
+	Dialog,
+	DialogTrigger,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+} from "@/components/ui/dialog"
 
 import type { Menu } from "@/database/database.types"
 import type { Selectable } from "kysely"
@@ -46,6 +54,12 @@ async function handleEditMenu(e: Event, id: number) {
 	}
 }
 
+const variants = [
+	{
+		option_id: 1,
+		option_value_ids: [1, 2, 3],
+	},
+]
 const variantOptions = ref(["apa", "kek"])
 
 async function handleAddOption() {
@@ -56,6 +70,10 @@ async function handleAddOption() {
 	})
 
 	const result = await response.json()
+}
+
+async function handleAddNewVariant() {
+	alert("belum diimplementasi")
 }
 </script>
 
@@ -95,7 +113,54 @@ async function handleAddOption() {
 			</SelectContent>
 		</Select>
 
-		<h2 class="font-bold text-xl font-sans">Variants</h2>
+		<h2 class="font-bold text-xl font-sans">Options</h2>
+
+		<Dialog>
+			<DialogTrigger as-child>
+				<Button>Add new option</Button>
+			</DialogTrigger>
+
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Add new option</DialogTitle>
+					<DialogDescription> Add new option and values. </DialogDescription>
+				</DialogHeader>
+
+				<form class="flex flex-col gap-4" @submit="handleAddNewVariant">
+					<Label for="new_variant">Variant name</Label>
+					<Input
+						type="text"
+						name="new_variant"
+						id="new_variant"
+						placeholder="variant name"
+						required
+					/>
+
+					<Label for="new_variant_values"
+						>Variant values, comma separated</Label
+					>
+
+					<TagsInput
+						v-model="variantOptions"
+						name="new_variant_values"
+						id="new_variant_values"
+					>
+						<TagsInputItem
+							v-for="option in variantOptions"
+							:key="option"
+							:value="option"
+						>
+							<TagsInputItemText />
+							<TagsInputItemDelete />
+						</TagsInputItem>
+
+						<TagsInputInput placeholder="L, Spicy, dll..." />
+					</TagsInput>
+
+					<Button type="submit">Add new variant</Button>
+				</form>
+			</DialogContent>
+		</Dialog>
 
 		<div class="grid grid-cols-8 gap-4 items-end">
 			<div class="col-span-3">
@@ -111,21 +176,26 @@ async function handleAddOption() {
 			<div class="col-span-4">
 				<Label for="menu_variation_options">Variant values</Label>
 
-				<TagsInput v-model="variantOptions" id="menu_variant_options">
-					<TagsInputItem
-						v-for="option in variantOptions"
-						:key="option"
-						:value="option"
-					>
-						<TagsInputItemText />
-						<TagsInputItemDelete />
-					</TagsInputItem>
+				<!-- TODO: only active shown when variant value is already picked  -->
 
-					<TagsInputInput placeholder="L, Spicy, dll..." />
-				</TagsInput>
+				<Select id="menu_variant_values" name="menu_variant_values" disabled>
+					<SelectTrigger>
+						<SelectValue placeholder="select a value" />
+					</SelectTrigger>
+
+					<SelectContent>
+						<SelectItem
+							v-for="value in ['not', 'implemented']"
+							:value="String(value)"
+						>
+							{{ value }}
+						</SelectItem>
+					</SelectContent>
+				</Select>
 			</div>
 
 			<Button
+				type="button"
 				class="col-span-1 text-destructive outline outline-1 outline-destructive"
 				variant="ghost"
 			>
