@@ -1,0 +1,15 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro"
+import MenuAdd from "@/components/MenuAdd.vue"
+import { db } from "@/database"
+
+const categories = await db.selectFrom("menu_categories").selectAll().execute()
+---
+
+<AdminLayout title="add new menua - Velvet Cup">
+	<section class="main-section">
+		<h2 class="text-lg">Tambahkan menu baru</h2>
+
+		<MenuAdd @menuAdded="handleAddMenu" categories={categories} client:load />
+	</section>
+</AdminLayout>

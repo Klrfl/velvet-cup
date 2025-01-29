@@ -1,9 +1,25 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuList from "@/components/MenuList.vue"
+import type { MenuWithCategories } from "@/types"
 import { db } from "@/database"
+import { sql } from "kysely"
 
-const menus = await db.selectFrom("menu").selectAll().execute()
+const menus = await db
+	.selectFrom("menu as m")
+	.leftJoin("menu_categories as c", "c.id", "m.category_id")
+	.select([
+		"m.id",
+		"m.name",
+		"m.image",
+		"m.category_id",
+		"m.created_at",
+		"m.description",
+	])
+	.select(({ fn }) =>
+		fn.coalesce("c.name", sql.lit("no category")).as("category")
+	)
+	.execute()
 ---
 
 <AdminLayout>
@@ -12,6 +28,6 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 	</header>
 
 	<section class="main-section grid grid-cols-subgrid">
-		<MenuList menu={menus} client:load />
+		<MenuList menu={menus as MenuWithCategories[]} client:load />
 	</section>
 </AdminLayout>
