@@ -71,8 +71,35 @@ async function handleAddOption() {
 	const result = await response.json()
 }
 
-async function handleAddNewVariant() {
-	alert("belum diimplementasi")
+async function handleAddNewVariant(form: HTMLFormElement) {
+	const formData = new FormData(form)
+
+	let body: Record<string, any> = {}
+
+	/** initially the input where we got the values from 
+   spits out a flat formData we transform it into an
+   object so we can insert it on the backend more easily
+   like so
+  */
+	for (const [key, value] of formData) {
+		if (key.startsWith("[new_variant_values]")) {
+			if (!Object.hasOwn(body, "values")) {
+				body["values"] = []
+			}
+
+			body["values"].push({ name: value })
+			continue
+		} else if (key === "new_variant") body["name"] = value as string
+	}
+
+	const response = await fetch("/api/admin/menu/variants", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(body),
+	})
+
+	const result = await response.json()
+	console.log(result)
 }
 </script>
 
@@ -129,7 +156,12 @@ async function handleAddNewVariant() {
 					<DialogDescription> Add new option and values. </DialogDescription>
 				</DialogHeader>
 
-				<form class="flex flex-col gap-4" @submit="handleAddNewVariant">
+				<form
+					class="flex flex-col gap-4"
+					@submit.prevent="
+						(e) => handleAddNewVariant(e.currentTarget as HTMLFormElement)
+					"
+				>
 					<Label for="new_variant">Variant name</Label>
 					<Input
 						type="text"
