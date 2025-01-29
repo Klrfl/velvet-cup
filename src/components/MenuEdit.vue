@@ -26,12 +26,11 @@ import {
 	DialogDescription,
 } from "@/components/ui/dialog"
 
-import type { Menu } from "@/database/database.types"
-import type { Selectable } from "kysely"
 import { ref } from "vue"
+import type { MenuWithCategories } from "@/types"
 
 interface Props {
-	menu: Selectable<Menu>
+	menu: MenuWithCategories
 	categories: {
 		id: number
 		name: string
@@ -101,7 +100,11 @@ async function handleAddNewVariant() {
 
 		<Label for="menu_category">Category</Label>
 
-		<Select id="menu_category" name="menu_category">
+		<Select
+			id="menu_category"
+			name="menu_category"
+			:default-value="String(menu.category_id)"
+		>
 			<SelectTrigger>
 				<SelectValue placeholder="select a category" />
 			</SelectTrigger>
