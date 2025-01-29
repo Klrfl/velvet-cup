@@ -48,6 +48,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
+		.addColumn("variant_id", "integer", (col) =>
+			col.notNull().references("menu_variants.id")
+		)
 		.addColumn("name", "text", (col) => col.notNull())
 		.execute()
 
@@ -59,10 +62,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("menu_item_id", "integer", (col) =>
 			col.references("menu_items.id")
 		)
-		.addColumn("variant_id", "integer", (col) =>
-			col.references("menu_variants.id")
-		)
-		.addColumn("variant_value_id", "integer", (col) =>
+		.addColumn("variation_id", "integer", (col) =>
 			col.references("menu_variant_values.id")
 		)
 		.addColumn("price", "numeric", (col) => col.notNull())
@@ -71,6 +71,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
 	db.schema.dropTable("menu_categories").cascade().execute()
-	db.schema.dropTable("menu_items").execute()
-	db.schema.dropTable("menu").execute()
+	db.schema.dropTable("menu_items").cascade().execute()
+	db.schema.dropTable("menu_variants").cascade().execute()
+	db.schema.dropTable("menu_variant_values").cascade().execute()
+	db.schema.dropTable("menu_configuration").cascade().execute()
+	db.schema.dropTable("menu").cascade().execute()
 }

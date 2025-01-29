@@ -35,4 +35,5 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
 	await db.schema.dropTable("order_status").cascade().execute()
 	await db.schema.dropTable("orders").cascade().execute()
+	await db.schema.dropTable("order_detail").cascade().execute()
 }

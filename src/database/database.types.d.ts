@@ -57,8 +57,7 @@ export interface MenuConfiguration {
   id: Generated<number>;
   menu_item_id: number | null;
   price: Numeric;
-  variant_id: number | null;
-  variant_value_id: number | null;
+  variation_id: number | null;
 }
 
 export interface MenuItems {
@@ -76,6 +75,7 @@ export interface MenuVariants {
 export interface MenuVariantValues {
   id: Generated<number>;
   name: string;
+  variant_id: number;
 }
 
 export interface OrderDetail {
