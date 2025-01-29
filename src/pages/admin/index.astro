@@ -1,17 +1,17 @@
 ---
-import Layout from "@/layouts/Layout.astro"
+import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuList from "@/components/MenuList.vue"
 import { db } from "@/database"
 
 const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
-<Layout>
+<AdminLayout>
 	<header class="main-section">
-		<h1>Menus</h1>
+		<h1 class="text-4xl">Menus</h1>
 	</header>
 
 	<section class="main-section grid grid-cols-subgrid">
 		<MenuList menu={menus} client:load />
 	</section>
-</Layout>
+</AdminLayout>

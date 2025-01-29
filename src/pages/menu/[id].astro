@@ -10,7 +10,11 @@ if (isNaN(Number(menuId))) {
 	return Astro.rewrite("/404")
 }
 
-const menu = await db.selectFrom("menu").selectAll().executeTakeFirst()
+const menu = await db
+	.selectFrom("menu")
+	.selectAll()
+	.where("id", "=", Number(menuId))
+	.executeTakeFirst()
 
 if (!menu) {
 	return Astro.rewrite("/404")

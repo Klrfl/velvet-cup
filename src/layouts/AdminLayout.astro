@@ -1,6 +1,6 @@
 ---
-import Layout from "./Layout.astro"
-import Navbar from "@/components/Navbar.astro"
+import BaseLayout from "./BaseLayout.astro"
+import AdminNavbar from "@/components/AdminNavbar.astro"
 
 interface Props {
 	title?: string
@@ -9,6 +9,8 @@ interface Props {
 const { title } = Astro.props
 ---
 
-<Layout {title}>
-	<Navbar />
-</Layout>
+<BaseLayout {title}>
+	<AdminNavbar />
+
+	<slot />
+</BaseLayout>
