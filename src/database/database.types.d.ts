@@ -55,24 +55,17 @@ export interface MenuCategories {
 
 export interface MenuConfiguration {
   id: Generated<number>;
-  menu_item_id: number;
+  menu_id: number;
   price: Numeric;
   variation_id: number;
 }
 
-export interface MenuItems {
-  id: Generated<number>;
-  image: string | null;
-  menu_id: number;
-  name: string;
-}
-
-export interface MenuVariants {
+export interface MenuOptions {
   id: Generated<number>;
   name: string;
 }
 
-export interface MenuVariantValues {
+export interface MenuOptionValues {
   id: Generated<number>;
   name: string;
   variant_id: number;
@@ -136,9 +129,8 @@ export interface DB {
   menu: Menu;
   menu_categories: MenuCategories;
   menu_configuration: MenuConfiguration;
-  menu_items: MenuItems;
-  menu_variant_values: MenuVariantValues;
-  menu_variants: MenuVariants;
+  menu_option_values: MenuOptionValues;
+  menu_options: MenuOptions;
   order_detail: OrderDetail;
   order_status: OrderStatus;
   orders: Orders;

@@ -26,19 +26,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.execute()
 
 	await db.schema
-		.createTable("menu_items")
-		.addColumn("id", "integer", (col) =>
-			col.primaryKey().generatedAlwaysAsIdentity()
-		)
-		.addColumn("menu_id", "integer", (col) =>
-			col.notNull().references("menu.id").onDelete("cascade")
-		)
-		.addColumn("name", "text", (col) => col.notNull())
-		.addColumn("image", "text")
-		.execute()
-
-	await db.schema
-		.createTable("menu_variants")
+		.createTable("menu_options")
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
@@ -46,12 +34,12 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.execute()
 
 	await db.schema
-		.createTable("menu_variant_values")
+		.createTable("menu_option_values")
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
 		.addColumn("variant_id", "integer", (col) =>
-			col.notNull().references("menu_variants.id")
+			col.notNull().references("menu_options.id")
 		)
 		.addColumn("name", "text", (col) => col.notNull())
 		.execute()
@@ -61,11 +49,11 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("menu_item_id", "integer", (col) =>
-			col.notNull().references("menu_items.id")
+		.addColumn("menu_id", "integer", (col) =>
+			col.notNull().references("menu.id")
 		)
 		.addColumn("variation_id", "integer", (col) =>
-			col.notNull().references("menu_variant_values.id")
+			col.notNull().references("menu_option_values.id")
 		)
 		.addColumn("price", "numeric", (col) => col.notNull())
 		.execute()
@@ -73,7 +61,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
 	db.schema.dropTable("menu_categories").cascade().execute()
-	db.schema.dropTable("menu_items").cascade().execute()
 	db.schema.dropTable("menu_variants").cascade().execute()
 	db.schema.dropTable("menu_variant_values").cascade().execute()
 	db.schema.dropTable("menu_configuration").cascade().execute()
