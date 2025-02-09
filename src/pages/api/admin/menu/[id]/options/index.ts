@@ -2,7 +2,16 @@ import { db } from "@/database"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, params }) => {
+	const { id } = params
+	const menu_id = Number(id)
+
+	if (isNaN(menu_id)) {
+		return new Response(JSON.stringify({ message: "invalid menu id" }), {
+			status: 400,
+		})
+	}
+
 	const body = await request.json()
 
 	const variantSchema = z
@@ -28,23 +37,26 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	const variantValues = await db.transaction().execute(async (trx) => {
-		const variant = await trx
+		const menu_option = await trx
 			.insertInto("menu_options")
-			.values({ name: newVariant.name })
+			.values({ name: newVariant.name, menu_id })
 			.returningAll()
 			.executeTakeFirstOrThrow()
 
-		const variantValues = await trx
+		const option_values = await trx
 			.insertInto("menu_option_values")
 			.values(
-				newVariant.values.map(({ name }) => ({ name, variant_id: variant.id }))
+				newVariant.values.map(({ name }) => ({
+					name,
+					menu_option_id: menu_option.id,
+				}))
 			)
 			.returningAll()
 			.execute()
 
 		return {
-			...variant,
-			values: [...variantValues],
+			...menu_option,
+			values: [...option_values],
 		}
 	})
 

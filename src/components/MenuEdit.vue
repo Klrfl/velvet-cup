@@ -37,7 +37,7 @@ interface Props {
 	}[]
 }
 
-const { categories } = defineProps<Props>()
+const { menu, categories } = defineProps<Props>()
 
 async function handleEditMenu(e: Event, id: number) {
 	const form = e.currentTarget as HTMLFormElement
@@ -53,25 +53,10 @@ async function handleEditMenu(e: Event, id: number) {
 	}
 }
 
-const variants = [
-	{
-		option_id: 1,
-		option_value_ids: [1, 2, 3],
-	},
-]
-const variantOptions = ref(["apa", "kek"])
+const newOptions = ref([])
+const menuOptions = ref([])
 
-async function handleAddOption() {
-	const response = await fetch("/api/admin/menu/variants", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(variantOptions),
-	})
-
-	const result = await response.json()
-}
-
-async function handleAddNewVariant(form: HTMLFormElement) {
+async function handleAddOption(form: HTMLFormElement) {
 	const formData = new FormData(form)
 
 	let body: Record<string, any> = {}
@@ -81,6 +66,7 @@ async function handleAddNewVariant(form: HTMLFormElement) {
    object so we can insert it on the backend more easily
    like so
   */
+
 	for (const [key, value] of formData) {
 		if (key.startsWith("[new_variant_values]")) {
 			if (!Object.hasOwn(body, "values")) {
@@ -92,7 +78,7 @@ async function handleAddNewVariant(form: HTMLFormElement) {
 		} else if (key === "new_variant") body["name"] = value as string
 	}
 
-	const response = await fetch("/api/admin/menu/variants", {
+	const response = await fetch(`/api/admin/menu/${menu.id}/options`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(body),
@@ -100,6 +86,9 @@ async function handleAddNewVariant(form: HTMLFormElement) {
 
 	const result = await response.json()
 	console.log(result)
+
+	menuOptions.value = menuOptions.value.push(result.data)
+	// TODO: handle errors when adding new option
 }
 </script>
 
@@ -143,120 +132,140 @@ async function handleAddNewVariant(form: HTMLFormElement) {
 			</SelectContent>
 		</Select>
 
-		<h2 class="font-bold text-xl font-sans">Options</h2>
-
-		<Dialog>
-			<DialogTrigger as-child>
-				<Button>Add new option</Button>
-			</DialogTrigger>
-
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Add new option</DialogTitle>
-					<DialogDescription> Add new option and values. </DialogDescription>
-				</DialogHeader>
-
-				<form
-					class="flex flex-col gap-4"
-					@submit.prevent="
-						(e) => handleAddNewVariant(e.currentTarget as HTMLFormElement)
-					"
-				>
-					<Label for="new_variant">Variant name</Label>
-					<Input
-						type="text"
-						name="new_variant"
-						id="new_variant"
-						placeholder="variant name"
-						required
-					/>
-
-					<Label for="new_variant_values"
-						>Variant values, comma separated</Label
-					>
-
-					<TagsInput
-						v-model="variantOptions"
-						name="new_variant_values"
-						id="new_variant_values"
-					>
-						<TagsInputItem
-							v-for="option in variantOptions"
-							:key="option"
-							:value="option"
-						>
-							<TagsInputItemText />
-							<TagsInputItemDelete />
-						</TagsInputItem>
-
-						<TagsInputInput placeholder="L, Spicy, dll..." />
-					</TagsInput>
-
-					<Button type="submit">Add new variant</Button>
-				</form>
-			</DialogContent>
-		</Dialog>
-
-		<div class="grid grid-cols-8 gap-4 items-end">
-			<div class="col-span-3">
-				<Label for="menu_option_name">Option title</Label>
-				<Input
-					type="text"
-					id="menu_option_name"
-					placeholder="option name"
-					required
-				/>
-			</div>
-
-			<div class="col-span-4">
-				<Label for="menu_variation_options">Variant values</Label>
-
-				<!-- TODO: only active shown when variant value is already picked  -->
-
-				<Select id="menu_variant_values" name="menu_variant_values" disabled>
-					<SelectTrigger>
-						<SelectValue placeholder="select a value" />
-					</SelectTrigger>
-
-					<SelectContent>
-						<SelectItem
-							v-for="value in ['not', 'implemented']"
-							:value="String(value)"
-						>
-							{{ value }}
-						</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
-
-			<Button
-				type="button"
-				class="col-span-1 text-destructive outline outline-1 outline-destructive"
-				variant="ghost"
-			>
-				Delete variant
-			</Button>
-
-			<div class="col-span-3">
-				<Label for="menu_price">Price</Label>
-				<Input
-					type="number"
-					id="menu_price"
-					name="menu_price"
-					placeholder="type price here"
-				/>
-			</div>
-
-			<Button
-				class="col-span-full"
-				type="button"
-				variant="outline"
-				@click="handleAddOption"
-			>
-				add a new variant
-			</Button>
-		</div>
-
 		<Button type="submit">Sunting</Button>
 	</form>
+
+	<h2 class="font-bold text-xl font-sans">Options</h2>
+	<Dialog>
+		<DialogTrigger as-child>
+			<Button>Add new option</Button>
+		</DialogTrigger>
+
+		<DialogContent>
+			<DialogHeader>
+				<DialogTitle>Add new option</DialogTitle>
+				<DialogDescription> Add new option and values. </DialogDescription>
+			</DialogHeader>
+
+			<form
+				class="flex flex-col gap-4"
+				@submit.prevent="
+					(e) => handleAddOption(e.currentTarget as HTMLFormElement)
+				"
+			>
+				<Label for="new_variant">Variant name</Label>
+				<Input
+					type="text"
+					name="new_variant"
+					id="new_variant"
+					placeholder="variant name"
+					required
+				/>
+
+				<Label for="new_variant_values">Variant values, comma separated</Label>
+
+				<TagsInput
+					v-model="newOptions"
+					name="new_variant_values"
+					id="new_variant_values"
+				>
+					<TagsInputItem
+						v-for="option in newOptions"
+						:key="option"
+						:value="option"
+					>
+						<TagsInputItemText />
+						<TagsInputItemDelete />
+					</TagsInputItem>
+
+					<TagsInputInput placeholder="L, Spicy, dll..." />
+				</TagsInput>
+
+				<Button type="submit">Add new variant</Button>
+			</form>
+		</DialogContent>
+	</Dialog>
+
+	<ul>
+		<li
+			v-for="option in menu.options"
+			:key="option.id"
+			class="flex items-center"
+		>
+			<span class="font-bold">
+				{{ option.name }}
+			</span>
+
+			<ul class="flex gap-4">
+				<li
+					v-for="option_value in option.option_values"
+					:key="option_value.id"
+					class="px-4 py-2"
+				>
+					{{ option_value.name }}
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="grid grid-cols-8 gap-4 items-end">
+		<h2 class="text-xl font-bold font-sans">Add new variants</h2>
+		<div class="col-span-3">
+			<Label for="menu_option_name">Variant title</Label>
+			<Input
+				type="text"
+				id="menu_option_name"
+				placeholder="option name"
+				required
+			/>
+		</div>
+
+		<div class="col-span-4">
+			<Label for="menu_variation_options">Variant values</Label>
+
+			<!-- TODO: only active shown when variant value is already picked  -->
+
+			<Select id="menu_variant_values" name="menu_variant_values" disabled>
+				<SelectTrigger>
+					<SelectValue placeholder="select a value" />
+				</SelectTrigger>
+
+				<SelectContent>
+					<SelectItem
+						v-for="value in ['not', 'implemented']"
+						:value="String(value)"
+					>
+						{{ value }}
+					</SelectItem>
+				</SelectContent>
+			</Select>
+		</div>
+
+		<Button
+			type="button"
+			class="col-span-1 text-destructive outline outline-1 outline-destructive"
+			variant="ghost"
+		>
+			Delete variant
+		</Button>
+
+		<div class="col-span-3">
+			<Label for="menu_price">Price</Label>
+			<Input
+				type="number"
+				id="menu_price"
+				name="menu_price"
+				placeholder="type price here"
+			/>
+		</div>
+
+		<Button
+			class="col-span-full"
+			type="button"
+			variant="outline"
+			@click="handleAddOption"
+		>
+			add a new variant
+		</Button>
+	</div>
 </template>

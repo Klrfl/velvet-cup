@@ -62,13 +62,14 @@ export interface MenuConfiguration {
 
 export interface MenuOptions {
   id: Generated<number>;
+  menu_id: number;
   name: string;
 }
 
 export interface MenuOptionValues {
   id: Generated<number>;
+  menu_option_id: number;
   name: string;
-  variant_id: number;
 }
 
 export interface OrderDetail {
