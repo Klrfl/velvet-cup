@@ -10,6 +10,6 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 	<section class="main-section">
 		<h2 class="text-lg">Tambahkan menu baru</h2>
 
-		<MenuAdd @menuAdded="handleAddMenu" categories={categories} client:load />
+		<MenuAdd categories={categories} client:load />
 	</section>
 </AdminLayout>

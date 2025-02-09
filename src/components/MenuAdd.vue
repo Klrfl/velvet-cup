@@ -57,48 +57,62 @@ async function handleAddCategory(category: string) {
 	}
 
 	categories.value.push(data)
+	newCategory.value = ""
 }
 </script>
 
 <template>
-	<form
-		@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
-		class="grid gap-2 max-w-xl"
-	>
-		<Label for="menu_name">Nama</Label>
-		<Input type="text" name="menu_name" placeholder="nama" required />
-
-		<Label for="menu_description">Deskripsi</Label>
-		<Textarea
-			placeholder="deskripsi"
-			name="menu_description"
-			required
-		></Textarea>
-
-		<Label for="menu_category">Category</Label>
-
-		<Select id="menu_category" name="menu_category">
-			<SelectTrigger>
-				<SelectValue placeholder="select a category" />
-			</SelectTrigger>
-
-			<SelectContent>
-				<SelectItem v-for="category in categories" :value="String(category.id)">
-					{{ category.name }}
-				</SelectItem>
-			</SelectContent>
-		</Select>
-
-		<Label for="new_category">Add new category</Label>
-		<Input type="text" v-model:model-value="newCategory" id="new_category" />
-		<Button
-			@click="handleAddCategory(newCategory)"
-			type="button"
-			variant="outline"
+	<div class="flex flex-wrap gap-4">
+		<form
+			@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
+			class="flex flex-col flex-grow-[6] gap-2"
 		>
-			Add new category
-		</Button>
+			<Label for="menu_name">Nama</Label>
+			<Input type="text" name="menu_name" placeholder="nama" required />
 
-		<Button type="submit">tambahkan menu baru</Button>
-	</form>
+			<Label for="menu_description">Deskripsi</Label>
+			<Textarea
+				placeholder="deskripsi"
+				name="menu_description"
+				required
+			></Textarea>
+
+			<Label for="menu_category">Category</Label>
+
+			<Select id="menu_category" name="menu_category">
+				<SelectTrigger>
+					<SelectValue placeholder="select a category" />
+				</SelectTrigger>
+
+				<SelectContent>
+					<SelectItem
+						v-for="category in categories"
+						:value="String(category.id)"
+					>
+						{{ category.name }}
+					</SelectItem>
+				</SelectContent>
+			</Select>
+
+			<Button type="submit">tambahkan menu baru</Button>
+		</form>
+
+		<form class="flex flex-col gap-4 flex-grow-[4]">
+			<Label for="new_category">Add new category</Label>
+			<Input
+				type="text"
+				required
+				placeholder="new category name..."
+				v-model:model-value="newCategory"
+				id="new_category"
+			/>
+			<Button
+				@click="handleAddCategory(newCategory)"
+				type="button"
+				variant="outline"
+			>
+				Add new category
+			</Button>
+		</form>
+	</div>
 </template>
