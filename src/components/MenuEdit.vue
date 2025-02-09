@@ -25,19 +25,22 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog"
+import MenuAddVariant from "@/components/MenuAddVariant.vue"
 
 import { ref } from "vue"
-import type { MenuWithCategories } from "@/types"
+import type { MenuComplete } from "@/types"
 
 interface Props {
-	menu: MenuWithCategories
+	menu: MenuComplete
 	categories: {
 		id: number
 		name: string
 	}[]
 }
 
-const { menu, categories } = defineProps<Props>()
+const props = defineProps<Props>()
+const categories = ref(props.categories)
+const menu = ref(props.menu)
 
 async function handleEditMenu(e: Event, id: number) {
 	const form = e.currentTarget as HTMLFormElement
@@ -54,7 +57,6 @@ async function handleEditMenu(e: Event, id: number) {
 }
 
 const newOptions = ref([])
-const menuOptions = ref([])
 
 async function handleAddOption(form: HTMLFormElement) {
 	const formData = new FormData(form)
@@ -78,16 +80,16 @@ async function handleAddOption(form: HTMLFormElement) {
 		} else if (key === "new_variant") body["name"] = value as string
 	}
 
-	const response = await fetch(`/api/admin/menu/${menu.id}/options`, {
+	const response = await fetch(`/api/admin/menu/${menu.value.id}/options`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(body),
 	})
 
 	const result = await response.json()
-	console.log(result)
+	console.log(result.data)
 
-	menuOptions.value = menuOptions.value.push(result.data)
+	menu.value.options = menu.value.options.push(result.data)
 	// TODO: handle errors when adding new option
 }
 </script>
@@ -109,7 +111,7 @@ async function handleAddOption(form: HTMLFormElement) {
 			placeholder="deskripsi"
 			name="menu_description"
 			id="menu_description"
-			v-model:model-value="menu.description as string"
+			v-model:model-value="menu.decription as string"
 			required
 		>
 		</Textarea>
@@ -209,63 +211,18 @@ async function handleAddOption(form: HTMLFormElement) {
 	</ul>
 
 	<div class="grid grid-cols-8 gap-4 items-end">
-		<h2 class="text-xl font-bold font-sans">Add new variants</h2>
-		<div class="col-span-3">
-			<Label for="menu_option_name">Variant title</Label>
-			<Input
-				type="text"
-				id="menu_option_name"
-				placeholder="option name"
-				required
-			/>
-		</div>
+		<h2 class="col-span-full text-xl font-bold font-sans">Add new variants</h2>
+		<Dialog>
+			<DialogTrigger as-child>
+				<Button type="button" class="col-span-full" variant="outline">
+					Add new variant
+				</Button>
+			</DialogTrigger>
 
-		<div class="col-span-4">
-			<Label for="menu_variation_options">Variant values</Label>
-
-			<!-- TODO: only active shown when variant value is already picked  -->
-
-			<Select id="menu_variant_values" name="menu_variant_values" disabled>
-				<SelectTrigger>
-					<SelectValue placeholder="select a value" />
-				</SelectTrigger>
-
-				<SelectContent>
-					<SelectItem
-						v-for="value in ['not', 'implemented']"
-						:value="String(value)"
-					>
-						{{ value }}
-					</SelectItem>
-				</SelectContent>
-			</Select>
-		</div>
-
-		<Button
-			type="button"
-			class="col-span-1 text-destructive outline outline-1 outline-destructive"
-			variant="ghost"
-		>
-			Delete variant
-		</Button>
-
-		<div class="col-span-3">
-			<Label for="menu_price">Price</Label>
-			<Input
-				type="number"
-				id="menu_price"
-				name="menu_price"
-				placeholder="type price here"
-			/>
-		</div>
-
-		<Button
-			class="col-span-full"
-			type="button"
-			variant="outline"
-			@click="handleAddOption"
-		>
-			add a new variant
-		</Button>
+			<DialogContent>
+				<h2 class="text-xl">Add new Variant</h2>
+				<MenuAddVariant :options="menu.options" />
+			</DialogContent>
+		</Dialog>
 	</div>
 </template>
