@@ -2,56 +2,76 @@ import { db } from "@/database"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const POST: APIRoute = async ({ request }) => {
-	const body = await request.json()
+export const POST: APIRoute = async ({ request, params }) => {
+	const { id } = params
+	const menu_id = Number(id)
 
-	const variantSchema = z
-		.object({
-			name: z.string(),
-			values: z.array(z.object({ name: z.string() })),
-		})
-		.required()
-
-	let newVariant
-	try {
-		newVariant = variantSchema.parse(body)
-	} catch (error) {
-		console.error(error)
-
+	if (isNaN(menu_id)) {
 		return new Response(
 			JSON.stringify({
-				message: "body malformed",
-				body,
+				message: "invalid menu id",
 			}),
 			{ status: 400 }
 		)
 	}
 
-	const variantValues = await db.transaction().execute(async (trx) => {
-		const variant = await trx
+	const body = await request.json()
+	const schema = z.object({
+		name: z.string().nonempty(),
+		price: z.number(),
+		options: z.array(
+			z.object({
+				option_value_id: z.number(),
+			})
+		),
+	})
+
+	const { data, error } = schema.safeParse(body)
+
+	if (!data || error) {
+		return new Response(
+			JSON.stringify({
+				message: "body malformed",
+			}),
+			{ status: 400 }
+		)
+	}
+
+	const results = await db.transaction().execute(async (tx) => {
+		const result = await tx
 			.insertInto("menu_variants")
-			.values({ name: newVariant.name })
-			.returningAll()
-			.executeTakeFirstOrThrow()
+			.values({ name: data.name, price: data.price, menu_id })
+			.returning("id")
+			.executeTakeFirst()
 
-		const variantValues = await trx
-			.insertInto("menu_variant_values")
+		if (!result) throw new Error("error when inserting new variant")
+
+		return await tx
+			.insertInto("menu_variant_options")
 			.values(
-				newVariant.values.map(({ name }) => ({ name, variant_id: variant.id }))
+				data.options.map(({ option_value_id }) => ({
+					variant_id: result.id,
+					option_value_id,
+				}))
 			)
-			.returningAll()
 			.execute()
+	})
 
-		return {
-			...variant,
-			values: [...variantValues],
+	results.forEach((result) => {
+		if (!Number(result.numInsertedOrUpdatedRows) || !result.insertId) {
+			return new Response(
+				JSON.stringify({
+					message: "failed to insert new menu variant",
+				}),
+				{ status: 500 }
+			)
 		}
 	})
 
 	return new Response(
 		JSON.stringify({
-			message: "successfully added new menu variant.",
-			data: variantValues,
+			message: "successfully added new variant for menu id",
+			data: {},
 		})
 	)
 }

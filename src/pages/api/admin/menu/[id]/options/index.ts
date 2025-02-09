@@ -56,7 +56,7 @@ export const POST: APIRoute = async ({ request, params }) => {
 
 		return {
 			...menu_option,
-			values: [...option_values],
+			option_values: [...option_values],
 		}
 	})
 
