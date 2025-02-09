@@ -15,7 +15,7 @@ const menuCompleteSchema = z.object({
 	name: z.string(),
 	category_id: z.number(),
 	created_at: z.coerce.date(),
-	decription: z.string(),
+	description: z.string(),
 	options: z.array(
 		z.object({
 			id: z.number(),

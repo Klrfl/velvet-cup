@@ -95,7 +95,7 @@ async function handleAddOption(form: HTMLFormElement) {
 </script>
 
 <template>
-	<form @submit.prevent="(e) => handleEditMenu(e, menu.id)">
+	<form class="grid gap-4" @submit.prevent="(e) => handleEditMenu(e, menu.id)">
 		<Label for="menu_name">Name</Label>
 		<Input
 			type="text"
@@ -111,7 +111,8 @@ async function handleAddOption(form: HTMLFormElement) {
 			placeholder="deskripsi"
 			name="menu_description"
 			id="menu_description"
-			v-model:model-value="menu.decription as string"
+			v-model:model-value="menu.description as string"
+			:default-value="menu.description"
 			required
 		>
 		</Textarea>
@@ -134,7 +135,7 @@ async function handleAddOption(form: HTMLFormElement) {
 			</SelectContent>
 		</Select>
 
-		<Button type="submit">Sunting</Button>
+		<Button type="submit" class="justify-self-start">Sunting</Button>
 	</form>
 
 	<h2 class="font-bold text-xl font-sans">Options</h2>
