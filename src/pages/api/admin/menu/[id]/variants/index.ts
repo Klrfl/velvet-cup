@@ -1,6 +1,6 @@
 import { db } from "@/database"
 import type { APIRoute } from "astro"
-import { z } from "astro:content"
+import { menuVariantsSchema } from "@/types"
 
 export const POST: APIRoute = async ({ request, params }) => {
 	const { id } = params
@@ -16,19 +16,11 @@ export const POST: APIRoute = async ({ request, params }) => {
 	}
 
 	const body = await request.json()
-	const schema = z.object({
-		name: z.string().nonempty(),
-		price: z.number(),
-		options: z.array(
-			z.object({
-				option_value_id: z.number(),
-			})
-		),
-	})
-
-	const { data, error } = schema.safeParse(body)
+	const { data, error } = menuVariantsSchema.safeParse(body)
 
 	if (!data || error) {
+		console.error(error)
+
 		return new Response(
 			JSON.stringify({
 				message: "body malformed",

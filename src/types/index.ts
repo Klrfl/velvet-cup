@@ -31,4 +31,15 @@ const menuCompleteSchema = z.object({
 	),
 })
 
+export const menuVariantsSchema = z.object({
+	name: z.string().nonempty(),
+	price: z.coerce.number(),
+	options: z.array(
+		z.object({
+			option_value_id: z.coerce.number(),
+		})
+	),
+})
+
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
+export type MenuVariants = z.infer<typeof menuVariantsSchema>

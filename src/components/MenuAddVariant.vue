@@ -52,7 +52,7 @@ const emit = defineEmits(["variantAdded"])
 		<fieldset v-for="option in options" :key="option.id">
 			<Label>{{ option.name }}</Label>
 
-			<Select>
+			<Select :id="option.name" :name="option.name">
 				<SelectTrigger>
 					<SelectValue :placeholder="`select a ${option.name}`" />
 				</SelectTrigger>

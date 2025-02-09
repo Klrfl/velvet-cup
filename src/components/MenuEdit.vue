@@ -63,7 +63,7 @@ async function handleAddOption(form: HTMLFormElement) {
 
 	let body: Record<string, any> = {}
 
-	/** initially the input where we got the values from 
+	/** initially the input where we got the values from
    spits out a flat formData we transform it into an
    object so we can insert it on the backend more easily
    like so
@@ -91,6 +91,38 @@ async function handleAddOption(form: HTMLFormElement) {
 
 	menu.value.options = menu.value.options.push(result.data)
 	// TODO: handle errors when adding new option
+}
+
+async function handleAddVariant(form: HTMLFormElement) {
+	const formData = new FormData(form)
+
+	let body: Record<string, any> = {}
+
+	for (const [key, value] of formData) {
+		// if current key is not name or price
+		// or in other words, if current key is the options
+		if (!["name", "price"].includes(key)) {
+			if (!Object.hasOwn(body, "options")) {
+				body["options"] = []
+			}
+
+			body["options"].push({
+				option_value_id: value,
+			})
+		} else {
+			body[key] = value
+		}
+	}
+
+	const response = await fetch(`/api/admin/menu/${menu.value.id}/variants`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(body),
+	})
+
+	const result = await response.json()
+
+	console.log(result)
 }
 </script>
 
@@ -221,8 +253,17 @@ async function handleAddOption(form: HTMLFormElement) {
 			</DialogTrigger>
 
 			<DialogContent>
-				<h2 class="text-xl">Add new Variant</h2>
-				<MenuAddVariant :options="menu.options" />
+				<DialogTitle>
+					<h2 class="text-xl">Add new Variant</h2>
+				</DialogTitle>
+				<DialogDescription>
+					Add a new variant for {{ menu.name }}.
+				</DialogDescription>
+
+				<MenuAddVariant
+					@variant-added="(form) => handleAddVariant(form as HTMLFormElement)"
+					:options="menu.options"
+				/>
 			</DialogContent>
 		</Dialog>
 	</div>
