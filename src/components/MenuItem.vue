@@ -18,13 +18,12 @@ async function deleteMenu(id: number) {
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(id),
 	})
 
-	const data = await res.json()
+	const { message } = await res.json()
 
 	if (res.status === 200) {
-		emit("menuDeleted")
+		emit("menuDeleted", message)
 	}
 
 	// TODO: validate response
