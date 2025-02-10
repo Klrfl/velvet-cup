@@ -42,7 +42,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
 		.addColumn("menu_option_id", "integer", (col) =>
-			col.notNull().references("menu_options.id")
+			col.notNull().references("menu_options.id").onDelete("cascade")
 		)
 		.addColumn("name", "text", (col) => col.notNull())
 		.execute()
