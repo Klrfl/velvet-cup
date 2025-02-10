@@ -59,6 +59,7 @@ const variants = await db
 				.select(["name", "mov.name as option_name"])
 		).as("options"),
 	])
+	.where("mv.menu_id", "=", Number(id))
 	.execute()
 
 const categories = await db.selectFrom("menu_categories").selectAll().execute()

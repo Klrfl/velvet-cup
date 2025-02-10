@@ -29,6 +29,8 @@ import MenuAddVariant from "@/components/MenuAddVariant.vue"
 
 import { ref } from "vue"
 import type { MenuComplete, MenuVariants } from "@/types"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "vue-sonner"
 
 interface Props {
 	menu: MenuComplete
@@ -55,11 +57,13 @@ async function handleEditMenu(e: Event, id: number) {
 	})
 
 	if (res.status === 200) {
-		console.log("success")
+		toast.success("Successfully edited menu item")
 	}
 }
 
 const newOptions = ref([])
+
+const isOptionDialogOpen = ref(false)
 
 async function handleAddOption(form: HTMLFormElement) {
 	const formData = new FormData(form)
@@ -92,8 +96,11 @@ async function handleAddOption(form: HTMLFormElement) {
 	const result = await response.json()
 	console.log(result.data)
 
-	menu.value.options = menu.value.options.push(result.data)
+	menu.value.options.push(result.data)
 	// TODO: handle errors when adding new option
+
+	isOptionDialogOpen.value = false
+	toast.success("successfully added a new option.")
 }
 
 async function handleAddVariant(form: HTMLFormElement) {
@@ -174,9 +181,9 @@ async function handleAddVariant(form: HTMLFormElement) {
 	</form>
 
 	<h2 class="font-bold text-xl font-sans">Options</h2>
-	<Dialog>
+	<Dialog :open="isOptionDialogOpen">
 		<DialogTrigger as-child>
-			<Button>Add new option</Button>
+			<Button @click="isOptionDialogOpen = true">Add new option</Button>
 		</DialogTrigger>
 
 		<DialogContent>
@@ -282,4 +289,6 @@ async function handleAddVariant(form: HTMLFormElement) {
 			</DialogContent>
 		</Dialog>
 	</div>
+
+	<Toaster rich-colors />
 </template>
