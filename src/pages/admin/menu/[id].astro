@@ -45,6 +45,22 @@ if (!menu) {
 	return Astro.rewrite("/404")
 }
 
+const variants = await db
+	.selectFrom("menu_variants as mv")
+	.select((eb) => [
+		"mv.id",
+		"mv.name",
+		"mv.price",
+		jsonArrayFrom(
+			eb
+				.selectFrom("menu_variant_options as mvo")
+				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
+				.whereRef("mvo.variant_id", "=", "mv.id")
+				.select(["name", "mov.name as option_name"])
+		).as("options"),
+	])
+	.execute()
+
 const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
@@ -54,6 +70,11 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 	</header>
 
 	<section class="col-span-full md:col-start-4 col-end-12">
-		<MenuEdit menu={menu} categories={categories} client:load />
+		<MenuEdit
+			menu={menu}
+			variants={variants}
+			categories={categories}
+			client:load
+		/>
 	</section>
 </Layout>

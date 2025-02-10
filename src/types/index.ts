@@ -37,6 +37,7 @@ export const menuVariantsSchema = z.object({
 	options: z.array(
 		z.object({
 			option_value_id: z.coerce.number(),
+			name: z.string().optional(),
 		})
 	),
 })

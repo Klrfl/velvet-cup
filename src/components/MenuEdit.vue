@@ -28,10 +28,11 @@ import {
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 
 import { ref } from "vue"
-import type { MenuComplete } from "@/types"
+import type { MenuComplete, MenuVariants } from "@/types"
 
 interface Props {
 	menu: MenuComplete
+	variants: MenuVariants[]
 	categories: {
 		id: number
 		name: string
@@ -39,8 +40,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
 const categories = ref(props.categories)
 const menu = ref(props.menu)
+const variants = ref(props.variants)
 
 async function handleEditMenu(e: Event, id: number) {
 	const form = e.currentTarget as HTMLFormElement
@@ -122,7 +125,7 @@ async function handleAddVariant(form: HTMLFormElement) {
 
 	const result = await response.json()
 
-	console.log(result)
+	variants.value.push(result.data)
 }
 </script>
 
@@ -244,7 +247,19 @@ async function handleAddVariant(form: HTMLFormElement) {
 	</ul>
 
 	<div class="grid grid-cols-8 gap-4 items-end">
-		<h2 class="col-span-full text-xl font-bold font-sans">Add new variants</h2>
+		<h2 class="col-span-full text-xl font-bold font-sans">variants</h2>
+
+		<ul class="col-span-full">
+			<li v-if="!variants.length">No variants yet.</li>
+			<li v-for="variant in variants">
+				{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
+
+				<div v-for="variant_option in variant.options">
+					{{ variant_option.name }}
+				</div>
+			</li>
+		</ul>
+
 		<Dialog>
 			<DialogTrigger as-child>
 				<Button type="button" class="col-span-full" variant="outline">
