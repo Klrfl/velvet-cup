@@ -3,6 +3,7 @@ import CoffeeImage from "@/assets/images/nathan-dumlao-nBJHO6wmRWw-unsplash.jpg"
 import Layout from "@/layouts/Layout.astro"
 import { db } from "@/database"
 import { Image } from "astro:assets"
+import { jsonArrayFrom } from "kysely/helpers/postgres"
 
 const { id: menuId } = Astro.params
 
@@ -12,7 +13,21 @@ if (isNaN(Number(menuId))) {
 
 const menu = await db
 	.selectFrom("menu")
-	.selectAll()
+	.select((eb) => [
+		"menu.id",
+		"menu.category_id",
+		"menu.name",
+		"menu.description",
+		"menu.image",
+		jsonArrayFrom(
+			eb
+				.selectFrom("menu_variants as mv")
+				.leftJoin("menu_variant_options as mvo", "mvo.variant_id", "mv.id")
+				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
+				.select(["mv.id", "mv.name", "mv.price", "mov.name as option_name"])
+				.whereRef("mv.menu_id", "=", "menu.id")
+		).as("variants"),
+	])
 	.where("id", "=", Number(menuId))
 	.executeTakeFirst()
 
@@ -38,13 +53,31 @@ if (!menu) {
 		class="details auto-rows-min col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid"
 	>
 		<h1 class="text-4xl">{menu.name}</h1>
-		<p>Rp.25.000</p>
+
+		<ul>
+			{
+				menu.variants.map((variant) => (
+					<li>
+						<span>
+							{variant.name} -{" "}
+							{Intl.NumberFormat("id-ID", {
+								style: "currency",
+								currency: "IDR",
+							}).format(Number(variant.price))}
+						</span>
+						<span>{variant.option_name}</span>
+					</li>
+				))
+			}
+		</ul>
 
 		<p>Pilih varian</p>
 		<ul class="flex gap-4">
-			<li class="px-8 py-4">Biasa</li>
-			<li class="px-8 py-4">Panas</li>
-			<li class="px-8 py-4">Dingin</li>
+			{
+				menu.variants.map((variant) => (
+					<li class="px-8 py-4">{variant.option_name}</li>
+				))
+			}
 		</ul>
 	</section>
 </Layout>
