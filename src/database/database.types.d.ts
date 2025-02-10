@@ -42,10 +42,12 @@ export interface Baskets {
 export interface Menu {
   category_id: number;
   created_at: Generated<Timestamp>;
+  deleted_at: Timestamp | null;
   description: string | null;
   id: Generated<number>;
   image: string | null;
   name: string;
+  updated_at: Generated<Timestamp | null>;
 }
 
 export interface MenuCategories {

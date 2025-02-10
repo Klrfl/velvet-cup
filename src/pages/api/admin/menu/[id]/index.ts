@@ -1,6 +1,7 @@
 import { db } from "@/database"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
+import { sql } from "kysely"
 
 export const PUT: APIRoute = async ({ request, params }) => {
 	const formData = await request.formData()
@@ -86,10 +87,14 @@ export const DELETE: APIRoute = async ({ params }) => {
 		)
 	}
 
-	const results = await db.deleteFrom("menu").where("id", "=", menuId).execute()
+	const results = await db
+		.updateTable("menu")
+		.set("deleted_at", sql`now()`)
+		.where("id", "=", menuId)
+		.execute()
 
 	for (const result of results) {
-		if (Number(result.numDeletedRows) === 0) {
+		if (Number(result.numUpdatedRows) === 0) {
 			return new Response(
 				JSON.stringify({
 					message: "nothing was deleted",

@@ -19,6 +19,7 @@ const menus = await db
 	.select(({ fn }) =>
 		fn.coalesce("c.name", sql.lit("no category")).as("category")
 	)
+	.where("deleted_at", "is", null)
 	.execute()
 ---
 
