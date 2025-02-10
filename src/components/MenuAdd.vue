@@ -24,11 +24,10 @@ async function handleAddMenu(form: HTMLFormElement) {
 		body: formData,
 	})
 
-	const { message, data } = await res.json()
+	const { message, data: menu } = await res.json()
 
 	if (res.status === 200) {
-		// TODO: do something
-		emit("menuAdded", data)
+		window.location.assign(`/admin/menu/${menu.id}`)
 	}
 }
 
