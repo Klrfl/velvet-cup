@@ -1,0 +1,54 @@
+<script setup lang="ts">
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import type { MenuCategories } from "@/database/database.types"
+import type { Selectable } from "kysely"
+
+import { ref } from "vue"
+
+const emit = defineEmits<{
+	(e: "categoryAdded", payload: Selectable<MenuCategories>): void
+}>()
+const newCategory = ref("")
+
+async function handleAddCategory(category: string) {
+	const response = await fetch("/api/admin/categories", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ name: category }),
+	})
+
+	const { data } = await response.json()
+
+	//TODO: alert or do something to handle error
+	if (response.status !== 200) {
+		return console.error(response)
+	}
+
+	emit("categoryAdded", data)
+	newCategory.value = ""
+}
+</script>
+
+<template>
+	<form class="grid gap-4">
+		<Label for="new_category">Add new category</Label>
+		<Input
+			type="text"
+			required
+			placeholder="new category name..."
+			v-model:model-value="newCategory"
+			id="new_category"
+		/>
+		<Button
+			@click="handleAddCategory(newCategory)"
+			type="button"
+			variant="outline"
+		>
+			Add new category
+		</Button>
+	</form>
+</template>

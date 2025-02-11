@@ -1,0 +1,15 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro"
+import CategoryList from "@/components/CategoryList.vue"
+import { db } from "@/database"
+
+const categories = await db.selectFrom("menu_categories").selectAll().execute()
+---
+
+<AdminLayout title="Manage categories">
+	<section class="grid gap-4 col-start-4 col-end-10">
+		<h1>Manage categories</h1>
+
+		<CategoryList categories={categories} client:load />
+	</section>
+</AdminLayout>

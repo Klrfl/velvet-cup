@@ -10,7 +10,6 @@ import {
 	SelectContent,
 	SelectItem,
 } from "@/components/ui/select"
-import { ref } from "vue"
 import type { Selectable } from "kysely"
 import type { MenuCategories } from "@/database/database.types"
 
@@ -35,29 +34,7 @@ interface Props {
 	categories: Selectable<MenuCategories>[]
 }
 
-const props = defineProps<Props>()
-const categories = ref(props.categories)
-const newCategory = ref("")
-
-async function handleAddCategory(category: string) {
-	const response = await fetch("/api/admin/categories", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ name: category }),
-	})
-
-	const { data } = await response.json()
-
-	//TODO: alert or do something to handle error
-	if (response.status !== 200) {
-		return console.error(response)
-	}
-
-	categories.value.push(data)
-	newCategory.value = ""
-}
+const { categories } = defineProps<Props>()
 </script>
 
 <template>
@@ -94,24 +71,6 @@ async function handleAddCategory(category: string) {
 			</Select>
 
 			<Button type="submit">tambahkan menu baru</Button>
-		</form>
-
-		<form class="flex flex-col gap-4 flex-grow-[4]">
-			<Label for="new_category">Add new category</Label>
-			<Input
-				type="text"
-				required
-				placeholder="new category name..."
-				v-model:model-value="newCategory"
-				id="new_category"
-			/>
-			<Button
-				@click="handleAddCategory(newCategory)"
-				type="button"
-				variant="outline"
-			>
-				Add new category
-			</Button>
 		</form>
 	</div>
 </template>
