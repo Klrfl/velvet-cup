@@ -75,7 +75,7 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 		<h1>Sunting "{menu.name}"</h1>
 	</header>
 
-	<section class="col-span-full md:col-start-4 col-end-12">
+	<section class="col-start-2 col-end-[-2] md:col-start-4 md:col-end-12">
 		<MenuEdit
 			menu={menu}
 			variants={variants}

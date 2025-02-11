@@ -183,12 +183,15 @@ async function handleAddVariant(form: HTMLFormElement) {
 		<Button type="submit" class="justify-self-start">Sunting</Button>
 	</form>
 
-	<h2 class="font-bold text-xl font-sans">Options</h2>
-	<Dialog :open="isOptionDialogOpen" @update:open="isOptionDialogOpen = false">
-		<DialogTrigger as-child>
-			<Button @click="isOptionDialogOpen = true">Add new option</Button>
-		</DialogTrigger>
+	<div class="flex justify-between gap-4">
+		<h2 class="font-bold text-xl font-sans">Options</h2>
 
+		<Button @click="isOptionDialogOpen = true" class="col-span-2">
+			Add new option
+		</Button>
+	</div>
+
+	<Dialog :open="isOptionDialogOpen" @update:open="isOptionDialogOpen = false">
 		<DialogContent>
 			<DialogHeader>
 				<DialogTitle>Add new option</DialogTitle>
@@ -256,50 +259,43 @@ async function handleAddVariant(form: HTMLFormElement) {
 		</li>
 	</ul>
 
-	<div class="grid grid-cols-8 gap-4 items-end">
-		<h2 class="col-span-full text-xl font-bold font-sans">variants</h2>
+	<div class="flex justify-between gap-4">
+		<h2 class="text-xl font-bold font-sans">variants</h2>
 
-		<ul class="col-span-full">
-			<li v-if="!variants.length">No variants yet.</li>
-			<li v-for="variant in variants">
-				{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
-
-				<div v-for="variant_option in variant.options" class="ml-4">
-					{{ variant_option.option_name }} - {{ variant_option.option_value }}
-				</div>
-			</li>
-		</ul>
-
-		<Dialog
-			:open="isVariantDialogOpen"
-			@update:open="isOptionDialogOpen = false"
-		>
-			<DialogTrigger as-child>
-				<Button
-					@click="isVariantDialogOpen = true"
-					type="button"
-					class="col-span-full"
-					variant="outline"
-				>
-					Add new variant
-				</Button>
-			</DialogTrigger>
-
-			<DialogContent>
-				<DialogTitle>
-					<h2 class="text-xl">Add new Variant</h2>
-				</DialogTitle>
-				<DialogDescription>
-					Add a new variant for {{ menu.name }}.
-				</DialogDescription>
-
-				<MenuAddVariant
-					@variant-added="(form) => handleAddVariant(form as HTMLFormElement)"
-					:options="menu.options"
-				/>
-			</DialogContent>
-		</Dialog>
+		<Button @click="isVariantDialogOpen = true"> Add new variant </Button>
 	</div>
+
+	<Dialog
+		:open="isVariantDialogOpen"
+		@update:open="isVariantDialogOpen = false"
+	>
+		<DialogTrigger as-child> </DialogTrigger>
+
+		<DialogContent>
+			<DialogTitle>
+				<h2 class="text-xl">Add new Variant</h2>
+			</DialogTitle>
+			<DialogDescription>
+				Add a new variant for {{ menu.name }}.
+			</DialogDescription>
+
+			<MenuAddVariant
+				@variant-added="(form) => handleAddVariant(form as HTMLFormElement)"
+				:options="menu.options"
+			/>
+		</DialogContent>
+	</Dialog>
+
+	<ul class="col-span-full">
+		<li v-if="!variants.length">No variants yet.</li>
+		<li v-for="variant in variants">
+			{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
+
+			<div v-for="variant_option in variant.options" class="ml-4">
+				{{ variant_option.option_name }} - {{ variant_option.option_value }}
+			</div>
+		</li>
+	</ul>
 
 	<Toaster rich-colors />
 </template>
