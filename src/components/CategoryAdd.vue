@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import type { MenuCategories } from "@/database/database.types"
 import type { Selectable } from "kysely"
 
@@ -35,7 +34,7 @@ async function handleAddCategory(category: string) {
 
 <template>
 	<form class="grid gap-4">
-		<Label for="new_category">Add new category</Label>
+		<label for="new_category">Add new category</label>
 		<Input
 			type="text"
 			required
@@ -43,11 +42,7 @@ async function handleAddCategory(category: string) {
 			v-model:model-value="newCategory"
 			id="new_category"
 		/>
-		<Button
-			@click="handleAddCategory(newCategory)"
-			type="button"
-			variant="outline"
-		>
+		<Button @click="handleAddCategory(newCategory)" type="button">
 			Add new category
 		</Button>
 	</form>
