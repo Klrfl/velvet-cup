@@ -99,10 +99,11 @@ async function handleAddOption(form: HTMLFormElement) {
 	menu.value.options.push(data)
 	// TODO: handle errors when adding new option
 
-	isOptionDialogOpen.value = false
 	toast.success("successfully added a new option.")
+	isOptionDialogOpen.value = false
 }
 
+const isVariantDialogOpen = ref(false)
 async function handleAddVariant(form: HTMLFormElement) {
 	const formData = new FormData(form)
 
@@ -132,6 +133,9 @@ async function handleAddVariant(form: HTMLFormElement) {
 
 	const { data } = await response.json()
 	variants.value.push(data)
+
+	toast.success("successfully added a new variant.")
+	isVariantDialogOpen.value = false
 }
 </script>
 
@@ -252,8 +256,6 @@ async function handleAddVariant(form: HTMLFormElement) {
 		</li>
 	</ul>
 
-	{{ variants }}
-
 	<div class="grid grid-cols-8 gap-4 items-end">
 		<h2 class="col-span-full text-xl font-bold font-sans">variants</h2>
 
@@ -268,9 +270,17 @@ async function handleAddVariant(form: HTMLFormElement) {
 			</li>
 		</ul>
 
-		<Dialog>
+		<Dialog
+			:open="isVariantDialogOpen"
+			@update:open="isOptionDialogOpen = false"
+		>
 			<DialogTrigger as-child>
-				<Button type="button" class="col-span-full" variant="outline">
+				<Button
+					@click="isVariantDialogOpen = true"
+					type="button"
+					class="col-span-full"
+					variant="outline"
+				>
 					Add new variant
 				</Button>
 			</DialogTrigger>
