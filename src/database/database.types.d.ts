@@ -75,7 +75,7 @@ export interface MenuVariantOptions {
 export interface MenuVariants {
   id: Generated<number>;
   menu_id: number;
-  name: string | null;
+  name: string;
   price: Numeric;
 }
 

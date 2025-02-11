@@ -55,7 +55,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("menu_id", "integer", (col) =>
 			col.notNull().references("menu.id")
 		)
-		.addColumn("name", "text")
+		.addColumn("name", "text", (col) => col.notNull())
 		.addColumn("price", "numeric", (col) => col.notNull())
 		.execute()
 
