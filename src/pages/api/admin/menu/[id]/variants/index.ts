@@ -29,41 +29,56 @@ export const POST: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const results = await db.transaction().execute(async (tx) => {
-		const result = await tx
+	const newVariant = await db.transaction().execute(async (tx) => {
+		const newVariant = await tx
 			.insertInto("menu_variants")
 			.values({ name: data.name, price: data.price, menu_id })
-			.returning("id")
+			.returning(["name", "price", "id"])
 			.executeTakeFirst()
 
-		if (!result) throw new Error("error when inserting new variant")
+		if (!newVariant) throw new Error("error when inserting new variant")
 
-		return await tx
+		const variant_id = await tx
 			.insertInto("menu_variant_options")
 			.values(
 				data.options.map(({ option_value_id }) => ({
-					variant_id: result.id,
+					variant_id: newVariant.id,
 					option_value_id,
 				}))
 			)
-			.execute()
+			.returning("variant_id")
+			.executeTakeFirst()
+		return newVariant
 	})
 
-	results.forEach((result) => {
-		if (!Number(result.numInsertedOrUpdatedRows) || !result.insertId) {
-			return new Response(
-				JSON.stringify({
-					message: "failed to insert new menu variant",
-				}),
-				{ status: 500 }
-			)
-		}
-	})
+	if (!newVariant) {
+		return new Response(
+			JSON.stringify({
+				message: "error when inserting new variant",
+			}),
+			{ status: 400 }
+		)
+	}
+
+	const menuVariantOptions = await db
+		.selectFrom("menu_variant_options as mvo")
+		.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
+		.leftJoin("menu_options as mo", "mo.id", "mov.menu_option_id")
+		.where("mvo.variant_id", "=", newVariant.id)
+		.select([
+			"option_value_id",
+			"mov.name as option_value",
+			"mo.name as option_name",
+		])
+		.execute()
 
 	return new Response(
 		JSON.stringify({
 			message: "successfully added new variant for menu id",
-			data: {},
+			data: {
+				...newVariant,
+				options: menuVariantOptions,
+			},
 		})
 	)
 }

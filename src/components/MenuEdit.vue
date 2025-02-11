@@ -93,10 +93,10 @@ async function handleAddOption(form: HTMLFormElement) {
 		body: JSON.stringify(body),
 	})
 
-	const result = await response.json()
-	console.log(result.data)
+	const { data } = await response.json()
+	console.log(data)
 
-	menu.value.options.push(result.data)
+	menu.value.options.push(data)
 	// TODO: handle errors when adding new option
 
 	isOptionDialogOpen.value = false
@@ -130,9 +130,8 @@ async function handleAddVariant(form: HTMLFormElement) {
 		body: JSON.stringify(body),
 	})
 
-	const result = await response.json()
-
-	variants.value.push(result.data)
+	const { data } = await response.json()
+	variants.value.push(data)
 }
 </script>
 
@@ -181,7 +180,7 @@ async function handleAddVariant(form: HTMLFormElement) {
 	</form>
 
 	<h2 class="font-bold text-xl font-sans">Options</h2>
-	<Dialog :open="isOptionDialogOpen">
+	<Dialog :open="isOptionDialogOpen" @update:open="isOptionDialogOpen = false">
 		<DialogTrigger as-child>
 			<Button @click="isOptionDialogOpen = true">Add new option</Button>
 		</DialogTrigger>
@@ -226,7 +225,7 @@ async function handleAddVariant(form: HTMLFormElement) {
 					<TagsInputInput placeholder="L, Spicy, dll..." />
 				</TagsInput>
 
-				<Button type="submit">Add new variant</Button>
+				<Button type="submit">Add new option</Button>
 			</form>
 		</DialogContent>
 	</Dialog>
@@ -253,6 +252,8 @@ async function handleAddVariant(form: HTMLFormElement) {
 		</li>
 	</ul>
 
+	{{ variants }}
+
 	<div class="grid grid-cols-8 gap-4 items-end">
 		<h2 class="col-span-full text-xl font-bold font-sans">variants</h2>
 
@@ -261,8 +262,8 @@ async function handleAddVariant(form: HTMLFormElement) {
 			<li v-for="variant in variants">
 				{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
 
-				<div v-for="variant_option in variant.options">
-					{{ variant_option.name }}
+				<div v-for="variant_option in variant.options" class="ml-4">
+					{{ variant_option.option_name }} - {{ variant_option.option_value }}
 				</div>
 			</li>
 		</ul>
