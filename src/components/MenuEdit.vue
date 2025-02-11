@@ -19,13 +19,14 @@ import {
 } from "@/components/ui/tags-input"
 import {
 	Dialog,
-	DialogTrigger,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog"
+
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
+import MenuEditVariant from "@/components/MenuEditVariant.vue"
 
 import { ref } from "vue"
 import type { MenuComplete, MenuVariants } from "@/types"
@@ -94,7 +95,6 @@ async function handleAddOption(form: HTMLFormElement) {
 	})
 
 	const { data } = await response.json()
-	console.log(data)
 
 	menu.value.options.push(data)
 	// TODO: handle errors when adding new option
@@ -136,6 +136,14 @@ async function handleAddVariant(form: HTMLFormElement) {
 
 	toast.success("successfully added a new variant.")
 	isVariantDialogOpen.value = false
+}
+
+const isEditVariantOpen = ref(false)
+const activeVariant = ref<MenuVariants>()
+
+function handleEditVariant(variant: MenuVariants) {
+	activeVariant.value = variant
+	isEditVariantOpen.value = true
 }
 </script>
 
@@ -269,8 +277,6 @@ async function handleAddVariant(form: HTMLFormElement) {
 		:open="isVariantDialogOpen"
 		@update:open="isVariantDialogOpen = false"
 	>
-		<DialogTrigger as-child> </DialogTrigger>
-
 		<DialogContent>
 			<DialogTitle>
 				<h2 class="text-xl">Add new Variant</h2>
@@ -286,16 +292,34 @@ async function handleAddVariant(form: HTMLFormElement) {
 		</DialogContent>
 	</Dialog>
 
-	<ul class="col-span-full">
+	<ul class="col-span-full flex flex-col gap-4">
 		<li v-if="!variants.length">No variants yet.</li>
-		<li v-for="variant in variants">
-			{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
+		<li
+			v-for="variant in variants"
+			class="grid grid-cols-6 grid-flow-row-dense"
+		>
+			<span class="col-span-4">
+				{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
+			</span>
 
-			<div v-for="variant_option in variant.options" class="ml-4">
+			<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
 				{{ variant_option.option_name }} - {{ variant_option.option_value }}
 			</div>
+
+			<Button
+				@click="handleEditVariant(variant)"
+				class="col-span-2 place-self-end"
+			>
+				Edit
+			</Button>
 		</li>
 	</ul>
+
+	<MenuEditVariant
+		v-model="isEditVariantOpen"
+		:variant="activeVariant"
+		v-if="activeVariant"
+	/>
 
 	<Toaster rich-colors />
 </template>
