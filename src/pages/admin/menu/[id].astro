@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro"
 import MenuEdit from "@/components/MenuEdit.vue"
 import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
+import { sql } from "kysely"
 
 const { id } = Astro.params
 
@@ -33,7 +34,7 @@ const menu = await db
 						eb
 							.selectFrom("menu_option_values as mov")
 							.whereRef("mov.menu_option_id", "=", "mo.id")
-							.selectAll()
+							.select(["menu_option_id", "id", "name"])
 					).as("option_values"),
 				])
 		).as("options"),
@@ -57,10 +58,10 @@ const variants = await db
 				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
 				.leftJoin("menu_options as mo", "mo.id", "mov.menu_option_id")
 				.whereRef("mvo.variant_id", "=", "mv.id")
-				.select([
+				.select((eb) => [
 					"option_value_id",
-					"mov.name as option_value",
-					"mo.name as option_name",
+					eb.fn.coalesce("mov.name", sql<string>`""`).as("option_value"),
+					eb.fn.coalesce("mo.name", sql<string>`""`).as("option_name"),
 				])
 		).as("options"),
 	])

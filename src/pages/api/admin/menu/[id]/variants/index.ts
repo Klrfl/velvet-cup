@@ -1,6 +1,6 @@
 import { db } from "@/database"
 import type { APIRoute } from "astro"
-import { menuVariantsSchema } from "@/types"
+import { insertableMenuVariantsSchema } from "@/types"
 
 export const POST: APIRoute = async ({ request, params }) => {
 	const { id } = params
@@ -16,7 +16,7 @@ export const POST: APIRoute = async ({ request, params }) => {
 	}
 
 	const body = await request.json()
-	const { data, error } = menuVariantsSchema.safeParse(body)
+	const { data, error } = insertableMenuVariantsSchema.safeParse(body)
 
 	if (!data || error) {
 		console.error(error)

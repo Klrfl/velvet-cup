@@ -35,15 +35,29 @@ const menuCompleteSchema = z.object({
 export const menuVariantsSchema = z.object({
 	id: z.number(),
 	name: z.string().nonempty(),
+	price: z.string().nonempty(),
+	options: z.array(
+		z.object({
+			option_value_id: z.coerce.number(),
+			option_name: z.string(),
+			option_value: z.string(),
+		})
+	),
+})
+
+export const insertableMenuVariantsSchema = z.object({
+	id: z.number(),
+	name: z.string().nonempty(),
 	price: z.coerce.number(),
 	options: z.array(
 		z.object({
 			option_value_id: z.coerce.number(),
-			option_name: z.string().optional(),
-			option_value: z.string().optional(),
 		})
 	),
 })
 
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
 export type MenuVariants = z.infer<typeof menuVariantsSchema>
+export type InsertableMenuVariants = z.infer<
+	typeof insertableMenuVariantsSchema
+>
