@@ -46,7 +46,6 @@ export const menuVariantsSchema = z.object({
 })
 
 export const insertableMenuVariantsSchema = z.object({
-	id: z.number(),
 	name: z.string().nonempty(),
 	price: z.coerce.number(),
 	options: z.array(

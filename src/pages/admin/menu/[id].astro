@@ -60,8 +60,8 @@ const variants = await db
 				.whereRef("mvo.variant_id", "=", "mv.id")
 				.select((eb) => [
 					"option_value_id",
-					eb.fn.coalesce("mov.name", sql<string>`""`).as("option_value"),
-					eb.fn.coalesce("mo.name", sql<string>`""`).as("option_name"),
+					eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
+					eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
 				])
 		).as("options"),
 	])
