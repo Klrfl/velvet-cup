@@ -38,16 +38,32 @@ const { title = "Velvet Cup" } = Astro.props
 		grid-template-rows: max-content auto;
 		align-content: start;
 		align-items: start;
+
+		--col-width: 20ch;
 		grid-template-columns:
-			2rem repeat(6, 1fr)
-			2rem;
+			[full-bleed-start]
+			minmax(1rem, 1fr)
+			[main-content-start]
+			repeat(6, minmax(0, var(--col-width)))
+			[main-content-end]
+			minmax(1rem, 1fr)
+			[full-bleed-end];
 		grid-auto-rows: auto;
 
 		@media screen and (min-width: 768px) {
-			grid-template-columns: minmax(0, 1fr) repeat(12, minmax(0, 7rem)) minmax(
-					0,
-					1fr
-				);
+			--col-width: 7rem;
+			grid-template-columns:
+				[full-bleed-start]
+				minmax(0, 1fr)
+				[bleed-start]
+				repeat(2, minmax(0, var(--col-width)))
+				[main-content-start]
+				repeat(8, minmax(0, var(--col-width)))
+				[main-content-end]
+				repeat(2, minmax(0, var(--col-width)))
+				[bleed-end]
+				minmax(0, 1fr)
+				[full-bleed-end];
 			gap: 2rem;
 		}
 	}

@@ -78,7 +78,18 @@
 	}
 
 	.main-section {
-		@apply col-start-2 col-end-[-2];
+		grid-column: main-content;
+	}
+
+	.bleed-section {
+		grid-column: full-bleed;
+		@media screen and (min-width: 768px) {
+			grid-column: bleed;
+		}
+	}
+
+	.full-bleed-section {
+		grid-column: full-bleed;
 	}
 
 	.heading,
