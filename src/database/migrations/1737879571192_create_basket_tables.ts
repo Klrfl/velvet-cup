@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely"
+import { sql, type Kysely } from "kysely"
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await db.schema
@@ -6,21 +6,14 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
-		.execute()
-
-	await db.schema
-		.createTable("basket_items")
-		.addColumn("id", "integer", (col) =>
-			col.primaryKey().generatedAlwaysAsIdentity()
-		)
-		.addColumn("menu_item_id", "integer", (col) =>
+		.addColumn("menu_id", "integer", (col) =>
 			col.notNull().references("menu.id")
 		)
+		.addColumn("quantity", "integer", (col) => col.notNull().defaultTo(sql`1`))
+		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
 		.execute()
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-	db.schema.dropTable("basket_items").execute()
 	db.schema.dropTable("baskets").execute()
 }
