@@ -11,7 +11,7 @@ function handleSignIn(form: HTMLFormElement) {
 
 <template>
 	<form
-		class="col-start-2 col-end-[-2] md:col-start-5 md:col-span-6 grid gap-4"
+		class="grid gap-4"
 		@submit.prevent="(e) => handleSignIn(e.currentTarget as HTMLFormElement)"
 	>
 		<Label for="email">Email</Label>

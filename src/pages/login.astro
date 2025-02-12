@@ -1,8 +1,35 @@
 ---
+export const prerender = true
+
 import Layout from "@/layouts/Layout.astro"
 import SigninForm from "@/components/auth/SigninForm.vue"
 ---
 
-<Layout title="login">
-	<SigninForm client:load />
+<Layout title="login" bodyClass="content-start md:content-stretch gap-y-4">
+	<header class="main-section md:col-start-3 md:col-span-3 md:self-center">
+		<h1 class="text-4xl font-bold">Log in</h1>
+		<p>Log in into your account.</p>
+	</header>
+
+	<div class="hidden md:block sep"></div>
+
+	<section class="main-section md:col-start-7 md:col-end-[-3] md:self-center">
+		<SigninForm client:load />
+
+		<a
+			href="/sign-up"
+			class="no-underline hover:underline text-primary underline-offset-2 block text-center"
+		>
+			No account yet? Sign up now!
+		</a>
+	</section>
 </Layout>
+
+<style>
+	.sep {
+		width: 0.2rem;
+		height: 20vh;
+		place-self: center;
+		@apply bg-gray-200/50 rounded-full;
+	}
+</style>

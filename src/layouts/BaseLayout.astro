@@ -5,9 +5,10 @@ import "@/styles/globals.css"
 
 interface Props {
 	title?: string
+	bodyClass?: string | string[]
 }
 
-const { title = "Velvet Cup" } = Astro.props
+const { title = "Velvet Cup", bodyClass } = Astro.props
 ---
 
 <!doctype html>
@@ -20,7 +21,7 @@ const { title = "Velvet Cup" } = Astro.props
 		<title>{title}</title>
 	</head>
 
-	<body class="bg-background font-sans">
+	<body class:list={["bg-background font-sans", bodyClass]}>
 		<slot />
 	</body>
 </html>
@@ -36,10 +37,8 @@ const { title = "Velvet Cup" } = Astro.props
 	body {
 		display: grid;
 		grid-template-rows: max-content auto;
-		align-content: start;
-		align-items: start;
 
-		--col-width: 20ch;
+		--col-width: 10ch;
 		grid-template-columns:
 			[full-bleed-start]
 			minmax(1rem, 1fr)
@@ -51,7 +50,7 @@ const { title = "Velvet Cup" } = Astro.props
 		grid-auto-rows: auto;
 
 		@media screen and (min-width: 768px) {
-			--col-width: 7rem;
+			--col-width: 6rem;
 			grid-template-columns:
 				[full-bleed-start]
 				minmax(0, 1fr)
@@ -64,7 +63,7 @@ const { title = "Velvet Cup" } = Astro.props
 				[bleed-end]
 				minmax(0, 1fr)
 				[full-bleed-end];
-			gap: 2rem;
+			gap: 1rem;
 		}
 	}
 </style>
