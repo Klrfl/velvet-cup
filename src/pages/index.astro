@@ -12,14 +12,14 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 ---
 
 <Layout title="Home - Velvet Cup">
-	<header class="main-section">
+	<header class="bleed-section">
 		<h1 class="text-6xl">Hey there!</h1>
 		<p>
 			What are you craving? Mocha, cappuccino, latte? We've got you covered.
 		</p>
 	</header>
 
-	<section class="main-section row-span-4">
+	<section class="bleed-section row-span-4">
 		<ul>
 			{
 				menus.map((menu) => (
@@ -34,7 +34,7 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 		</ul>
 	</section>
 
-	<section class="main-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
 		<figure class="col-span-full md:col-span-5">
 			<Image
 				src={CoffeeImage}
@@ -59,7 +59,7 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 		</div>
 	</section>
 
-	<section class="main-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
 		<figure class="col-span-full md:col-span-5">
 			<Image
 				src={AnotherCoffeeImage}
@@ -83,7 +83,7 @@ const menus = await db.selectFrom("menu").selectAll().execute()
 		</div>
 	</section>
 
-	<section class="main-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
 		<figure class="col-span-full md:col-span-5">
 			<iframe
 				class="max-w-full"

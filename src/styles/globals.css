@@ -20,6 +20,16 @@
 		--input: 20 5.9% 90%;
 
 		--primary: 24 9.8% 10%;
+		--primary-100: 36 2% 95%;
+		--primary-200: 26 3% 92%;
+		--primary-300: 30 8% 83%;
+		--primary-400: 31 43% 45%;
+		--primary-500: 31 43% 41%;
+		--primary-600: 31 42% 36%;
+		--primary-700: 30 42% 34%;
+		--primary-800: 31 42% 27%;
+		--primary-900: 30 42% 20%;
+		--primary-950: 32 43% 16%;
 		--primary-foreground: 60 9.1% 97.8%;
 
 		--secondary: 60 4.8% 95.9%;
