@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro"
 import { db } from "@/database"
 import { Image } from "astro:assets"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
+import MenuOrder from "@/components/MenuOrder.vue"
 
 const { id: menuId } = Astro.params
 
@@ -24,7 +25,14 @@ const menu = await db
 				.selectFrom("menu_variants as mv")
 				.leftJoin("menu_variant_options as mvo", "mvo.variant_id", "mv.id")
 				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
-				.select(["mv.id", "mv.name", "mv.price", "mov.name as option_name"])
+				.leftJoin("menu_options as mo", "mov.menu_option_id", "mo.id")
+				.select([
+					"mv.id",
+					"mv.name",
+					"mv.price",
+					"mov.name as option_value",
+					"mo.name as option_name",
+				])
 				.whereRef("mv.menu_id", "=", "menu.id")
 		).as("variants"),
 	])
@@ -50,35 +58,14 @@ if (!menu) {
 	</header>
 
 	<section
-		class="details auto-rows-min col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid"
+		class="details auto-rows-min col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid gap-4"
 	>
 		<h1 class="text-4xl">{menu.name}</h1>
+		<p>{menu.description}</p>
 
-		<ul>
-			{
-				menu.variants.map((variant) => (
-					<li>
-						<span>
-							{variant.name} -{" "}
-							{Intl.NumberFormat("id-ID", {
-								style: "currency",
-								currency: "IDR",
-							}).format(Number(variant.price))}
-						</span>
-						<span>{variant.option_name}</span>
-					</li>
-				))
-			}
-		</ul>
+		<p>Choose a variant</p>
 
-		<p>Pilih varian</p>
-		<ul class="flex gap-4">
-			{
-				menu.variants.map((variant) => (
-					<li class="px-8 py-4">{variant.option_name}</li>
-				))
-			}
-		</ul>
+		<MenuOrder variants={menu.variants} client:load />
 	</section>
 </Layout>
 
