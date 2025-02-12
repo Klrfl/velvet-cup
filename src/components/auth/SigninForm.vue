@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
 import { ref } from "vue"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "vue-sonner"
 
 interface SignInCredentials {
 	email: string
@@ -24,6 +26,10 @@ async function handleSignIn(credentials: SignInCredentials) {
 
 	if (error) {
 		if (import.meta.env.DEV) console.error(error)
+		return toast.error(
+			error.message ??
+				"there was an error signin into your account. Please try again later."
+		)
 	}
 
 	window.location.assign("/")
@@ -54,4 +60,6 @@ async function handleSignIn(credentials: SignInCredentials) {
 
 		<Button type="submit">Submit</Button>
 	</form>
+
+	<Toaster rich-colors />
 </template>

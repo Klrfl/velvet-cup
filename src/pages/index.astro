@@ -7,8 +7,15 @@ import Layout from "@/layouts/Layout.astro"
 import { Button } from "@/components/ui/button"
 import { db } from "@/database"
 import { Image } from "astro:assets"
+import { auth } from "@/lib/auth"
 
 const menus = await db.selectFrom("menu").selectAll().execute()
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
+
+console.log(session)
 ---
 
 <Layout title="Home - Velvet Cup">
