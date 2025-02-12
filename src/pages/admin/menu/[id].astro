@@ -40,6 +40,7 @@ const menu = await db
 		).as("options"),
 	])
 	.where("m.id", "=", menuId)
+	.where("m.deleted_at", "is", null)
 	.executeTakeFirst()
 
 if (!menu) {
