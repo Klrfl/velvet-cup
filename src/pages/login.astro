@@ -7,7 +7,7 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 ---
 
 <Layout title="login" bodyClass="content-start gap-y-4">
-	<nav class="main-section flex justify-center">
+	<nav class="main-section flex justify-center select-none">
 		<label for="sign-up-input" class="hover:cursor-pointer">
 			<input type="radio" name="auth" id="sign-up-input" class="peer hidden" />
 			<span
@@ -18,7 +18,13 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 		</label>
 
 		<label for="login-input" class="hover:cursor-pointer">
-			<input type="radio" name="auth" id="login-input" class="peer hidden" />
+			<input
+				type="radio"
+				name="auth"
+				id="login-input"
+				class="peer hidden"
+				checked
+			/>
 			<span
 				class="block p-4 outline outline-1 outline-primary peer-checked:bg-primary peer-checked:text-white transition-colors rounded-r-lg"
 			>
@@ -27,7 +33,10 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 		</label>
 	</nav>
 
-	<div class="full-bleed-section grid grid-cols-subgrid py-8" id="sign-up">
+	<div
+		class="full-bleed-section grid gap-8 grid-cols-subgrid py-8 min-h-[50vh]"
+		id="sign-up"
+	>
 		<header class="main-section md:col-start-3 md:col-span-3 md:self-center">
 			<h1 class="text-4xl font-bold">Sign up</h1>
 			<p>And be part of the Velvet Cup family!</p>
@@ -40,7 +49,10 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 		</section>
 	</div>
 
-	<div class="full-bleed-section grid grid-cols-subgrid py-8" id="login">
+	<div
+		class="full-bleed-section grid gap-8 grid-cols-subgrid py-8 min-h-[50vh]"
+		id="login"
+	>
 		<header class="main-section md:col-start-3 md:col-span-3 md:self-center">
 			<h1 class="text-4xl font-bold">Log in</h1>
 			<p>Log in into your account.</p>
@@ -50,13 +62,6 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 
 		<section class="main-section md:col-start-7 md:col-end-[-3] md:self-center">
 			<SigninForm client:load />
-
-			<a
-				href="/sign-up"
-				class="no-underline hover:underline text-primary underline-offset-2 block text-center"
-			>
-				No account yet? Sign up now!
-			</a>
 		</section>
 	</div>
 </Layout>
