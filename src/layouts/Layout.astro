@@ -8,12 +8,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro"
 
 interface Props {
 	title?: string
+	description?: string
 }
 
-const { title = "Velvet Cup" } = Astro.props
+const { title = "Velvet Cup", description } = Astro.props
 ---
 
-<BaseLayout {title}>
+<BaseLayout {title} {description}>
 	<Navbar />
 
 	<slot />

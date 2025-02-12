@@ -5,9 +5,10 @@ import "@/styles/globals.css"
 
 interface Props {
 	title?: string
+	description?: string
 }
 
-const { title = "Velvet Cup" } = Astro.props
+const { title = "Velvet Cup", description = "Velvet Cup" } = Astro.props
 ---
 
 <!doctype html>
@@ -17,6 +18,7 @@ const { title = "Velvet Cup" } = Astro.props
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
 		<title>{title}</title>
 	</head>
 
