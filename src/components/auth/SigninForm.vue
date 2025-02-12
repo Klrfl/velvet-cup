@@ -2,23 +2,49 @@
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
+import { ref } from "vue"
 
-function handleSignIn(form: HTMLFormElement) {
-	const formData = new FormData(form)
-	console.log(formData)
+interface SignInCredentials {
+	email: string
+	password: string
+}
+
+const credentials = ref<SignInCredentials>({
+	email: "",
+	password: "",
+})
+
+async function handleSignIn(credentials: SignInCredentials) {
+	const { error } = await authClient.signIn.email({
+		email: credentials.email,
+		password: credentials.password,
+		rememberMe: true,
+	})
+
+	if (error) {
+		if (import.meta.env.DEV) console.error(error)
+	}
+
+	window.location.assign("/")
 }
 </script>
 
 <template>
-	<form
-		class="grid gap-4"
-		@submit.prevent="(e) => handleSignIn(e.currentTarget as HTMLFormElement)"
-	>
+	<form class="grid gap-4" @submit.prevent="handleSignIn(credentials)">
 		<Label for="email">Email</Label>
-		<Input type="email" id="email" name="email" placeholder="email" required />
+		<Input
+			v-model="credentials.email"
+			type="email"
+			id="email"
+			name="email"
+			placeholder="email"
+			required
+		/>
 
 		<Label for="password">Password</Label>
 		<Input
+			v-model="credentials.password"
 			type="password"
 			id="password"
 			name="password"
