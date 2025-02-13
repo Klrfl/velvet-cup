@@ -36,6 +36,8 @@ export interface BasketItems {
 
 export interface Baskets {
   id: Generated<number>;
+  menu_id: number;
+  quantity: Generated<number>;
   user_id: string;
 }
 
