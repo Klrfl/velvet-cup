@@ -6,6 +6,8 @@ interface Props {
 }
 
 const { session } = Astro.props
+
+const isAdmin = session?.user.role === "admin"
 ---
 
 <nav
@@ -13,8 +15,14 @@ const { session } = Astro.props
 >
 	<span class="block p-4">Logo here</span>
 	<ul class="flex gap-4">
-		<li><a href="/admin">Admin</a></li>
 		<li><a href="/">Home</a></li>
+		{
+			isAdmin && (
+				<li>
+					<a href="/admin">Admin</a>
+				</li>
+			)
+		}
 		<li><a href="/about">The Cafe</a></li>
 		<li><a href="/login">Cart</a></li>
 		{
