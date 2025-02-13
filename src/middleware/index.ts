@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
-import { defineMiddleware } from "astro:middleware"
+import { defineMiddleware, sequence } from "astro:middleware"
 
-export const onRequest = defineMiddleware(
+const adminMiddleware = defineMiddleware(
 	async ({ request, redirect }, next) => {
 		const isGoingToAdmin = request.url.includes("/admin")
 		const session = await auth.api.getSession({ headers: request.headers })
@@ -14,3 +14,30 @@ export const onRequest = defineMiddleware(
 		return next()
 	}
 )
+
+/**
+ * middleware for both authenticated and anon routes.
+ * */
+const authMiddleware = defineMiddleware(
+	async ({ request, redirect, url }, next) => {
+		const session = await auth.api.getSession({ headers: request.headers })
+
+		// if not authenticated
+		if (!session) {
+			if (["/account"].includes(url.pathname)) {
+				return redirect("/")
+			}
+		}
+
+		// if authenticated
+		if (session) {
+			if (["/login"].includes(url.pathname)) {
+				return redirect("/")
+			}
+		}
+
+		return next()
+	}
+)
+
+export const onRequest = sequence(adminMiddleware, authMiddleware)
