@@ -3,6 +3,7 @@ import "@fontsource-variable/inter"
 import "@fontsource/merriweather"
 import "@/styles/globals.css"
 
+import { auth } from "@/lib/auth"
 import Navbar from "@/components/Navbar.astro"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 
@@ -10,10 +11,14 @@ interface Props {
 	title?: string
 	bodyClass?: string | string[]
 }
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
 ---
 
 <BaseLayout {...Astro.props}>
-	<Navbar />
+	<Navbar {session} />
 
 	<slot />
 </BaseLayout>

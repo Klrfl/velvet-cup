@@ -1,0 +1,19 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { auth } from "@/lib/auth"
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
+---
+
+<Layout title="Your account - Velvet Cup" bodyClass="content-start">
+	<header class="main-section">
+		<h1 class="text-4xl">Your account</h1>
+	</header>
+
+	<section class="main-section bg-white p-8 rounded-lg">
+		<p>{session?.user.name}</p>
+		<p>{session?.user.email}</p>
+	</section>
+</Layout>

@@ -1,3 +1,13 @@
+---
+import { authClient } from "@/lib/auth-client"
+
+interface Props {
+	session: typeof authClient.$Infer.Session
+}
+
+const { session } = Astro.props
+---
+
 <nav
 	class="bleed-section flex justify-between bg-white rounded-full border border-black my-4 px-4 overflow-hidden"
 >
@@ -6,7 +16,18 @@
 		<li><a href="/admin">Admin</a></li>
 		<li><a href="/">Home</a></li>
 		<li><a href="/about">The Cafe</a></li>
-		<li><a href="/login">Login</a></li>
+		<li><a href="/login">Cart</a></li>
+		{
+			session ? (
+				<li>
+					<a href="/account">Account</a>
+				</li>
+			) : (
+				<li>
+					<a href="/login">Login</a>
+				</li>
+			)
+		}
 	</ul>
 </nav>
 
