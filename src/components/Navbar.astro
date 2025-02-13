@@ -19,20 +19,20 @@ const isAdmin = session?.user.role === "admin"
 		{
 			isAdmin && (
 				<li>
-					<a href="/admin">Admin</a>
+					<a href="/admin/">Admin</a>
 				</li>
 			)
 		}
-		<li><a href="/about">The Cafe</a></li>
-		<li><a href="/login">Cart</a></li>
+		<li><a href="/about/">The Cafe</a></li>
+		<li><a href="/cart/">Cart</a></li>
 		{
 			session ? (
 				<li>
-					<a href="/account">Account</a>
+					<a href="/account/">Account</a>
 				</li>
 			) : (
 				<li>
-					<a href="/login">Login</a>
+					<a href="/login/">Login</a>
 				</li>
 			)
 		}

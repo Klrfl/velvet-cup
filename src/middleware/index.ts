@@ -2,12 +2,12 @@ import { auth } from "@/lib/auth"
 import { defineMiddleware, sequence } from "astro:middleware"
 
 const adminMiddleware = defineMiddleware(
-	async ({ request, redirect }, next) => {
-		const isGoingToAdmin = request.url.includes("/admin")
+	async ({ request, redirect, url }, next) => {
+		const isGoingToAdmin = url.pathname.includes("/admin")
 		const session = await auth.api.getSession({ headers: request.headers })
-		const isAdmin = session?.user.role === "admin"
+		const isAdmin = session && session.user.role === "admin"
 
-		if ((!session || !isAdmin) && isGoingToAdmin) {
+		if (isGoingToAdmin && !isAdmin) {
 			return redirect("/", 308)
 		}
 
@@ -24,14 +24,14 @@ const authMiddleware = defineMiddleware(
 
 		// if not authenticated
 		if (!session) {
-			if (["/account"].includes(url.pathname)) {
+			if (url.pathname.includes("/account")) {
 				return redirect("/")
 			}
 		}
 
 		// if authenticated
 		if (session) {
-			if (["/login"].includes(url.pathname)) {
+			if (url.pathname.includes("/login")) {
 				return redirect("/")
 			}
 		}
