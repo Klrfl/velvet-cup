@@ -1,5 +1,5 @@
 ---
-import Layout from "@/layouts/Layout.astro"
+import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuEdit from "@/components/MenuEdit.vue"
 import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
@@ -72,7 +72,7 @@ const variants = await db
 const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
-<Layout>
+<AdminLayout>
 	<header class="main-section">
 		<h1>Sunting "{menu.name}"</h1>
 	</header>
@@ -85,4 +85,4 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 			client:load
 		/>
 	</section>
-</Layout>
+</AdminLayout>

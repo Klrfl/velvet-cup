@@ -14,12 +14,12 @@ const session = await auth.api.getSession({
 		<h1 class="text-4xl">Your account</h1>
 	</header>
 
-	<section class="main-section bg-white p-8 rounded-lg">
+	<section class="app-section main-section">
 		<p>{session?.user.name}</p>
 		<p>{session?.user.email}</p>
 	</section>
 
-	<section class="main-section bg-white p-8 rounded-lg">
+	<section class="main-section app-section">
 		<h2 class="text-xl mb-4">Sign out</h2>
 
 		<SignOutConfirm client:load />

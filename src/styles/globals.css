@@ -87,6 +87,10 @@
 		@apply bg-background text-foreground;
 	}
 
+	.app-section {
+		@apply bg-white p-8 rounded-lg;
+	}
+
 	.main-section {
 		grid-column: main-content;
 	}
