@@ -6,8 +6,25 @@ import { Button } from "@/components/ui/button"
 import { db } from "@/database"
 import { Image } from "astro:assets"
 import { auth } from "@/lib/auth"
+import { jsonObjectFrom } from "kysely/helpers/postgres"
 
-const menus = await db.selectFrom("menu").selectAll().execute()
+const menus = await db
+	.selectFrom("menu")
+	.select((eb) => [
+		"menu.id",
+		"menu.name",
+		"menu.image",
+		jsonObjectFrom(
+			eb
+				.selectFrom("menu_variants as mv")
+				.select(["mv.name", "mv.price"])
+				.whereRef("mv.menu_id", "=", "menu.id")
+				.orderBy("mv.price asc")
+				.limit(1)
+		).as("variant"),
+	])
+	.limit(6)
+	.execute()
 
 const session = await auth.api.getSession({
 	headers: Astro.request.headers,
@@ -29,14 +46,29 @@ const session = await auth.api.getSession({
 	</header>
 
 	<section class="bleed-section row-span-4">
-		<ul>
+		<ul class="grid gap-4 md:grid-cols-3">
 			{
 				menus.map((menu) => (
-					<li>
-						<a class="underline decoration-black" href={`/menu/${menu.id}`}>
-							{menu.name}
+					<li class="bg-white">
+						<a
+							class="flex flex-col hover:bg-primary-200/20 transition-colors ring-2 ring-primary-100 rounded-lg"
+							href={`/menu/${menu.id}`}
+						>
+							<figure>
+								<img
+									src="/Image_not_available.png"
+									class="block object-cover aspect-video max-w-full"
+									alt=""
+								/>
+							</figure>
+							<figcaption class="flex flex-col p-4">
+								<span class="text-lg text-primary-900">{menu.name}</span>
+								<span class="text-primary-300">{menu.variant?.name}</span>
+								<span class="text-primary-900 font-bold my-3">
+									{menu.variant?.price}
+								</span>
+							</figcaption>
 						</a>
-						-<span>{menu.description}</span>
 					</li>
 				))
 			}
