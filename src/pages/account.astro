@@ -1,5 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro"
+import SignOutConfirm from "@/components/auth/SignOutConfirm.vue"
+
 import { auth } from "@/lib/auth"
 
 const session = await auth.api.getSession({
@@ -15,5 +17,11 @@ const session = await auth.api.getSession({
 	<section class="main-section bg-white p-8 rounded-lg">
 		<p>{session?.user.name}</p>
 		<p>{session?.user.email}</p>
+	</section>
+
+	<section class="main-section bg-white p-8 rounded-lg">
+		<h2 class="text-xl mb-4">Sign out</h2>
+
+		<SignOutConfirm client:load />
 	</section>
 </Layout>
