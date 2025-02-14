@@ -65,7 +65,7 @@ if (!menu) {
 
 		<p>Choose a variant</p>
 
-		<MenuOrder variants={menu.variants} client:load />
+		<MenuOrder variants={menu.variants} menu_id={menu.id} client:load />
 	</section>
 </Layout>
 

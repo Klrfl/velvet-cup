@@ -9,6 +9,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("menu_id", "integer", (col) =>
 			col.notNull().references("menu.id")
 		)
+		.addColumn("variant_id", "integer", (col) =>
+			col.notNull().references("menu_variants.id")
+		)
 		.addColumn("quantity", "integer", (col) => col.notNull().defaultTo(sql`1`))
 		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
 		.execute()

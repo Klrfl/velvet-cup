@@ -29,16 +29,12 @@ export interface Account {
   userId: string;
 }
 
-export interface BasketItems {
-  id: Generated<number>;
-  menu_item_id: number;
-}
-
 export interface Baskets {
   id: Generated<number>;
   menu_id: number;
   quantity: Generated<number>;
   user_id: string;
+  variant_id: number;
 }
 
 export interface Menu {
@@ -106,6 +102,7 @@ export interface Session {
   createdAt: Timestamp;
   expiresAt: Timestamp;
   id: string;
+  impersonatedBy: string | null;
   ipAddress: string | null;
   token: string;
   updatedAt: Timestamp;
@@ -114,12 +111,16 @@ export interface Session {
 }
 
 export interface User {
+  banExpires: Timestamp | null;
+  banned: boolean | null;
+  banReason: string | null;
   createdAt: Timestamp;
   email: string;
   emailVerified: boolean;
   id: string;
   image: string | null;
   name: string;
+  role: string | null;
   updatedAt: Timestamp;
 }
 
@@ -134,7 +135,6 @@ export interface Verification {
 
 export interface DB {
   account: Account;
-  basket_items: BasketItems;
   baskets: Baskets;
   menu: Menu;
   menu_categories: MenuCategories;

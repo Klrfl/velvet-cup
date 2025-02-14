@@ -1,5 +1,8 @@
 import type { Selectable } from "kysely"
-import type { Menu } from "@/database/database.types.ts"
+import type {
+	Menu,
+	MenuVariants as DBMenuVariants,
+} from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
 
@@ -60,7 +63,7 @@ export type MenuVariants = z.infer<typeof menuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
 	typeof insertableMenuVariantsSchema
 >
-export type MenuPrice = MenuVariants & {
+export type MenuPrice = Selectable<DBMenuVariants> & {
 	option_value: string
 	option_name: string
 }
