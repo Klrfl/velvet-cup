@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro"
-import { Button } from "@/components/ui/button"
+import BasketList from "@/components/BasketList.vue"
 
 import { db } from "@/database/"
 import { auth } from "@/lib/auth"
@@ -21,6 +21,7 @@ const basket = await db
 		join.onRef("mv.menu_id", "=", "m.id").onRef("mv.id", "=", "b.variant_id")
 	)
 	.select([
+		"b.id",
 		"m.name as menu_name",
 		"b.quantity",
 		"mv.name as variant_name",
@@ -36,18 +37,6 @@ const basket = await db
 	</header>
 
 	<section class="main-section">
-		<ul>
-			{
-				basket.map((item) => (
-					<li>
-						<span class="block">{item.menu_name}</span>
-						<span class="block">{item.quantity}</span>
-						<span class="block">{item.variant_name}</span>
-						<span class="block">{item.price}</span>
-						<Button variant="outline">Delete</Button>
-					</li>
-				))
-			}
-		</ul>
+		<BasketList basket={basket} client:load />
 	</section>
 </Layout>
