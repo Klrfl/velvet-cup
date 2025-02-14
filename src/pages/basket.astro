@@ -1,0 +1,53 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { Button } from "@/components/ui/button"
+
+import { db } from "@/database/"
+import { auth } from "@/lib/auth"
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
+
+if (!session) {
+	if (import.meta.env.DEV) console.error("no session")
+	return Astro.redirect("/")
+}
+
+const basket = await db
+	.selectFrom("baskets as b")
+	.leftJoin("menu as m", "m.id", "b.menu_id")
+	.leftJoin("menu_variants as mv", (join) =>
+		join.onRef("mv.menu_id", "=", "m.id").onRef("mv.id", "=", "b.variant_id")
+	)
+	.select([
+		"m.name as menu_name",
+		"b.quantity",
+		"mv.name as variant_name",
+		"mv.price",
+	])
+	.where("user_id", "=", session.user.id)
+	.execute()
+---
+
+<Layout bodyClass="content-start">
+	<header class="main-section">
+		<h1 class="text-4xl">Your basket</h1>
+	</header>
+
+	<section class="main-section">
+		<ul>
+			{
+				basket.map((item) => (
+					<li>
+						<span class="block">{item.menu_name}</span>
+						<span class="block">{item.quantity}</span>
+						<span class="block">{item.variant_name}</span>
+						<span class="block">{item.price}</span>
+						<Button variant="outline">Delete</Button>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Layout>
