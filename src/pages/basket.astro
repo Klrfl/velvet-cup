@@ -24,6 +24,7 @@ const basket = await db
 		"b.id",
 		"m.name as menu_name",
 		"b.quantity",
+		"mv.id as variant_id",
 		"mv.name as variant_name",
 		"mv.price",
 	])
