@@ -63,7 +63,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 
 	const results = await db
 		.updateTable("menu")
-		.set(newMenu)
+		.set({ ...newMenu, updated_at: new Date().toISOString() })
 		.where("id", "=", Number(id))
 		.returning("id")
 		.execute()
