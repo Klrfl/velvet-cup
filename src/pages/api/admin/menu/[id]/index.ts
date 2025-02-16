@@ -20,12 +20,14 @@ export const PUT: APIRoute = async ({ request, params }) => {
 	const name = formData.get("menu_name")
 	const description = formData.get("menu_description")
 	const category_id = formData.get("menu_category")
+	const image = formData.get("menu_image")
 
 	// TODO: add validation
 	const schema = z.object({
 		name: z.string(),
 		description: z.string(),
-		category_id: z.number().positive(),
+		category_id: z.coerce.number().positive(),
+		image: z.instanceof(File),
 	})
 
 	let newMenu
@@ -33,7 +35,8 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		newMenu = schema.parse({
 			name,
 			description,
-			category_id: Number(category_id),
+			category_id,
+			image,
 		})
 	} catch (error) {
 		console.error(error)
@@ -45,6 +48,17 @@ export const PUT: APIRoute = async ({ request, params }) => {
 			}),
 			{ status: 400 }
 		)
+	}
+
+	// no image submitted by admin
+	if (newMenu.image.size === 0) {
+		const { image, ...newMenuClone } = newMenu
+		newMenu = newMenuClone
+	} else {
+		const imageBuf = await newMenu.image.arrayBuffer()
+		let encodedImage = Buffer.from(imageBuf).toString("base64")
+		encodedImage = `data:${request.headers.get("content-type")};charset=utf8;base64,${encodedImage}`
+		newMenu = { ...newMenu, image: encodedImage }
 	}
 
 	const results = await db

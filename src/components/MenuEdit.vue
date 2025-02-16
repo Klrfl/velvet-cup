@@ -32,6 +32,7 @@ import { ref } from "vue"
 import type { MenuComplete, MenuVariants } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
+import { usePreviewImage } from "@/composables"
 
 interface Props {
 	menu: MenuComplete
@@ -145,10 +146,20 @@ function handleEditVariant(variant: MenuVariants) {
 	activeVariant.value = variant
 	isEditVariantOpen.value = true
 }
+
+const { previewURL, previewImage, newImage } = usePreviewImage()
 </script>
 
 <template>
-	<form class="grid gap-4" @submit.prevent="(e) => handleEditMenu(e, menu.id)">
+	<figure class="col-span-full md:col-span-3" v-if="menu.image || !newImage">
+		<img :src="previewURL === '' ? menu.image : previewURL" alt="" />
+	</figure>
+
+	<form
+		class="flex flex-col gap-2 col-span-full md:col-span-3"
+		@submit.prevent="(e) => handleEditMenu(e, menu.id)"
+		enctype="multipart/form-data"
+	>
 		<Label for="menu_name">Name</Label>
 		<Input
 			type="text"
@@ -157,6 +168,15 @@ function handleEditVariant(variant: MenuVariants) {
 			name="menu_name"
 			id="menu_name"
 			required
+		/>
+
+		<Label for="menu_image">Image</Label
+		><Input
+			type="file"
+			id="menu_image"
+			name="menu_image"
+			accept="image/*"
+			@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
 		/>
 
 		<Label for="menu_description">Description</Label>
@@ -188,15 +208,39 @@ function handleEditVariant(variant: MenuVariants) {
 			</SelectContent>
 		</Select>
 
-		<Button type="submit" class="justify-self-start">Sunting</Button>
+		<Button variant="secondary" type="submit" class="justify-self-start"
+			>Edit</Button
+		>
 	</form>
 
-	<div class="flex justify-between gap-4">
-		<h2 class="font-bold text-xl font-sans">Options</h2>
+	<div class="col-span-full md:col-span-3 gap-4">
+		<header class="flex justify-between">
+			<h2 class="font-bold text-xl font-sans">Options</h2>
 
-		<Button @click="isOptionDialogOpen = true" class="col-span-2">
-			Add new option
-		</Button>
+			<Button @click="isOptionDialogOpen = true">Add new option</Button>
+		</header>
+
+		<ul>
+			<li
+				v-for="option in menu.options"
+				:key="option.id"
+				class="flex items-center"
+			>
+				<span class="font-bold">
+					{{ option.name }}
+				</span>
+
+				<ul class="flex gap-4">
+					<li
+						v-for="option_value in option.option_values"
+						:key="option_value.id"
+						class="px-4 py-2"
+					>
+						{{ option_value.name }}
+					</li>
+				</ul>
+			</li>
+		</ul>
 	</div>
 
 	<Dialog :open="isOptionDialogOpen" @update:open="isOptionDialogOpen = false">
@@ -245,32 +289,36 @@ function handleEditVariant(variant: MenuVariants) {
 		</DialogContent>
 	</Dialog>
 
-	<ul>
-		<li
-			v-for="option in menu.options"
-			:key="option.id"
-			class="flex items-center"
-		>
-			<span class="font-bold">
-				{{ option.name }}
-			</span>
+	<div class="col-span-full md:col-span-3 gap-4">
+		<header class="flex justify-between">
+			<h2 class="text-xl font-bold font-sans">Variants</h2>
 
-			<ul class="flex gap-4">
-				<li
-					v-for="option_value in option.option_values"
-					:key="option_value.id"
-					class="px-4 py-2"
+			<Button @click="isVariantDialogOpen = true">Add new variant</Button>
+		</header>
+
+		<ul class="col-span-full flex flex-col gap-4">
+			<li v-if="!variants.length">No variants yet.</li>
+			<li
+				v-for="variant in variants"
+				class="grid grid-cols-6 grid-flow-row-dense"
+			>
+				<span class="col-span-4">
+					{{ variant.name }} -
+					<span class="font-bold">{{ variant.price }}</span>
+				</span>
+
+				<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
+					{{ variant_option.option_name }} - {{ variant_option.option_value }}
+				</div>
+
+				<Button
+					@click="handleEditVariant(variant)"
+					class="col-span-2 place-self-end"
 				>
-					{{ option_value.name }}
-				</li>
-			</ul>
-		</li>
-	</ul>
-
-	<div class="flex justify-between gap-4">
-		<h2 class="text-xl font-bold font-sans">variants</h2>
-
-		<Button @click="isVariantDialogOpen = true"> Add new variant </Button>
+					Edit
+				</Button>
+			</li>
+		</ul>
 	</div>
 
 	<Dialog
@@ -291,29 +339,6 @@ function handleEditVariant(variant: MenuVariants) {
 			/>
 		</DialogContent>
 	</Dialog>
-
-	<ul class="col-span-full flex flex-col gap-4">
-		<li v-if="!variants.length">No variants yet.</li>
-		<li
-			v-for="variant in variants"
-			class="grid grid-cols-6 grid-flow-row-dense"
-		>
-			<span class="col-span-4">
-				{{ variant.name }} - <span class="font-bold">{{ variant.price }}</span>
-			</span>
-
-			<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
-				{{ variant_option.option_name }} - {{ variant_option.option_value }}
-			</div>
-
-			<Button
-				@click="handleEditVariant(variant)"
-				class="col-span-2 place-self-end"
-			>
-				Edit
-			</Button>
-		</li>
-	</ul>
 
 	<MenuEditVariant
 		v-model="isEditVariantOpen"
