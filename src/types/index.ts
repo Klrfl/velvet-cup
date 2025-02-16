@@ -16,6 +16,7 @@ export type MenuWithCategories = Selectable<Menu> & ModifiedCategories
 const menuCompleteSchema = z.object({
 	id: z.number(),
 	name: z.string(),
+	image: z.string().optional(),
 	category_id: z.number(),
 	category: z.string(),
 	created_at: z.coerce.date(),

@@ -7,7 +7,7 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
 <AdminLayout title="add new menua - Velvet Cup">
-	<section class="main-section">
+	<section class="app-section bleed-section">
 		<h2 class="text-lg">Tambahkan menu baru</h2>
 
 		<MenuAdd categories={categories} client:load />

@@ -12,8 +12,11 @@ import {
 } from "@/components/ui/select"
 import type { Selectable } from "kysely"
 import type { MenuCategories } from "@/database/database.types"
+import { usePreviewImage } from "@/composables"
 
 const emit = defineEmits(["menuAdded"])
+
+const { previewImage, previewURL, newImage } = usePreviewImage()
 
 async function handleAddMenu(form: HTMLFormElement) {
 	const formData = new FormData(form)
@@ -23,7 +26,7 @@ async function handleAddMenu(form: HTMLFormElement) {
 		body: formData,
 	})
 
-	const { message, data: menu } = await res.json()
+	const { data: menu } = await res.json()
 
 	if (res.status === 200) {
 		window.location.assign(`/admin/menu/${menu.id}`)
@@ -38,12 +41,41 @@ const { categories } = defineProps<Props>()
 </script>
 
 <template>
-	<div class="flex flex-wrap gap-4">
+	<div class="grid md:grid-cols-6 auto-rows-fr gap-4">
+		<figure
+			:class="[
+				'col-span-full md:col-span-3 grid items-center',
+				{ 'outline-dashed outline-primary-300 ': !previewURL },
+			]"
+		>
+			<span v-if="!newImage" class="text-center">
+				Your image preview will show up here.
+			</span>
+			<img
+				v-else
+				:src="previewURL"
+				alt=""
+				width="800"
+				height="450"
+				class="object-cover aspect-video w-full"
+			/>
+		</figure>
+
 		<form
 			@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
-			class="flex flex-col flex-grow-[6] gap-2"
+			class="flex flex-col col-span-full md:col-span-3 gap-2"
+			enctype="multipart/form-data"
 		>
-			<Label for="menu_name">Nama</Label>
+			<Label for="menu_image">Image</Label>
+			<Input
+				type="file"
+				id="menu_image"
+				name="menu_image"
+				@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
+				accept="image/*"
+			/>
+
+			<Label for="menu_name">Name</Label>
 			<Input type="text" name="menu_name" placeholder="nama" required />
 
 			<Label for="menu_description">Deskripsi</Label>
