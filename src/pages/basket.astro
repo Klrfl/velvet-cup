@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro"
 import BasketList from "@/components/BasketList.vue"
+import { Button } from "@/components/ui/button"
 
 import { db } from "@/database/"
 import { auth } from "@/lib/auth"
@@ -23,6 +24,7 @@ const basket = await db
 	.select([
 		"b.id",
 		"m.name as menu_name",
+		"m.image",
 		"b.quantity",
 		"mv.id as variant_id",
 		"mv.name as variant_name",
@@ -33,11 +35,21 @@ const basket = await db
 ---
 
 <Layout bodyClass="content-start">
-	<header class="main-section">
+	<header class="bleed-section">
 		<h1 class="text-4xl">Your basket</h1>
+		<p>You have {basket.length} items in your basket.</p>
 	</header>
 
-	<section class="main-section">
-		<BasketList basket={basket} client:load />
-	</section>
+	{
+		basket.length === 0 ? (
+			<section class="main-section flex flex-col items-center">
+				<p>No basket items yet.</p>
+				<Button class="outline" as-child client:load>
+					<a href="/">Explore our menu</a>
+				</Button>
+			</section>
+		) : (
+			<BasketList basket={basket} client:load />
+		)
+	}
 </Layout>
