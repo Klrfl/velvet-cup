@@ -29,22 +29,26 @@ interface Props {
 const props = defineProps<Props>()
 const derivedOption = ref(props.option)
 
+const emit = defineEmits<{
+	(e: "optionEdited"): void
+}>()
+
 async function handleEditOption(
 	menuId: MenuComplete["id"],
 	option: MenuComplete["options"][0]
 ) {
-	return console.log(option)
-
 	const response = await fetch(
 		`/api/admin/menu/${menuId}/options/${option.id}`,
 		{
-			method: "POST",
+			method: "PUT",
 			headers: { "Content-Type": "application/json" },
-			// body: JSON.stringify(body),
+			body: JSON.stringify(option),
 		}
 	)
 
-	const { data } = await response.json()
+	if (response.status === 200) {
+		emit("optionEdited")
+	}
 }
 </script>
 
@@ -92,7 +96,7 @@ async function handleEditOption(
 					<TagsInputInput placeholder="L, Spicy, dll..." />
 				</TagsInput>
 
-				<Button type="submit">Add new option</Button>
+				<Button type="submit">Edit option</Button>
 			</form>
 		</DialogContent>
 	</Dialog>

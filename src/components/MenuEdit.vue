@@ -305,6 +305,12 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		v-model="isEditOptionDialogOpen"
 		:menu-id="menu.id"
 		:option="activeOption"
+		@option-edited="
+			() => {
+				toast.success('Successfully edited option.')
+				isEditOptionDialogOpen = false
+			}
+		"
 	/>
 
 	<div class="col-span-full md:col-span-3 gap-4">
