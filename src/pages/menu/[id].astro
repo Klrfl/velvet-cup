@@ -5,6 +5,7 @@ import MenuOrder from "@/components/MenuOrder.vue"
 
 import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
+import { sql } from "kysely"
 
 const { id: menuId } = Astro.params
 
@@ -26,12 +27,12 @@ const menu = await db
 				.leftJoin("menu_variant_options as mvo", "mvo.variant_id", "mv.id")
 				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
 				.leftJoin("menu_options as mo", "mov.menu_option_id", "mo.id")
-				.select([
+				.select((eb) => [
 					"mv.id",
 					"mv.name",
 					"mv.price",
-					"mov.name as option_value",
-					"mo.name as option_name",
+					eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
+					eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
 				])
 				.whereRef("mv.menu_id", "=", "menu.id")
 		).as("variants"),

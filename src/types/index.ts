@@ -64,7 +64,7 @@ export type MenuVariants = z.infer<typeof menuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
 	typeof insertableMenuVariantsSchema
 >
-export type MenuPrice = Selectable<DBMenuVariants> & {
+export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 	option_value: string
 	option_name: string
 }

@@ -10,7 +10,7 @@ import { computed, ref } from "vue"
 
 interface Props {
 	variants: MenuPrice[]
-	menu_id: string
+	menu_id: number
 }
 
 const { variants, menu_id } = defineProps<Props>()
