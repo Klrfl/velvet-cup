@@ -24,6 +24,7 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog"
+import { Pencil, Plus } from "lucide-vue-next"
 
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 import MenuEditVariant from "@/components/MenuEditVariant.vue"
@@ -217,23 +218,27 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			</SelectContent>
 		</Select>
 
-		<Button variant="secondary" type="submit" class="justify-self-start"
-			>Edit</Button
-		>
+		<Button variant="secondary" type="submit" class="justify-self-start">
+			<Pencil fill="white" />
+			Edit
+		</Button>
 	</form>
 
 	<div class="col-span-full md:col-span-3 gap-4">
 		<header class="flex justify-between">
 			<h2 class="font-bold text-xl font-sans">Options</h2>
 
-			<Button @click="isOptionDialogOpen = true">Add new option</Button>
+			<Button @click="isOptionDialogOpen = true">
+				<Plus fill="white" />
+				Add new option
+			</Button>
 		</header>
 
-		<ul>
+		<ul class="py-4">
 			<li
 				v-for="option in menu.options"
 				:key="option.id"
-				class="flex items-center"
+				class="flex items-center outline outline-slate-100 px-4 py-3 rounded-lg"
 			>
 				<span class="font-bold">
 					{{ option.name }}
@@ -249,7 +254,14 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 					</li>
 				</ul>
 
-				<Button @click="handleEditOption(option)">Edit</Button>
+				<Button
+					variant="outline"
+					@click="handleEditOption(option)"
+					class="ml-auto"
+				>
+					<Pencil fill="white" />
+					Edit
+				</Button>
 			</li>
 		</ul>
 	</div>
@@ -295,7 +307,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 					<TagsInputInput placeholder="L, Spicy, dll..." />
 				</TagsInput>
 
-				<Button type="submit">Add new option</Button>
+				<Button type="submit"> Add new option </Button>
 			</form>
 		</DialogContent>
 	</Dialog>
@@ -316,14 +328,17 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 	<div class="col-span-full md:col-span-3 gap-4">
 		<header class="flex justify-between">
 			<h2 class="text-xl font-bold font-sans">Variants</h2>
-			<Button @click="isVariantDialogOpen = true">Add new variant</Button>
+			<Button @click="isVariantDialogOpen = true">
+				<Plus fill="white" />
+				Add new variant
+			</Button>
 		</header>
 
-		<ul class="col-span-full flex flex-col gap-4">
+		<ul class="col-span-full flex flex-col gap-4 py-4">
 			<li v-if="!variants.length">No variants yet.</li>
 			<li
 				v-for="variant in variants"
-				class="grid grid-cols-6 grid-flow-row-dense"
+				class="grid grid-cols-6 grid-flow-row-dense outline outline-slate-100 px-4 py-3 rounded-lg"
 			>
 				<span class="col-span-4">
 					{{ variant.name }} -
@@ -335,9 +350,11 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 				</div>
 
 				<Button
+					variant="outline"
 					@click="handleEditVariant(variant)"
 					class="col-span-2 place-self-end"
 				>
+					<Pencil fill="white" />
 					Edit
 				</Button>
 			</li>
