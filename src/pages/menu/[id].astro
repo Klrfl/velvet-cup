@@ -1,10 +1,10 @@
 ---
-import CoffeeImage from "@/assets/images/nathan-dumlao-nBJHO6wmRWw-unsplash.jpg"
 import Layout from "@/layouts/Layout.astro"
-import { db } from "@/database"
 import { Image } from "astro:assets"
-import { jsonArrayFrom } from "kysely/helpers/postgres"
 import MenuOrder from "@/components/MenuOrder.vue"
+
+import { db } from "@/database"
+import { jsonArrayFrom } from "kysely/helpers/postgres"
 
 const { id: menuId } = Astro.params
 
@@ -44,13 +44,14 @@ if (!menu) {
 }
 ---
 
-<Layout title={`${menu.name} - Velvet Cup`}>
-	<header class="col-span-full md:col-start-2 md:col-end-6">
+<Layout title={`${menu.name} - Velvet Cup`} bodyClass="content-start">
+	<header class="main-section md:col-start-2 md:col-end-6">
 		<figure>
 			<Image
-				src={CoffeeImage}
+				src={menu.image ?? "/Image_not_available.png"}
 				width={800}
 				height={450}
+				alt={menu.name}
 				class="size-full object-cover aspect-video"
 				alt=""
 			/>
@@ -58,7 +59,7 @@ if (!menu) {
 	</header>
 
 	<section
-		class="details auto-rows-min col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid gap-4"
+		class="main-section details md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid gap-4"
 	>
 		<h1 class="text-4xl">{menu.name}</h1>
 		<p>{menu.description}</p>

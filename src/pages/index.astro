@@ -23,6 +23,7 @@ const menus = await db
 				.limit(1)
 		).as("variant"),
 	])
+	.where("deleted_at", "is", null)
 	.limit(6)
 	.execute()
 
