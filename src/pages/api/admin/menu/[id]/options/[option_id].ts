@@ -3,7 +3,7 @@ import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
-	const { id: raw_menu_id, raw_option_id } = params
+	const { id: raw_menu_id, option_id: raw_option_id } = params
 	const option_id = Number(raw_option_id)
 	const menu_id = Number(raw_menu_id)
 
@@ -86,7 +86,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 
 	return new Response(
 		JSON.stringify({
-			message: "successfully added new menu variant.",
+			message: "successfully updated menu option.",
 			data: result,
 		})
 	)
