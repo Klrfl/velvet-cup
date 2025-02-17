@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button"
-import type { Menu } from "@/database/database.types"
 import type { MenuWithCategories } from "@/types"
-import { formatDate } from "@/utils/index.ts"
-import type { Selectable } from "kysely"
+import { Pencil, Trash } from "lucide-vue-next"
 
 interface Props {
 	menu: MenuWithCategories
@@ -32,18 +30,24 @@ async function deleteMenu(id: number) {
 
 <template>
 	<li class="p-4 border-b border-b-slate-200">
-		<p>{{ menu.name }}</p>
+		<p class="leading-tight text-lg font-bold">{{ menu.name }}</p>
 		<p>{{ menu.description }}</p>
-		<p v-if="menu.category">{{ menu.category }}</p>
-
-		<p v-if="menu.created_at">{{ formatDate(new Date(menu.created_at)) }}</p>
+		<p class="text-sm text-primary-400" v-if="menu.category">
+			{{ menu.category }}
+		</p>
 
 		<div class="py-4 flex gap-2">
-			<Button variant="link" as-child>
-				<a :href="`/admin/menu/${menu.id}`">Edit</a>
+			<Button variant="outline" as-child>
+				<a :href="`/admin/menu/${menu.id}`" class="flex gap-2">
+					<Pencil />
+					Edit
+				</a>
 			</Button>
 
-			<Button @click="deleteMenu(menu.id)">Hapus</Button>
+			<Button @click="deleteMenu(menu.id)" variant="outline">
+				<Trash />
+				Hapus
+			</Button>
 		</div>
 	</li>
 </template>

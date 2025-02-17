@@ -1,6 +1,8 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuEdit from "@/components/MenuEdit.vue"
+
+import { formatDate } from "@/utils/index.ts"
 import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
@@ -74,7 +76,9 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 
 <AdminLayout>
 	<header class="bleed-section">
-		<h1>Sunting "{menu.name}"</h1>
+		<h1>Edit "{menu.name}"</h1>
+
+		<p>Created at {formatDate(new Date(menu.created_at))}</p>
 	</header>
 
 	<section class="bleed-section app-section grid md:grid-cols-6 gap-4">
