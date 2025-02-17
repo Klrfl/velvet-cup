@@ -38,14 +38,32 @@ export const POST: APIRoute = async ({ request }) => {
 		)
 	}
 
-	const result = await db
-		.insertInto("baskets")
-		.values({
-			user_id: session.user.id,
-			...inputCart,
-		})
-		.returningAll()
-		.execute()
+	const existing = await db
+		.selectFrom("baskets")
+		.selectAll()
+		.where("baskets.menu_id", "=", inputCart.menu_id)
+		.where("baskets.variant_id", "=", inputCart.variant_id)
+		.where("baskets.user_id", "=", session.user.id)
+		.executeTakeFirst()
+
+	let result
+	if (!existing) {
+		result = await db
+			.insertInto("baskets")
+			.values({
+				user_id: session.user.id,
+				...inputCart,
+			})
+			.returningAll()
+			.execute()
+	} else {
+		result = await db
+			.updateTable("baskets")
+			.set("quantity", existing.quantity + 1)
+			.where("baskets.id", "=", existing.id)
+			.returningAll()
+			.executeTakeFirst()
+	}
 
 	return new Response(
 		JSON.stringify({
