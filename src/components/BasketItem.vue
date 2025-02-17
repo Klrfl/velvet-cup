@@ -37,9 +37,14 @@ const emit = defineEmits<{
 				>{{ item.menu_name }} - {{ item.variant_name }}</span
 			>
 
-			<span class="font-bold col-end-[-1] col-span-2 text-right">{{
-				item.price
-			}}</span>
+			<span class="font-bold col-end-[-1] col-span-2 text-right">
+				{{
+					new Intl.NumberFormat("id-ID", {
+						style: "currency",
+						currency: "IDR",
+					}).format(item.price)
+				}}
+			</span>
 
 			<div class="flex gap-2 col-end-[-1]">
 				<Button

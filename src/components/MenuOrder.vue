@@ -17,7 +17,7 @@ const { variants, menu_id } = defineProps<Props>()
 
 const defaultVariant = computed(() => variants[0])
 const selectedVariant = ref(defaultVariant.value)
-const quantity = ref(0)
+const quantity = ref(1)
 
 async function addToCart() {
 	const body = {
@@ -44,7 +44,7 @@ async function addToCart() {
 		<TabsList v-for="variant in variants">
 			<TabsTrigger
 				:value="variant.id"
-				class="outline outline-1 outline-primary data-[active=true]:bg-primary data-[active=true]:text-[#fff]"
+				class="outline outline-1 outline-primary data-[active=true]:bg-primary-400 data-[active=true]:text-white"
 				@click="selectedVariant = variant"
 			>
 				{{ variant.name }}
@@ -72,7 +72,7 @@ async function addToCart() {
 		:default-value="quantity"
 		:invalid="quantity === 0"
 		:min="1"
-		:max="10"
+		:max="30"
 	/>
 
 	<Button

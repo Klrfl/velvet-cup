@@ -75,33 +75,56 @@ async function handleQty(
 }
 
 const total = computed(() =>
-	basket.value.reduce((acc, item) => Number(item.price) + acc, 0)
+	basket.value.reduce(
+		(acc, item) => Number(item.price) * item.quantity + acc,
+		0
+	)
 )
 </script>
 
 <template>
 	<ul class="app-section col-start-2 col-span-8">
-		<BasketItem
-			v-for="item in basket"
-			:basket-item="item"
-			@trigger-add-qty="handleQty(item, 'add')"
-			@trigger-subtract-qty="handleQty(item, 'subtract')"
-			@trigger-delete="handleDeleteItem(item)"
-		/>
+		<li v-if="basket.length === 0" class="flex flex-col items-center">
+			<p class="text-xl font-bold">Your basket is currently empty.</p>
+			<p>Go check out our menus!</p>
+
+			<Button as-child>
+				<a href="/">Explore our menu</a>
+			</Button>
+		</li>
+
+		<template v-else>
+			<BasketItem
+				v-for="item in basket"
+				:basket-item="item"
+				@trigger-add-qty="handleQty(item, 'add')"
+				@trigger-subtract-qty="handleQty(item, 'subtract')"
+				@trigger-delete="handleDeleteItem(item)"
+			/>
+		</template>
 	</ul>
 
 	<section class="app-section col-span-4 flex flex-col gap-4">
 		<h2 class="text-4xl">Checkout</h2>
-		<span
-			>total:
-			{{
-				Intl.NumberFormat("id-ID", {
-					style: "currency",
-					currency: "IDR",
-				}).format(total)
-			}}</span
+		<p>
+			total:
+			<span v-if="total > 0" class="font-bold">
+				{{
+					Intl.NumberFormat("id-ID", {
+						style: "currency",
+						currency: "IDR",
+					}).format(total)
+				}}
+			</span>
+			<span v-else>-</span>
+		</p>
+
+		<Button
+			:disabled="total === 0"
+			:variant="total === 0 ? 'outline' : 'default'"
 		>
-		<Button>Check out</Button>
+			Check out
+		</Button>
 	</section>
 
 	<Toaster rich-colors />
