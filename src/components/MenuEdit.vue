@@ -27,6 +27,7 @@ import {
 
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 import MenuEditVariant from "@/components/MenuEditVariant.vue"
+import MenuEditOption from "@/components/MenuEditOption.vue"
 
 import { ref } from "vue"
 import type { MenuComplete, MenuVariants } from "@/types"
@@ -102,6 +103,14 @@ async function handleAddOption(form: HTMLFormElement) {
 
 	toast.success("successfully added a new option.")
 	isOptionDialogOpen.value = false
+}
+
+const isEditOptionDialogOpen = ref(false)
+const activeOption = ref<MenuComplete["options"][0]>()
+
+function handleEditOption(option: MenuComplete["options"][0]) {
+	isEditOptionDialogOpen.value = true
+	activeOption.value = option
 }
 
 const isVariantDialogOpen = ref(false)
@@ -239,6 +248,8 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 						{{ option_value.name }}
 					</li>
 				</ul>
+
+				<Button @click="handleEditOption(option)">Edit</Button>
 			</li>
 		</ul>
 	</div>
@@ -289,10 +300,16 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		</DialogContent>
 	</Dialog>
 
+	<MenuEditOption
+		v-if="activeOption"
+		v-model="isEditOptionDialogOpen"
+		:menu-id="menu.id"
+		:option="activeOption"
+	/>
+
 	<div class="col-span-full md:col-span-3 gap-4">
 		<header class="flex justify-between">
 			<h2 class="text-xl font-bold font-sans">Variants</h2>
-
 			<Button @click="isVariantDialogOpen = true">Add new variant</Button>
 		</header>
 
