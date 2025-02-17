@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { db } from "@/database/"
 import { auth } from "@/lib/auth"
 
+const MIDTRANS_CLIENT_KEY = import.meta.env.MIDTRANS_CLIENT_KEY
+
 const session = await auth.api.getSession({
 	headers: Astro.request.headers,
 })
@@ -58,4 +60,9 @@ const basket = await db
 			<BasketList basket={basket} client:load />
 		)
 	}
+
+	<script
+		is:inline
+		src="https://app.sandbox.midtrans.com/snap/snap.js"
+		data-client-key={MIDTRANS_CLIENT_KEY}></script>
 </Layout>

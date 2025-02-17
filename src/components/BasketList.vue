@@ -74,6 +74,18 @@ async function handleQty(
 	debouncedPost()
 }
 
+async function handleCheckout() {
+	const response = await fetch("/api/checkout", {
+		method: "POST",
+	})
+
+	const result = await response.json()
+	const { data } = result
+
+	//@ts-expect-error
+	return window.snap.pay(data.token)
+}
+
 const total = computed(() =>
 	basket.value.reduce(
 		(acc, item) => Number(item.price) * item.quantity + acc,
@@ -122,6 +134,7 @@ const total = computed(() =>
 		<Button
 			:disabled="total === 0"
 			:variant="total === 0 ? 'outline' : 'default'"
+			@click="handleCheckout"
 		>
 			Check out
 		</Button>
