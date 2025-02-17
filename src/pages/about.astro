@@ -3,12 +3,16 @@ import Layout from "@/layouts/Layout.astro"
 import { Button } from "@/components/ui/button"
 ---
 
-<Layout title="About - Velvet Cup" description="About Velvet Cup">
-	<header class="main-section">
+<Layout
+	title="About - Velvet Cup"
+	description="About Velvet Cup"
+	bodyClass="content-start"
+>
+	<header class="main-section md:col-start-3 md:col-span-3">
 		<h1 class="text-4xl font-bold">About us</h1>
 	</header>
 
-	<section class="main-section *:max-w-prose mx-auto grid gap-4">
+	<section class="main-section md:col-span-7 mx-auto grid gap-4">
 		<p>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque facere
 			labore obcaecati accusantium laboriosam est odio cumque corporis, deserunt
