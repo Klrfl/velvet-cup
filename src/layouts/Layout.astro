@@ -21,5 +21,23 @@ const session = await auth.api.getSession({
 <BaseLayout {...Astro.props}>
 	<Navbar {session} />
 
+	<div class="overlay z-0"></div>
 	<slot />
 </BaseLayout>
+
+<style>
+	.overlay {
+		position: absolute;
+		inset: 0;
+		background: #0000;
+		visibility: hidden;
+		transition:
+			background-color 200ms ease,
+			visibility 200ms ease;
+	}
+
+	body:has(#burger:checked) .overlay {
+		background: #0004;
+		visibility: visible;
+	}
+</style>

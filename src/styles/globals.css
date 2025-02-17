@@ -97,6 +97,8 @@
 
 	.bleed-section {
 		grid-column: full-bleed;
+		@apply p-4 md:p-0;
+
 		@media screen and (min-width: 768px) {
 			grid-column: bleed;
 		}

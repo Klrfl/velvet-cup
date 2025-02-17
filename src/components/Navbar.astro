@@ -1,5 +1,6 @@
 ---
 import { authClient } from "@/lib/auth-client"
+import { Menu, X } from "lucide-vue-next"
 
 interface Props {
 	session: typeof authClient.$Infer.Session
@@ -11,10 +12,28 @@ const isAdmin = session?.user.role === "admin"
 ---
 
 <nav
-	class="bleed-section flex justify-between bg-white rounded-full border border-black my-4 px-4 overflow-hidden"
+	class="bleed-section flex justify-between bg-white rounded-lg border border-black my-4 py-0 relative z-10"
 >
 	<span class="block p-4">Logo here</span>
-	<ul class="flex gap-4">
+	<label
+		for="burger"
+		class="block p-4 cursor-pointer md:hidden
+    hover:bg-slate-100"
+	>
+		<Menu />
+	</label>
+
+	<input type="checkbox" name="burger" id="burger" class="peer hidden" />
+	<ul
+		class="border border-black md:border-none rounded-lg shadow-lg md:shadow-none px-4 md:p-0 bg-inherit hidden peer-checked:flex absolute top-0 left-0 right-0 gap-4 flex-col md:flex md:flex-row md:relative"
+	>
+		<label
+			for="burger"
+			class="block p-4 cursor-pointer md:hidden self-end hover:bg-slate-100"
+		>
+			<X />
+		</label>
+
 		<li><a href="/">Home</a></li>
 		{
 			isAdmin && (
@@ -42,5 +61,6 @@ const isAdmin = session?.user.role === "admin"
 <style>
 	ul a {
 		@apply block p-4 hover:bg-slate-200;
+		transition: background-color 100ms ease;
 	}
 </style>
