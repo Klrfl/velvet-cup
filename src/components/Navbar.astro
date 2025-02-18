@@ -65,7 +65,7 @@ if (session) {
 					<li class="relative flex justify-between items-center">
 						<a href="/basket/">Your basket</a>
 						{basketCount && (
-							<span class="block md:absolute md:top-full md:right-0 md:transform md:-translate-y-1/2 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
+							<span class="basket-chip block md:absolute md:top-full md:right-0 md:transform md:-translate-y-1/2 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
 								{basketCount.value}
 							</span>
 						)}
@@ -87,5 +87,20 @@ if (session) {
 	ul a {
 		@apply block p-4 hover:bg-slate-200;
 		transition: background-color 100ms ease;
+	}
+
+	@keyframes scale-in {
+		0% {
+			scale: 0;
+		}
+
+		100% {
+			scale: 1;
+		}
+	}
+
+	.basket-chip {
+		transform-origin: top;
+		animation: scale-in 500ms ease;
 	}
 </style>
