@@ -3,6 +3,8 @@ import "@fontsource-variable/inter"
 import "@fontsource/merriweather"
 import "@/styles/globals.css"
 
+import BaseHead from "@/components/BaseHead.astro"
+
 interface Props {
 	title?: string
 	bodyClass?: string | string[]
@@ -19,12 +21,7 @@ const {
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		<title>{title}</title>
+		<BaseHead {title} {description} />
 	</head>
 
 	<body class:list={["bg-background font-sans", bodyClass]}>

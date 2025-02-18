@@ -1,0 +1,47 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Navbar from "@/components/Navbar.astro"
+import { auth } from "@/lib/auth"
+
+interface Props {
+	title: string
+	description: string
+}
+
+const { title, description } = Astro.props
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
+---
+
+<html>
+	<head>
+		<BaseHead {title} {description} />
+	</head>
+
+	<body class="grid">
+		<Navbar {session} />
+		<slot />
+	</body>
+</html>
+
+<style>
+	:root {
+		--col-width: 10ch;
+	}
+
+	.grid {
+		grid-template-columns:
+			[full-bleed-start]
+			minmax(0, 1fr)
+			[sidebar-start]
+			repeat(3, minmax(0, var(--col-width)))
+			[sidebar-end]
+			[main-start]
+			repeat(7, minmax(0, var(--col-width)))
+			[main-end]
+			minmax(0, 1fr)
+			[full-bleed-end];
+	}
+</style>

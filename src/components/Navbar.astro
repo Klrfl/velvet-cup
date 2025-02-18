@@ -1,14 +1,30 @@
 ---
+import { db } from "@/database"
 import { authClient } from "@/lib/auth-client"
+import { sql } from "kysely"
 import { Menu, X } from "lucide-vue-next"
 
 interface Props {
-	session: typeof authClient.$Infer.Session
+	session: typeof authClient.$Infer.Session | null
 }
 
 const { session } = Astro.props
 
 const isAdmin = session?.user.role === "admin"
+
+let basketCount = { value: 0 }
+
+if (session) {
+	const result = await db
+		.selectFrom("baskets")
+		.select((eb) => [
+			eb.fn.coalesce(eb.fn.sum<number>("quantity"), sql`0`).as("value"),
+		])
+		.where("user_id", "=", session.user.id)
+		.executeTakeFirst()
+
+	basketCount = result ?? basketCount
+}
 ---
 
 <nav
@@ -43,12 +59,21 @@ const isAdmin = session?.user.role === "admin"
 			)
 		}
 		<li><a href="/about/">The Cafe</a></li>
-		<li><a href="/basket/">Your basket</a></li>
 		{
 			session ? (
-				<li>
-					<a href="/account/">Account</a>
-				</li>
+				<>
+					<li class="relative">
+						<a href="/basket/">Your basket</a>
+						{basketCount && (
+							<span class="block absolute top-full transform -translate-y-1/2 right-0 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
+								{basketCount.value}
+							</span>
+						)}
+					</li>
+					<li>
+						<a href="/account/">Account</a>
+					</li>
+				</>
 			) : (
 				<li>
 					<a href="/login/">Login</a>
