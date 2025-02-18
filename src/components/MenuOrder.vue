@@ -45,7 +45,7 @@ async function addToCart() {
 		<TabsList v-for="variant in variants">
 			<TabsTrigger
 				:value="variant.id"
-				class="outline outline-1 outline-primary data-[active=true]:bg-primary-400 data-[active=true]:text-white"
+				class="data-[state=active]:text-white data-[state=active]:bg-primary"
 				@click="selectedVariant = variant"
 			>
 				{{ variant.name }}
@@ -59,18 +59,38 @@ async function addToCart() {
 		</template>
 	</Tabs>
 
-	<Label for="quantity">Quantity</Label>
-	<Input
-		type="number"
-		id="quantity"
-		name="quantity"
-		v-model="quantity"
-		:default-value="quantity"
-		:invalid="quantity === 0"
-		:min="1"
-		:max="30"
-	/>
-
+	<div
+		class="grid grid-cols-3 col-span-2 rounded-lg ring ring-gray-100 has-[:focus-visible]:ring-primary"
+	>
+		<Button
+			@click="quantity > 0 ? quantity-- : quantity"
+			variant="ghost"
+			class="h-full rounded-none"
+			title="decrement quantity"
+		>
+			-
+		</Button>
+		<Input
+			type="text"
+			inputmode="numeric"
+			id="quantity"
+			name="quantity"
+			v-model="quantity"
+			class="rounded-none text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+			:default-value="quantity"
+			:invalid="quantity === 0"
+			:min="1"
+			:max="30"
+		/>
+		<Button
+			@click="quantity++"
+			variant="ghost"
+			class="h-full rounded-none"
+			title="increment quantity"
+		>
+			+
+		</Button>
+	</div>
 	<Button
 		class="justify-self-start col-span-full"
 		:disabled="!selectedVariant"
