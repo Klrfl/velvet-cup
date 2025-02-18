@@ -62,10 +62,10 @@ if (session) {
 		{
 			session ? (
 				<>
-					<li class="relative">
+					<li class="relative flex justify-between items-center">
 						<a href="/basket/">Your basket</a>
 						{basketCount && (
-							<span class="block absolute top-full transform -translate-y-1/2 right-0 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
+							<span class="block md:absolute md:top-full md:right-0 md:transform md:-translate-y-1/2 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
 								{basketCount.value}
 							</span>
 						)}

@@ -36,8 +36,10 @@ const session = await auth.api.getSession({
 			visibility 200ms ease;
 	}
 
-	body:has(#burger:checked) .overlay {
-		background: #0004;
-		visibility: visible;
+	@media screen and (max-width: 768px) {
+		body:has(#burger:checked) .overlay {
+			background: #0004;
+			visibility: visible;
+		}
 	}
 </style>

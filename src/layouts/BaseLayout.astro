@@ -44,13 +44,20 @@ const {
 		--col-width: 10ch;
 		grid-template-columns:
 			[full-bleed-start]
-			minmax(1rem, 1fr)
+			minmax(0, 1fr)
+			/* bleed start */
+			[bleed-start]
+			minmax(1rem, var(--col-width))
 			[main-content-start]
-			repeat(6, minmax(0, var(--col-width)))
+			repeat(4, minmax(0, var(--col-width)))
 			[main-content-end]
-			minmax(1rem, 1fr)
+			minmax(1rem, var(--col-width))
+			[bleed-end]
+			/* bleed end */
+			minmax(0, 1fr)
 			[full-bleed-end];
 		grid-auto-rows: auto;
+		gap: 1rem;
 
 		@media screen and (min-width: 768px) {
 			--col-width: 6rem;
@@ -66,7 +73,6 @@ const {
 				[bleed-end]
 				minmax(0, 1fr)
 				[full-bleed-end];
-			gap: 1rem;
 		}
 	}
 </style>
