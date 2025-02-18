@@ -84,6 +84,7 @@ export interface OrderDetail {
   order_id: string;
   price: Numeric;
   quantity: number;
+  variant_id: number;
 }
 
 export interface Orders {
