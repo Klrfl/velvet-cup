@@ -26,13 +26,16 @@ const navLinks: Record<string, string>[] = [
 ]
 ---
 
-<Layout title="Your account - Velvet Cup" bodyClass="content-start row-gap-4">
+<Layout
+	title="Your account - Velvet Cup"
+	bodyClass="content-start row-gap-4 grid-flow-row-dense"
+>
 	<header class="main-section">
 		<h1 class="text-4xl">Your account</h1>
 	</header>
 
 	<nav
-		class="col-span-full md:col-start-[bleed-start] app-section md:col-span-2 row-span-2 sidebar"
+		class="col-span-full md:col-start-[bleed-start] app-section md:col-span-2 row-span-4 sidebar"
 	>
 		<ul class="flex flex-col">
 			{
