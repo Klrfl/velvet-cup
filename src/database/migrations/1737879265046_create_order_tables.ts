@@ -11,8 +11,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 	await db.schema
 		.createTable("orders")
-		.addColumn("id", "integer", (col) =>
-			col.primaryKey().generatedAlwaysAsIdentity()
+		.addColumn("id", "uuid", (col) =>
+			col.primaryKey().defaultTo(sql`gen_random_uuid()`)
 		)
 		.addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
 		.addColumn("status_id", "integer", (col) => col.notNull())
@@ -26,7 +26,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "integer", (col) =>
 			col.primaryKey().generatedAlwaysAsIdentity()
 		)
-		.addColumn("order_id", "integer", (col) =>
+		.addColumn("order_id", "uuid", (col) =>
 			col.notNull().references("orders.id")
 		)
 		.addColumn("menu_id", "integer", (col) =>

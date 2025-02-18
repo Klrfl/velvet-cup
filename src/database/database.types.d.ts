@@ -81,14 +81,14 @@ export interface OrderDetail {
   id: Generated<number>;
   menu_id: number;
   notes: string | null;
-  order_id: number;
+  order_id: string;
   price: Numeric;
   quantity: number;
 }
 
 export interface Orders {
   created_at: Generated<Timestamp>;
-  id: Generated<number>;
+  id: Generated<string>;
   status_id: number;
   user_id: string;
 }
