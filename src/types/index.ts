@@ -39,7 +39,7 @@ const menuCompleteSchema = z.object({
 export const menuVariantsSchema = z.object({
 	id: z.number(),
 	name: z.string().nonempty(),
-	price: z.string().nonempty(),
+	price: z.number(),
 	options: z.array(
 		z.object({
 			option_value_id: z.coerce.number(),

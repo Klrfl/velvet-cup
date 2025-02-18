@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select"
 
 import type { MenuComplete } from "@/types"
+import { ref, useTemplateRef, watch } from "vue"
 
 interface Props {
 	options: MenuComplete["options"]
@@ -18,6 +19,22 @@ interface Props {
 
 const { options } = defineProps<Props>()
 const emit = defineEmits(["variantAdded"])
+
+const price = ref(0)
+
+const priceInput = useTemplateRef("price-input")
+
+watch(
+	() => priceInput.value?.modelValue ?? 0,
+	async (newPrice, oldPrice) => {
+		const castedPrice = Number(newPrice)
+		const castedOldPrice = Number(oldPrice)
+
+		if (isNaN(castedPrice)) {
+			price.value = isNaN(castedOldPrice) ? 0 : castedOldPrice
+		}
+	}
+)
 </script>
 
 <template>
@@ -41,8 +58,11 @@ const emit = defineEmits(["variantAdded"])
 		<fieldset>
 			<Label for="price">Price</Label>
 			<Input
-				type="number"
-				inputmode="number"
+				ref="price-input"
+				v-model="price"
+				pattern="[0-9]+"
+				type="text"
+				inputmode="numeric"
 				id="price"
 				name="price"
 				placeholder="price"
