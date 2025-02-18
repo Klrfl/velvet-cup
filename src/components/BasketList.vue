@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { computed, ref } from "vue"
 import { toast } from "vue-sonner"
 import { useDebounceFn } from "@vueuse/core"
+import { formatCurrency } from "@/utils"
 
 interface Props {
 	basket: {
@@ -121,20 +122,10 @@ const total = computed(() =>
 
 		<p v-for="item in basket" class="flex">
 			{{ item.quantity }} ×
-			{{
-				Intl.NumberFormat("id-ID", {
-					style: "currency",
-					currency: "IDR",
-				}).format(item.price)
-			}}
+			{{ formatCurrency(item.price) }}
 
 			<span class="ml-auto">
-				{{
-					Intl.NumberFormat("id-ID", {
-						style: "currency",
-						currency: "IDR",
-					}).format(item.quantity * item.price)
-				}}
+				{{ formatCurrency(item.quantity * item.price) }}
 			</span>
 		</p>
 
@@ -143,12 +134,7 @@ const total = computed(() =>
 		<p class="flex justify-between">
 			<span>total:</span>
 			<span v-if="total > 0" class="font-bold">
-				{{
-					Intl.NumberFormat("id-ID", {
-						style: "currency",
-						currency: "IDR",
-					}).format(total)
-				}}
+				{{ formatCurrency(total) }}
 			</span>
 			<span v-else>-</span>
 		</p>

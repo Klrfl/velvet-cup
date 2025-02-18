@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs"
 import { computed, ref } from "vue"
+import { formatCurrency } from "@/utils"
 
 interface Props {
 	variants: MenuPrice[]
@@ -53,12 +54,7 @@ async function addToCart() {
 
 		<template v-for="{ id, price } in variants">
 			<TabsContent :value="id" class="text-xl font-bold">
-				{{
-					new Intl.NumberFormat("id-ID", {
-						style: "currency",
-						currency: "IDR",
-					}).format(Number(price))
-				}}
+				{{ formatCurrency(Number(price)) }}
 			</TabsContent>
 		</template>
 	</Tabs>
