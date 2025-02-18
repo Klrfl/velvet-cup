@@ -1,25 +1,27 @@
 ---
-import Layout from "@/layouts/Layout.astro"
+import AdminLayout from "@/layouts/AdminLayout.astro"
+import { formatDate } from "@/utils"
 import { db } from "@/database"
 
 const users = await db.selectFrom("user").selectAll().execute()
 ---
 
-<Layout title="Customers - Velvet Cup" bodyClass="content-start">
+<AdminLayout title="Customers - Velvet Cup">
 	<header class="main-section">
 		<h1 class="text-4xl">Customers</h1>
 	</header>
 
-	<section class="main-section">
+	<section class="app-section main-section">
 		<ul>
 			{
 				users.map((user) => (
 					<li class="flex gap-4">
 						<span>{user.name}</span>
 						<span>{user.email}</span>
+						<span class="ml-auto">{formatDate(user.createdAt)}</span>
 					</li>
 				))
 			}
 		</ul>
 	</section>
-</Layout>
+</AdminLayout>

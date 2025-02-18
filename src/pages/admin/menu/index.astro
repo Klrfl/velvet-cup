@@ -28,7 +28,7 @@ const menus = await db
 		<h1 class="text-4xl">Menus</h1>
 	</header>
 
-	<section class="main-section grid grid-cols-subgrid">
+	<section class="app-section main-section grid grid-cols-subgrid">
 		<MenuList menu={menus as MenuWithCategories[]} client:load />
 	</section>
 </AdminLayout>
