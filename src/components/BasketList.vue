@@ -118,8 +118,30 @@ const total = computed(() =>
 
 	<section class="app-section col-span-4 flex flex-col gap-4">
 		<h2 class="text-4xl">Checkout</h2>
-		<p>
-			total:
+
+		<p v-for="item in basket" class="flex">
+			{{ item.quantity }} ×
+			{{
+				Intl.NumberFormat("id-ID", {
+					style: "currency",
+					currency: "IDR",
+				}).format(item.price)
+			}}
+
+			<span class="ml-auto">
+				{{
+					Intl.NumberFormat("id-ID", {
+						style: "currency",
+						currency: "IDR",
+					}).format(item.quantity * item.price)
+				}}
+			</span>
+		</p>
+
+		<hr />
+
+		<p class="flex justify-between">
+			<span>total:</span>
 			<span v-if="total > 0" class="font-bold">
 				{{
 					Intl.NumberFormat("id-ID", {
