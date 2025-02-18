@@ -35,6 +35,7 @@ import type { MenuComplete, MenuVariants } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
+import { formatCurrency } from "@/utils"
 
 interface Props {
 	menu: MenuComplete
@@ -342,7 +343,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			>
 				<span class="col-span-4">
 					{{ variant.name }} -
-					<span class="font-bold">{{ variant.price }}</span>
+					<span class="font-bold">{{ formatCurrency(variant.price) }}</span>
 				</span>
 
 				<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
