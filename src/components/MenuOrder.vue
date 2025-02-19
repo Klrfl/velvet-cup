@@ -2,7 +2,6 @@
 import type { MenuPrice } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs"
@@ -12,15 +11,18 @@ import { formatCurrency } from "@/utils"
 interface Props {
 	variants: MenuPrice[]
 	menu_id: number
+	user_id?: string
 }
 
-const { variants, menu_id } = defineProps<Props>()
+const { user_id, variants, menu_id } = defineProps<Props>()
 
 const defaultVariant = computed(() => variants[0])
 const selectedVariant = ref(defaultVariant.value)
 const quantity = ref(1)
 
 async function addToCart() {
+	if (!user_id) return window.location.assign("/login")
+
 	const body = {
 		menu_id,
 		variant_id: selectedVariant.value.id,

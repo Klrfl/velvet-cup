@@ -6,12 +6,17 @@ import MenuOrder from "@/components/MenuOrder.vue"
 import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
+import { auth } from "@/lib/auth"
 
 const { id: menuId } = Astro.params
 
 if (isNaN(Number(menuId))) {
 	return Astro.rewrite("/404")
 }
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
 
 const menu = await db
 	.selectFrom("menu")
@@ -67,7 +72,12 @@ if (!menu) {
 
 		<p>Choose a variant</p>
 
-		<MenuOrder variants={menu.variants} menu_id={menu.id} client:load />
+		<MenuOrder
+			user_id={session?.user?.id}
+			variants={menu.variants}
+			menu_id={menu.id}
+			client:load
+		/>
 	</section>
 </Layout>
 

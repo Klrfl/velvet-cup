@@ -100,7 +100,7 @@
 	}
 
 	.app-section {
-		@apply bg-white p-4 md:p-8 rounded-lg;
+		@apply bg-white p-4 md:p-8 rounded-xl;
 	}
 
 	.main-section {
