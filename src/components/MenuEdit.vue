@@ -28,6 +28,7 @@ import { Pencil, Plus } from "lucide-vue-next"
 
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 import MenuEditVariant from "@/components/MenuEditVariant.vue"
+import MenuOption from "@/components/MenuOption.vue"
 import MenuEditOption from "@/components/MenuEditOption.vue"
 
 import { ref } from "vue"
@@ -236,34 +237,12 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		</header>
 
 		<ul class="py-4">
-			<li
+			<MenuOption
 				v-for="option in menu.options"
 				:key="option.id"
-				class="flex items-center outline outline-slate-100 px-4 py-3 rounded-lg"
-			>
-				<span class="font-bold">
-					{{ option.name }}
-				</span>
-
-				<ul class="flex gap-4">
-					<li
-						v-for="option_value in option.option_values"
-						:key="option_value.id"
-						class="px-4 py-2"
-					>
-						{{ option_value.name }}
-					</li>
-				</ul>
-
-				<Button
-					variant="outline"
-					@click="handleEditOption(option)"
-					class="ml-auto"
-				>
-					<Pencil fill="white" />
-					Edit
-				</Button>
-			</li>
+				:option="option"
+				@trigger-option-edit="(option) => handleEditOption(option)"
+			/>
 		</ul>
 	</div>
 
