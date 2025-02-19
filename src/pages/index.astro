@@ -2,9 +2,11 @@
 import CoffeeImage from "@/assets/images/guy-basabose-FzdEbrA3Qj0-unsplash.jpg"
 import AnotherCoffeeImage from "@/assets/images/nathan-dumlao-wCJ1WwrAHW0-unsplash.png"
 import Layout from "@/layouts/Layout.astro"
+import MenuItem from "@/components/MenuItem.astro"
 import { Button } from "@/components/ui/button"
-import { db } from "@/database"
 import { Image } from "astro:assets"
+
+import { db } from "@/database"
 import { auth } from "@/lib/auth"
 import { jsonObjectFrom } from "kysely/helpers/postgres"
 
@@ -48,33 +50,7 @@ const session = await auth.api.getSession({
 
 	<section class="bleed-section row-span-4">
 		<ul class="grid gap-4 md:grid-cols-3">
-			{
-				menus.map((menu) => (
-					<li class="bg-white">
-						<a
-							class="flex flex-col hover:bg-primary-200/20 transition-colors ring-2 ring-primary-100 rounded-lg"
-							href={`/menu/${menu.id}`}
-						>
-							<figure>
-								<Image
-									src="/Image_not_available.png"
-									width={800}
-									height={450}
-									class="block object-cover aspect-video max-w-full"
-									alt=""
-								/>
-							</figure>
-							<figcaption class="flex flex-col p-4">
-								<span class="text-lg text-primary-900">{menu.name}</span>
-								<span class="text-primary-300">{menu.variant?.name}</span>
-								<span class="text-primary-900 font-bold my-3">
-									{menu.variant?.price}
-								</span>
-							</figcaption>
-						</a>
-					</li>
-				))
-			}
+			{menus.map((menu) => <MenuItem menu={menu} />)}
 		</ul>
 	</section>
 

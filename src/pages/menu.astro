@@ -1,0 +1,36 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { db } from "@/database/"
+import MenuItem from "@/components/MenuItem.astro"
+import { jsonObjectFrom } from "kysely/helpers/postgres"
+
+const menus = await db
+	.selectFrom("menu")
+	.select((eb) => [
+		"menu.id",
+		"menu.name",
+		"menu.image",
+		jsonObjectFrom(
+			eb
+				.selectFrom("menu_variants as mv")
+				.select(["mv.name", "mv.price"])
+				.whereRef("mv.menu_id", "=", "menu.id")
+				.orderBy("mv.price asc")
+				.limit(1)
+		).as("variant"),
+	])
+	.where("deleted_at", "is", null)
+	.execute()
+---
+
+<Layout title="Our menu - Velvet Cup" description="List of our menu">
+	<header class="bleed-section">
+		<h1 class="text-4xl">Our menu</h1>
+	</header>
+
+	<section class="bleed-section">
+		<ul class="grid grid-cols-3 gap-4">
+			{menus.map((menu) => <MenuItem {menu} />)}
+		</ul>
+	</section>
+</Layout>

@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets"
+import type { Selectable } from "kysely"
+import type { Menu } from "@/database/database.types.ts"
+
+const { menu } = Astro.props
+---
+
+<li class="bg-white">
+	<a
+		class="flex flex-col hover:bg-primary-200/20 transition-colors ring-2 ring-primary-100 rounded-lg"
+		href={`/menu/${menu.id}`}
+	>
+		<figure>
+			<Image
+				src={menu.image ?? "/Image_not_available.png"}
+				width={800}
+				height={450}
+				class="block object-cover aspect-video max-w-full"
+				alt=""
+			/>
+		</figure>
+		<figcaption class="flex flex-col p-4">
+			<span class="text-lg text-primary-900">{menu.name}</span>
+			<span class="text-primary-300">{menu.variant?.name}</span>
+			<span class="text-primary-900 font-bold my-3">
+				{menu.variant?.price}
+			</span>
+		</figcaption>
+	</a>
+</li>
