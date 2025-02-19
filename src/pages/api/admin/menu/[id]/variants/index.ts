@@ -1,6 +1,9 @@
 import { db } from "@/database"
 import type { APIRoute } from "astro"
-import { insertableMenuVariantsSchema } from "@/types"
+import {
+	insertableMenuVariantsSchema,
+	updateableMenuVariantsSchema,
+} from "@/types"
 
 export const POST: APIRoute = async ({ request, params }) => {
 	const { id } = params

@@ -9,14 +9,40 @@ import {
 } from "@/components/ui/dialog"
 
 import type { MenuVariants } from "@/types"
+import type { UpdateableMenuVariant } from "@/types"
+import { ref } from "vue"
 
 const open = defineModel<boolean>({ required: true })
 
 interface Props {
 	variant: MenuVariants
+	menuId: number
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+const emit = defineEmits<{
+	(e: "variantEdited", newVariant: UpdateableMenuVariant): void
+}>()
+
+const newVariant = ref({
+	name: props.variant.name,
+	price: props.variant.price,
+})
+
+async function handleEditVariant(variant: UpdateableMenuVariant) {
+	const response = await fetch(
+		`/api/admin/menu/${props.menuId}/variants/${props.variant.id}`,
+		{
+			method: "PUT",
+			body: JSON.stringify(variant),
+		}
+	)
+
+	if (response.status === 200) {
+		emit("variantEdited", variant)
+		open.value = false
+	}
+}
 </script>
 
 <template>
@@ -30,13 +56,12 @@ defineProps<Props>()
 				<p>Edit variant to change name, prices and more</p>
 			</DialogDescription>
 
-			<form @submit.prevent="console.log('not implemented')">
+			<form @submit.prevent="handleEditVariant(newVariant)">
 				<label for="edit_variant_name">Name</label>
 				<Input
 					type="text"
 					id="edit_variant_name"
-					:default-value="variant.name"
-					:value="variant.name"
+					v-model="newVariant.name"
 					required
 				/>
 
@@ -44,8 +69,7 @@ defineProps<Props>()
 				<Input
 					type="number"
 					id="edit_variant_price"
-					:default-value="variant.price"
-					:value="variant.price"
+					v-model="newVariant.price"
 					required
 				/>
 

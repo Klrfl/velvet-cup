@@ -59,8 +59,14 @@ export const insertableMenuVariantsSchema = z.object({
 	),
 })
 
+export const updateableMenuVariantsSchema = z.object({
+	name: z.string().nonempty(),
+	price: z.coerce.number(),
+})
+
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
 export type MenuVariants = z.infer<typeof menuVariantsSchema>
+export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
 	typeof insertableMenuVariantsSchema
 >

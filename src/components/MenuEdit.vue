@@ -219,7 +219,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			</SelectContent>
 		</Select>
 
-		<Button variant="secondary" type="submit" class="justify-self-start">
+		<Button type="submit" class="justify-self-start">
 			<Pencil fill="white" />
 			Edit
 		</Button>
@@ -384,7 +384,9 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 	<MenuEditVariant
 		v-model="isEditVariantOpen"
 		:variant="activeVariant"
+		:menu-id="menu.id"
 		v-if="activeVariant"
+		@menu-edited="toast.success('successfully edited menu variant.')"
 	/>
 
 	<Toaster rich-colors />
