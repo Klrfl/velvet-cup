@@ -11,6 +11,7 @@ import { jsonObjectFrom } from "kysely/helpers/postgres"
 const params = Astro.url.searchParams
 
 const searchQuery = params.get("query") ?? ""
+const categoryQuery = params.get("category") ?? 0
 
 let menuQuery = db
 	.selectFrom("menu")
@@ -32,12 +33,18 @@ if (searchQuery !== "") {
 	menuQuery = menuQuery.where("menu.name", "ilike", `%${searchQuery}%`)
 }
 
+if (categoryQuery) {
+	menuQuery = menuQuery.where("menu.category_id", "=", Number(categoryQuery))
+}
+
 const menus = await menuQuery.where("deleted_at", "is", null).execute()
+const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
 <Layout title="Our menu - Velvet Cup" description="List of our menu">
 	<header class="bleed-section grid grid-cols-6">
 		<h1 class="text-4xl col-span-3">Our menu</h1>
+		<p class="order-last col-span-6">Showing {menus.length} items.</p>
 
 		<form class="flex gap-4 col-span-3">
 			<Input
@@ -46,8 +53,20 @@ const menus = await menuQuery.where("deleted_at", "is", null).execute()
 				id="query"
 				placeholder="what are you looking for?"
 				default-value={searchQuery}
-				required
 			/>
+			<select
+				id="category"
+				name="category"
+				class="bg-transparent py-2 px-3 text-sm rounded-md border border-1 border-input"
+			>
+				{
+					categories.map((category) => (
+						<option class="bg-transparent" value={category.id}>
+							{category.name}
+						</option>
+					))
+				}
+			</select>
 			<Button type="submit">
 				<Search />
 			</Button>
