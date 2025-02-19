@@ -33,6 +33,18 @@
 		--primary-foreground: 60 9.1% 97.8%;
 
 		--secondary: 60 4.8% 95.9%;
+
+		--secondary-100: 120 25% 94%;
+		--secondary-200: 125 24% 90%;
+		--secondary-300: 120 24% 80%;
+		--secondary-400: 122 44% 35%;
+		--secondary-500: 122 44% 32%;
+		--secondary-600: 121 44% 28%;
+		--secondary-700: 122 44% 27%;
+		--secondary-800: 121 43% 21%;
+		--secondary-900: 122 43% 16%;
+		--secondary-950: 122 44% 13%;
+
 		--secondary-foreground: 24 9.8% 10%;
 
 		--accent: 60 4.8% 95.9%;
@@ -88,11 +100,15 @@
 	}
 
 	.app-section {
-		@apply bg-white p-8 rounded-lg;
+		@apply bg-white p-4 md:p-8 rounded-lg;
 	}
 
 	.main-section {
-		grid-column: main-content;
+		grid-column: bleed;
+
+		@media screen and (min-width: 768px) {
+			grid-column: main-content;
+		}
 	}
 
 	.bleed-section {

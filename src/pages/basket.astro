@@ -36,8 +36,11 @@ const basket = await db
 	.execute()
 ---
 
-<Layout bodyClass="content-start">
-	<header class="bleed-section">
+<Layout
+	title="Basket - Velvet Cup"
+	description={`You have ${basket.length} items in your basket.`}
+>
+	<header class="bleed-section self-start">
 		<h1 class="text-4xl">Your basket</h1>
 		{
 			basket.length !== 0 && (

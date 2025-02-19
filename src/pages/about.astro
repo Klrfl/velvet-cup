@@ -6,13 +6,30 @@ import { Button } from "@/components/ui/button"
 <Layout
 	title="About - Velvet Cup"
 	description="About Velvet Cup"
-	bodyClass="content-start"
+	bodyClass="gap-y-16"
 >
+	<section
+		class="bleed-section app-section grid grid-cols-subgrid *:main-section"
+	>
+		<h1 class="text-6xl">Our vision</h1>
+
+		<p class="my-4">
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores vel
+			vitae quam esse ex veritatis dolor quia optio perferendis laborum quas
+			repudiandae eius consectetur rerum harum, officiis velit architecto ipsa!
+		</p>
+		<p class="my-4">
+			Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloribus
+			deleniti, soluta ullam esse est repellat! Nam obcaecati ipsa expedita ex?
+			Nobis perspiciatis quia provident quam ipsum eius voluptatem. Nobis, ut!
+		</p>
+	</section>
+
 	<header class="main-section md:col-start-3 md:col-span-3">
-		<h1 class="text-4xl font-bold">About us</h1>
+		<h2 class="text-4xl">Our story</h2>
 	</header>
 
-	<section class="main-section md:col-span-7 mx-auto grid gap-4">
+	<section class="main-section md:col-span-7 mx-auto grid gap-4 content-start">
 		<p>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque facere
 			labore obcaecati accusantium laboriosam est odio cumque corporis, deserunt
@@ -28,10 +45,31 @@ import { Button } from "@/components/ui/button"
 			rem voluptate. Eum ducimus incidunt modi aut quod, corrupti consequatur
 			nostrum!
 		</p>
+	</section>
+
+	<header class="main-section md:col-start-3 md:col-span-3">
+		<h2 class="text-4xl">What we value</h2>
+	</header>
+
+	<section class="main-section md:col-span-7 mx-auto grid gap-4 content-start">
+		<ul class="list-disc ml-4">
+			<li>
+				<span class="font-bold">Lorem, ipsum</span> dolor sit amet consectetur adipisicing
+				elit. Sunt est a laborum ex accusamus. Ipsam molestiae quaerat totam rerum
+				quo earum impedit, inventore quam ipsa deserunt assumenda perspiciatis, molestias
+				repudiandae.
+			</li>
+			<li>
+				<span class="font-bold">Lorem, ipsum</span> dolor sit amet consectetur adipisicing
+				elit. Sunt est a laborum ex accusamus. Ipsam molestiae quaerat totam rerum
+				quo earum impedit, inventore quam ipsa deserunt assumenda perspiciatis, molestias
+				repudiandae.
+			</li>
+		</ul>
 
 		<div class="flex gap-4">
-			<Button variant="outline">Join us</Button>
-			<Button>Explore our menus</Button>
+			<Button size="lg">Join us</Button>
+			<Button size="lg">Explore our menus</Button>
 		</div>
 	</section>
 </Layout>
