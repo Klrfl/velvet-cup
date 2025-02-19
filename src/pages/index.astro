@@ -4,7 +4,9 @@ import AnotherCoffeeImage from "@/assets/images/nathan-dumlao-wCJ1WwrAHW0-unspla
 import Layout from "@/layouts/Layout.astro"
 import MenuItem from "@/components/MenuItem.astro"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Image } from "astro:assets"
+import { Search } from "lucide-vue-next"
 
 import { db } from "@/database"
 import { auth } from "@/lib/auth"
@@ -35,15 +37,29 @@ const session = await auth.api.getSession({
 ---
 
 <Layout title="Home - Velvet Cup">
-	<header class="bleed-section">
+	<header class="bleed-section grid grid-cols-6">
 		{
 			session?.user ? (
-				<h1 class="text-6xl">Hello, {session?.user.name}</h1>
+				<>
+					<h1 class="text-6xl col-span-3">Hello, {session?.user.name}</h1>
+					<form class="flex gap-4 col-span-3" action="/menu">
+						<Input
+							type="search"
+							name="query"
+							id="query"
+							placeholder="what are you looking for?"
+							required
+						/>
+						<Button type="submit">
+							<Search />
+						</Button>
+					</form>
+				</>
 			) : (
 				<h1 class="text-6xl">Hey there!</h1>
 			)
 		}
-		<p>
+		<p class="col-span-6">
 			What are you craving? Mocha, cappuccino, latte? We've got you covered.
 		</p>
 	</header>
