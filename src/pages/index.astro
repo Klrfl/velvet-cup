@@ -47,42 +47,46 @@ const session = await auth.api.getSession({
 
 <Layout title="Home - Velvet Cup">
 	<header class="bleed-section grid grid-cols-6">
-		{
-			session?.user ? (
-				<>
-					<h1 class="text-6xl col-span-3">Hello, {session?.user.name}</h1>
-					<form class="flex items-center gap-4 col-span-3" action="/menu">
-						<Input
-							type="search"
-							name="query"
-							id="query"
-							placeholder="what are you looking for?"
-						/>
+		<h1 class="text-6xl col-span-3">
+			{
+				session ? (
+					<span>Hello, {session?.user.name}</span>
+				) : (
+					<span>Hey there!</span>
+				)
+			}
+		</h1>
 
-						<select
-							id="category"
-							name="category"
-							class="bg-transparent py-2 px-3 text-sm rounded-md border border-1 border-input"
-						>
-							{categories.map((category) => (
-								<option class="bg-transparent" value={category.id}>
-									{category.name}
-								</option>
-							))}
-						</select>
-
-						<Button type="submit">
-							<Search />
-						</Button>
-					</form>
-				</>
-			) : (
-				<h1 class="text-6xl">Hey there!</h1>
-			)
-		}
-		<p class="col-span-6">
+		<p class="col-span-6 order-last">
 			What are you craving? Mocha, cappuccino, latte? We've got you covered.
 		</p>
+
+		<form class="flex items-center gap-4 col-span-3" action="/menu">
+			<Input
+				type="search"
+				name="query"
+				id="query"
+				placeholder="what are you looking for?"
+			/>
+
+			<select
+				id="category"
+				name="category"
+				class="bg-transparent py-2 px-3 text-sm rounded-md border border-1 border-input"
+			>
+				{
+					categories.map((category) => (
+						<option class="bg-transparent" value={category.id}>
+							{category.name}
+						</option>
+					))
+				}
+			</select>
+
+			<Button type="submit">
+				<Search />
+			</Button>
+		</form>
 	</header>
 
 	<section class="bleed-section row-span-4">
