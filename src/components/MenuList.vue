@@ -25,9 +25,7 @@ function handleDeleteMenu(targetMenu: Selectable<Menu>) {
 </script>
 
 <template>
-	<ul
-		class="col-span-full md:col-span-8 lg:col-span-9 lg:grid lg:gap-8 lg:grid-cols-2"
-	>
+	<ul class="col-span-full grid gap-y-4 grid-cols-2 lg:grid-cols-4">
 		<li v-if="!menuList.length">no menu items to display.</li>
 		<MenuItem
 			v-for="item in menuList"
