@@ -1,0 +1,82 @@
+---
+import Layout from "@/layouts/Layout.astro"
+
+import { db } from "@/database/"
+import { auth } from "@/lib/auth"
+import { formatCurrency, formatDate } from "@/utils"
+import { jsonArrayFrom } from "kysely/helpers/postgres"
+
+const session = await auth.api.getSession({
+	headers: Astro.request.headers,
+})
+
+if (!session) {
+	return Astro.redirect("/")
+}
+
+const orders = await db
+	.selectFrom("orders")
+	.leftJoin("order_status as os", "os.id", "orders.status_id")
+	.select((eb) => [
+		"orders.id",
+		"orders.status_id",
+		"orders.created_at",
+		"os.name as status",
+		jsonArrayFrom(
+			eb
+				.selectFrom("order_detail as od")
+				.leftJoin("menu as m", "m.id", "od.menu_id")
+				.select(["m.name as menu_name", "od.quantity", "od.price"])
+				.whereRef("od.order_id", "=", "orders.id")
+		).as("details"),
+	])
+	.where("user_id", "=", session.user.id)
+	.orderBy("orders.created_at desc")
+	.execute()
+---
+
+<Layout>
+	<header class="bleed-section">
+		<h1 class="text-4xl">Your orders</h1>
+	</header>
+
+	<section class="main-section">
+		<ul class="grid gap-4">
+			{
+				orders.map((order) => (
+					<li class="app-section grid gap-4 grid-cols-2">
+						<span>
+							<span class="font-bold">{order.status}</span> - ordered at{" "}
+							{formatDate(order.created_at)}
+						</span>
+
+						<span class="justify-self-end">
+							total:{" "}
+							{formatCurrency(
+								order.details.reduce(
+									(acc, detail) => detail.quantity * Number(detail.price) + acc,
+									0
+								)
+							)}
+						</span>
+
+						<ul class="ml-4">
+							{order.details.map((detail) => (
+								<li class="flex gap-4">
+									<span>{detail.menu_name}</span>
+									<span>{detail.quantity}</span>
+									<span>x {formatCurrency(Number(detail.price))} =</span>
+									<span>
+										{formatCurrency(
+											Number(detail.quantity * Number(detail.price))
+										)}
+									</span>
+								</li>
+							))}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Layout>
