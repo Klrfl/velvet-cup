@@ -359,7 +359,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		:variant="activeVariant"
 		:menu-id="menu.id"
 		v-if="activeVariant"
-		@menu-edited="toast.success('successfully edited menu variant.')"
+		@variant-edited="toast.success('successfully edited menu variant.')"
 	/>
 
 	<Toaster rich-colors />
