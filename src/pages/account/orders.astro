@@ -1,9 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro"
+import OrderItem from "@/components/order/OrderItem.astro"
 
 import { db } from "@/database/"
 import { auth } from "@/lib/auth"
-import { formatCurrency, formatDate } from "@/utils"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 
 const session = await auth.api.getSession({
@@ -42,41 +42,7 @@ const orders = await db
 
 	<section class="main-section">
 		<ul class="grid gap-4">
-			{
-				orders.map((order) => (
-					<li class="app-section grid gap-4 grid-cols-2">
-						<span>
-							<span class="font-bold">{order.status}</span> - ordered at{" "}
-							{formatDate(order.created_at)}
-						</span>
-
-						<span class="justify-self-end">
-							total:{" "}
-							{formatCurrency(
-								order.details.reduce(
-									(acc, detail) => detail.quantity * Number(detail.price) + acc,
-									0
-								)
-							)}
-						</span>
-
-						<ul class="ml-4">
-							{order.details.map((detail) => (
-								<li class="flex gap-4">
-									<span>{detail.menu_name}</span>
-									<span>{detail.quantity}</span>
-									<span>x {formatCurrency(Number(detail.price))} =</span>
-									<span>
-										{formatCurrency(
-											Number(detail.quantity * Number(detail.price))
-										)}
-									</span>
-								</li>
-							))}
-						</ul>
-					</li>
-				))
-			}
+			{orders.map((order) => <OrderItem {order} />)}
 		</ul>
 	</section>
 </Layout>

@@ -1,7 +1,9 @@
 import type { Selectable } from "kysely"
 import type {
+	Orders as DBOrders,
 	Menu,
 	MenuVariants as DBMenuVariants,
+	OrderDetail,
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
@@ -64,6 +66,10 @@ export const updateableMenuVariantsSchema = z.object({
 	price: z.coerce.number(),
 })
 
+export type Orders = Selectable<DBOrders> & {
+	status: string
+	details: OrderDetail[]
+}
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
 export type MenuVariants = z.infer<typeof menuVariantsSchema>
 export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
