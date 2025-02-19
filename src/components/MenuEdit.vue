@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Pencil, Plus } from "lucide-vue-next"
 
+import MenuVariant from "@/components/MenuVariant.vue"
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 import MenuEditVariant from "@/components/MenuEditVariant.vue"
 import MenuOption from "@/components/MenuOption.vue"
@@ -36,7 +37,6 @@ import type { MenuComplete, MenuVariants } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
-import { formatCurrency } from "@/utils"
 
 interface Props {
 	menu: MenuComplete
@@ -316,28 +316,13 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 
 		<ul class="col-span-full flex flex-col gap-4 py-4">
 			<li v-if="!variants.length">No variants yet.</li>
-			<li
+
+			<MenuVariant
 				v-for="variant in variants"
-				class="grid grid-cols-6 grid-flow-row-dense outline outline-slate-100 px-4 py-3 rounded-lg"
-			>
-				<span class="col-span-4">
-					{{ variant.name }} -
-					<span class="font-bold">{{ formatCurrency(variant.price) }}</span>
-				</span>
-
-				<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
-					{{ variant_option.option_name }} - {{ variant_option.option_value }}
-				</div>
-
-				<Button
-					variant="outline"
-					@click="handleEditVariant(variant)"
-					class="col-span-2 place-self-end"
-				>
-					<Pencil fill="white" />
-					Edit
-				</Button>
-			</li>
+				:key="variant.id"
+				:variant="variant"
+				@trigger-variant-edit="(variant) => handleEditVariant(variant)"
+			/>
 		</ul>
 	</div>
 
