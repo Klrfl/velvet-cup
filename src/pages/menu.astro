@@ -1,10 +1,18 @@
 ---
 import Layout from "@/layouts/Layout.astro"
-import { db } from "@/database/"
 import MenuItem from "@/components/MenuItem.astro"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Search } from "lucide-vue-next"
+
+import { db } from "@/database/"
 import { jsonObjectFrom } from "kysely/helpers/postgres"
 
-const menus = await db
+const params = Astro.url.searchParams
+
+const searchQuery = params.get("query") ?? ""
+
+let menuQuery = db
 	.selectFrom("menu")
 	.select((eb) => [
 		"menu.id",
@@ -19,13 +27,31 @@ const menus = await db
 				.limit(1)
 		).as("variant"),
 	])
-	.where("deleted_at", "is", null)
-	.execute()
+
+if (searchQuery !== "") {
+	menuQuery = menuQuery.where("menu.name", "ilike", `%${searchQuery}%`)
+}
+
+const menus = await menuQuery.where("deleted_at", "is", null).execute()
 ---
 
 <Layout title="Our menu - Velvet Cup" description="List of our menu">
-	<header class="bleed-section">
-		<h1 class="text-4xl">Our menu</h1>
+	<header class="bleed-section grid grid-cols-6">
+		<h1 class="text-4xl col-span-3">Our menu</h1>
+
+		<form class="flex gap-4 col-span-3">
+			<Input
+				type="search"
+				name="query"
+				id="query"
+				placeholder="what are you looking for?"
+				default-value={searchQuery}
+				required
+			/>
+			<Button type="submit">
+				<Search />
+			</Button>
+		</form>
 	</header>
 
 	<section class="bleed-section">

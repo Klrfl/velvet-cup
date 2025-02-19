@@ -26,7 +26,7 @@ const menus = await db
 		).as("variant"),
 	])
 	.where("deleted_at", "is", null)
-	.limit(6)
+	.limit(9)
 	.execute()
 
 const session = await auth.api.getSession({
@@ -52,6 +52,8 @@ const session = await auth.api.getSession({
 		<ul class="grid gap-4 md:grid-cols-3">
 			{menus.map((menu) => <MenuItem menu={menu} />)}
 		</ul>
+
+		<Button as="a" href="/menu">See our menu</Button>
 	</section>
 
 	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
