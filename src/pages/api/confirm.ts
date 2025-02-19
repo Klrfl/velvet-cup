@@ -1,8 +1,22 @@
 import { db } from "@/database"
+import { auth } from "@/lib/auth"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const GET: APIRoute = async ({ request, redirect }) => {
+	const session = await auth.api.getSession({
+		headers: request.headers,
+	})
+
+	if (!session) {
+		return new Response(
+			JSON.stringify({
+				message: "unauthorized",
+			}),
+			{ status: 401 }
+		)
+	}
+
 	const rawSearchParams = new URL(request.url).searchParams
 
 	const schema = z.object({
@@ -25,7 +39,8 @@ export const GET: APIRoute = async ({ request, redirect }) => {
 
 	const existingOrder = await db
 		.selectFrom("orders")
-		.select(["status_id"])
+		.select(["id", "status_id"])
+		.where("orders.id", "=", searchParams.order_id)
 		.executeTakeFirst()
 
 	if (!existingOrder) {
@@ -40,8 +55,8 @@ export const GET: APIRoute = async ({ request, redirect }) => {
 
 	const targetOrder = await db
 		.updateTable("orders")
-		.set("status_id", 2)
-		.where("id", "=", searchParams.order_id)
+		.set({ status_id: 2 })
+		.where("id", "=", existingOrder.id)
 		.returningAll()
 		.executeTakeFirst()
 
@@ -51,6 +66,11 @@ export const GET: APIRoute = async ({ request, redirect }) => {
 			{ status: 404 }
 		)
 	}
+
+	const deleteResult = await db
+		.deleteFrom("baskets")
+		.where("user_id", "=", session.user.id)
+		.execute()
 
 	return new Response(
 		JSON.stringify({
