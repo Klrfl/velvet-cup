@@ -3,7 +3,7 @@ import type { Orders } from "@/types"
 import { formatDate, formatCurrency } from "@/utils"
 
 interface Props {
-	order: Orders
+	order: Omit<Orders, "user_id">
 }
 
 const { order } = Astro.props

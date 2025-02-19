@@ -163,8 +163,17 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 </script>
 
 <template>
-	<figure class="col-span-full md:col-span-3" v-if="menu.image || !newImage">
-		<img :src="previewURL === '' ? menu.image : previewURL" alt="" />
+	<figure class="col-span-full md:col-span-3">
+		<span v-if="!newImage && !menu.image">
+			Your image preview will show up here.
+		</span>
+
+		<img
+			v-else
+			:src="previewURL === '' ? menu.image : previewURL"
+			class="object-cover aspect-video w-full"
+			alt=""
+		/>
 	</figure>
 
 	<form

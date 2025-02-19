@@ -67,7 +67,7 @@ export const updateableMenuVariantsSchema = z.object({
 })
 
 export type Orders = Selectable<DBOrders> & {
-	status: string
+	status: string | null
 	details: OrderDetail[]
 }
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
