@@ -4,6 +4,7 @@ import MenuEdit from "@/components/MenuEdit.vue"
 
 import { formatDate } from "@/utils"
 import { db } from "@/database"
+import { adminMenuQuery } from "@/database/queries"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
 
@@ -14,36 +15,7 @@ if (!id || isNaN(menuId)) {
 	return Astro.rewrite("/404")
 }
 
-const menu = await db
-	.selectFrom("menu as m")
-	.leftJoin("menu_categories as c", "c.id", "m.category_id")
-	.select((eb) => [
-		"m.id",
-		"m.name",
-		"m.image",
-		"m.category_id",
-		"m.created_at",
-		"m.description",
-		"c.name as category",
-		jsonArrayFrom(
-			eb
-				.selectFrom("menu_options as mo")
-				.whereRef("mo.menu_id", "=", "m.id")
-				.select((eb) => [
-					"mo.id",
-					"mo.name",
-					jsonArrayFrom(
-						eb
-							.selectFrom("menu_option_values as mov")
-							.whereRef("mov.menu_option_id", "=", "mo.id")
-							.select(["menu_option_id", "id", "name"])
-					).as("option_values"),
-				])
-		).as("options"),
-	])
-	.where("m.id", "=", menuId)
-	.where("m.deleted_at", "is", null)
-	.executeTakeFirst()
+const menu = await adminMenuQuery.where("m.id", "=", menuId).executeTakeFirst()
 
 if (!menu) {
 	return Astro.rewrite("/404")

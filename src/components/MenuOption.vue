@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { MenuComplete } from "@/types"
 import { Pencil } from "lucide-vue-next"
 import { Button } from "@/components/ui/button"
+import type { menuAdminReturnType } from "@/database/queries"
 
 interface Props {
-	option: MenuComplete["options"][0]
+	option: menuAdminReturnType[0]["options"][0]
 }
 
 const props = defineProps<Props>()
@@ -20,13 +20,14 @@ const emit = defineEmits<{
 		</span>
 
 		<ul class="flex gap-4">
-			<li
+			<template
 				v-for="option_value in option.option_values"
 				:key="option_value.id"
-				class="px-4 py-2"
 			>
-				{{ option_value.name }}
-			</li>
+				<li v-if="option_value.id" class="px-4 py-2">
+					{{ option_value.name }}
+				</li>
+			</template>
 		</ul>
 
 		<Button

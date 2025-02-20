@@ -1,9 +1,9 @@
 ---
-import type { Orders } from "@/types"
+import type { OrderReturnType } from "@/database/queries"
 import { formatDate, formatCurrency } from "@/utils"
 
 interface Props {
-	order: Omit<Orders, "user_id">
+	order: OrderReturnType[0]
 }
 
 const { order } = Astro.props

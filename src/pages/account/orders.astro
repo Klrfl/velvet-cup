@@ -2,9 +2,8 @@
 import Layout from "@/layouts/Layout.astro"
 import OrderItem from "@/components/order/OrderItem.astro"
 
-import { db } from "@/database/"
+import { ordersQuery } from "@/database/queries"
 import { auth } from "@/lib/auth"
-import { jsonArrayFrom } from "kysely/helpers/postgres"
 
 const session = await auth.api.getSession({
 	headers: Astro.request.headers,
@@ -14,22 +13,7 @@ if (!session) {
 	return Astro.redirect("/")
 }
 
-const orders = await db
-	.selectFrom("orders")
-	.leftJoin("order_status as os", "os.id", "orders.status_id")
-	.select((eb) => [
-		"orders.id",
-		"orders.status_id",
-		"orders.created_at",
-		"os.name as status",
-		jsonArrayFrom(
-			eb
-				.selectFrom("order_detail as od")
-				.leftJoin("menu as m", "m.id", "od.menu_id")
-				.select(["m.name as menu_name", "od.quantity", "od.price"])
-				.whereRef("od.order_id", "=", "orders.id")
-		).as("details"),
-	])
+const orders = await ordersQuery
 	.where("user_id", "=", session.user.id)
 	.orderBy("orders.created_at desc")
 	.execute()

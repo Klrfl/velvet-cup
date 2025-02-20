@@ -33,13 +33,14 @@ import MenuOption from "@/components/MenuOption.vue"
 import MenuEditOption from "@/components/MenuEditOption.vue"
 
 import { ref } from "vue"
-import type { MenuComplete, MenuVariant } from "@/types"
+import type { MenuVariant } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
+import type { menuAdminReturnType } from "@/database/queries"
 
 interface Props {
-	menu: MenuComplete
+	menu: menuAdminReturnType[0]
 	variants: MenuVariant[]
 	categories: {
 		id: number
@@ -109,9 +110,9 @@ async function handleAddOption(form: HTMLFormElement) {
 }
 
 const isEditOptionDialogOpen = ref(false)
-const activeOption = ref<MenuComplete["options"][0]>()
+const activeOption = ref<menuAdminReturnType[0]["options"]>()
 
-function handleEditOption(option: MenuComplete["options"][0]) {
+function handleEditOption(option: menuAdminReturnType[0]["options"]) {
 	isEditOptionDialogOpen.value = true
 	activeOption.value = option
 }
@@ -206,7 +207,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			name="menu_description"
 			id="menu_description"
 			v-model:model-value="menu.description as string"
-			:default-value="menu.description"
+			:default-value="menu.description ?? ''"
 			required
 		>
 		</Textarea>

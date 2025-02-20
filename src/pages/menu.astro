@@ -42,7 +42,7 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
 <Layout title="Our menu - Velvet Cup" description="List of our menu">
-	<header class="bleed-section grid grid-cols-6">
+	<header class="bleed-section grid grid-cols-6 self-start">
 		<h1 class="text-4xl col-span-3">Our menu</h1>
 		<p class="order-last col-span-6">Showing {menus.length} items.</p>
 

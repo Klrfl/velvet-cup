@@ -10,12 +10,12 @@ import { formatCurrency } from "@/utils"
 interface Props {
 	basket: {
 		id: number
-		menu_name: string
-		image: string
-		quantity: number
-		variant_id: number
-		variant_name: string
-		price: number
+		quantity: number | null
+		menu_name: string | null
+		image: string | null
+		variant_id: number | null
+		variant_name: string | null
+		price: number | null
 	}[]
 }
 

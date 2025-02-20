@@ -2,9 +2,10 @@
 import Layout from "@/layouts/Layout.astro"
 import { Image } from "astro:assets"
 import MenuOrder from "@/components/MenuOrder.vue"
+import MenuItem from "@/components/MenuItem.astro"
 
 import { db } from "@/database"
-import { jsonArrayFrom } from "kysely/helpers/postgres"
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
 import { auth } from "@/lib/auth"
 
@@ -48,6 +49,26 @@ const menu = await db
 if (!menu) {
 	return Astro.rewrite("/404")
 }
+
+const relatedMenus = await db
+	.selectFrom("menu")
+	.select((eb) => [
+		"menu.id",
+		"menu.name",
+		"menu.image",
+		jsonObjectFrom(
+			eb
+				.selectFrom("menu_variants as mv")
+				.select(["mv.name", "mv.price"])
+				.whereRef("mv.menu_id", "=", "menu.id")
+				.orderBy("mv.price asc")
+				.limit(1)
+		).as("variant"),
+	])
+	.where("category_id", "=", menu.category_id)
+	.where("deleted_at", "is", null)
+	.limit(9)
+	.execute()
 ---
 
 <Layout title={`${menu.name} - Velvet Cup`} bodyClass="content-start">
@@ -58,7 +79,7 @@ if (!menu) {
 				width={800}
 				height={450}
 				alt={menu.name}
-				class="size-full object-cover aspect-video"
+				class="size-full object-cover aspect-video rounded-lg"
 				alt=""
 			/>
 		</figure>
@@ -78,6 +99,14 @@ if (!menu) {
 			menu_id={menu.id}
 			client:load
 		/>
+	</section>
+
+	<section class="bleed-section">
+		<h2 class="text-2xl mb-4">Other items you might like</h2>
+
+		<ul class="grid md:grid-cols-3 gap-4">
+			{relatedMenus.map((item) => <MenuItem menu={item} />)}
+		</ul>
 	</section>
 </Layout>
 
