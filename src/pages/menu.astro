@@ -6,28 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-vue-next"
 
 import { db } from "@/database/"
-import { jsonObjectFrom } from "kysely/helpers/postgres"
+import { menuQuery as initialMenuQuery } from "@/database/queries"
 
 const params = Astro.url.searchParams
 
 const searchQuery = params.get("query") ?? ""
 const categoryQuery = params.get("category") ?? 0
 
-let menuQuery = db
-	.selectFrom("menu")
-	.select((eb) => [
-		"menu.id",
-		"menu.name",
-		"menu.image",
-		jsonObjectFrom(
-			eb
-				.selectFrom("menu_variants as mv")
-				.select(["mv.name", "mv.price"])
-				.whereRef("mv.menu_id", "=", "menu.id")
-				.orderBy("mv.price asc")
-				.limit(1)
-		).as("variant"),
-	])
+let menuQuery = initialMenuQuery
 
 if (searchQuery !== "") {
 	menuQuery = menuQuery.where("menu.name", "ilike", `%${searchQuery}%`)

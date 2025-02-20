@@ -1,6 +1,25 @@
-import { jsonArrayFrom } from "kysely/helpers/postgres"
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
 import { db } from "."
 import type { InferResult } from "kysely"
+
+export const menuQuery = db
+	.selectFrom("menu")
+	.select((eb) => [
+		"menu.id",
+		"menu.name",
+		"menu.image",
+		jsonObjectFrom(
+			eb
+				.selectFrom("menu_variants as mv")
+				.select(["mv.name", "mv.price"])
+				.whereRef("mv.menu_id", "=", "menu.id")
+				.orderBy("mv.price asc")
+				.limit(1)
+		).as("variant"),
+	])
+	.where("deleted_at", "is", null)
+
+export type menuReturnType = InferResult<typeof menuQuery>
 
 export const adminMenuQuery = db
 	.selectFrom("menu as m")

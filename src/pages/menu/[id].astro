@@ -5,9 +5,10 @@ import MenuOrder from "@/components/MenuOrder.vue"
 import MenuItem from "@/components/MenuItem.astro"
 
 import { db } from "@/database"
+import { menuQuery } from "@/database/queries"
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
-import { sql } from "kysely"
 import { auth } from "@/lib/auth"
+import { sql } from "kysely"
 
 const { id: menuId } = Astro.params
 
@@ -19,14 +20,12 @@ const session = await auth.api.getSession({
 	headers: Astro.request.headers,
 })
 
-const menu = await db
-	.selectFrom("menu")
+const menu = await menuQuery
+	.leftJoin("menu_categories as c", "c.id", "menu.category_id")
 	.select((eb) => [
-		"menu.id",
 		"menu.category_id",
-		"menu.name",
 		"menu.description",
-		"menu.image",
+		"c.name as category_name",
 		jsonArrayFrom(
 			eb
 				.selectFrom("menu_variants as mv")
@@ -43,7 +42,7 @@ const menu = await db
 				.whereRef("mv.menu_id", "=", "menu.id")
 		).as("variants"),
 	])
-	.where("id", "=", Number(menuId))
+	.where("menu.id", "=", Number(menuId))
 	.executeTakeFirst()
 
 if (!menu) {
