@@ -38,7 +38,7 @@ const menuCompleteSchema = z.object({
 	),
 })
 
-export const menuVariantsSchema = z.object({
+export const menuVariantSchema = z.object({
 	id: z.number(),
 	name: z.string().nonempty(),
 	price: z.number(),
@@ -71,7 +71,7 @@ export type Orders = Selectable<DBOrders> & {
 	details: OrderDetail[]
 }
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
-export type MenuVariants = z.infer<typeof menuVariantsSchema>
+export type MenuVariant = z.infer<typeof menuVariantSchema>
 export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
 	typeof insertableMenuVariantsSchema

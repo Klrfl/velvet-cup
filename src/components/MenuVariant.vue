@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Pencil } from "lucide-vue-next"
 import { Button } from "@/components/ui/button"
-import type { MenuVariants } from "@/types"
+import type { MenuVariant } from "@/types"
 import { formatCurrency } from "@/utils"
 
 interface Props {
-	variant: MenuVariants
+	variant: MenuVariant
 }
 
 const props = defineProps<Props>()

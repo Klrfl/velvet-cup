@@ -1,5 +1,11 @@
 ---
 import { Image } from "astro:assets"
+import { formatCurrency } from "@/utils"
+import type { MenuComplete } from "@/types"
+
+interface Props {
+	menu: MenuComplete
+}
 
 const { menu } = Astro.props
 ---
@@ -22,7 +28,7 @@ const { menu } = Astro.props
 			<span class="text-lg text-primary-900">{menu.name}</span>
 			<span class="text-primary-300">{menu.variant?.name}</span>
 			<span class="text-primary-900 font-bold my-3">
-				{menu.variant?.price}
+				{formatCurrency(Number(menu.variant?.price))}
 			</span>
 		</figcaption>
 	</a>

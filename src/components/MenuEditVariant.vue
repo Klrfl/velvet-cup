@@ -8,14 +8,14 @@ import {
 	DialogDescription,
 } from "@/components/ui/dialog"
 
-import type { MenuVariants } from "@/types"
+import type { MenuVariant } from "@/types"
 import type { UpdateableMenuVariant } from "@/types"
 import { ref } from "vue"
 
 const open = defineModel<boolean>({ required: true })
 
 interface Props {
-	variant: MenuVariants
+	variant: MenuVariant
 	menuId: number
 }
 

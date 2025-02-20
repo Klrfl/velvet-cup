@@ -26,21 +26,21 @@ import {
 } from "@/components/ui/dialog"
 import { Pencil, Plus } from "lucide-vue-next"
 
-import MenuVariant from "@/components/MenuVariant.vue"
+import MenuVariantItem from "@/components/MenuVariant.vue"
 import MenuAddVariant from "@/components/MenuAddVariant.vue"
 import MenuEditVariant from "@/components/MenuEditVariant.vue"
 import MenuOption from "@/components/MenuOption.vue"
 import MenuEditOption from "@/components/MenuEditOption.vue"
 
 import { ref } from "vue"
-import type { MenuComplete, MenuVariants } from "@/types"
+import type { MenuComplete, MenuVariant } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
 
 interface Props {
 	menu: MenuComplete
-	variants: MenuVariants[]
+	variants: MenuVariant[]
 	categories: {
 		id: number
 		name: string
@@ -152,9 +152,9 @@ async function handleAddVariant(form: HTMLFormElement) {
 }
 
 const isEditVariantOpen = ref(false)
-const activeVariant = ref<MenuVariants>()
+const activeVariant = ref<MenuVariant>()
 
-function handleEditVariant(variant: MenuVariants) {
+function handleEditVariant(variant: MenuVariant) {
 	activeVariant.value = variant
 	isEditVariantOpen.value = true
 }
@@ -326,7 +326,7 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		<ul class="col-span-full flex flex-col gap-4 py-4">
 			<li v-if="!variants.length">No variants yet.</li>
 
-			<MenuVariant
+			<MenuVariantItem
 				v-for="variant in variants"
 				:key="variant.id"
 				:variant="variant"
