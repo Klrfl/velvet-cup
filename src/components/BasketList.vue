@@ -6,17 +6,10 @@ import { computed, ref } from "vue"
 import { toast } from "vue-sonner"
 import { useDebounceFn } from "@vueuse/core"
 import { formatCurrency } from "@/utils"
+import type { BasketReturnType } from "@/database/queries"
 
 interface Props {
-	basket: {
-		id: number
-		quantity: number | null
-		menu_name: string | null
-		image: string | null
-		variant_id: number | null
-		variant_name: string | null
-		price: number | null
-	}[]
+	basket: BasketReturnType
 }
 
 const props = defineProps<Props>()

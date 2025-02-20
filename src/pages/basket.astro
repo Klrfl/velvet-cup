@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro"
 import BasketList from "@/components/BasketList.vue"
 import { Button } from "@/components/ui/button"
 
-import { db } from "@/database/"
+import { basketQuery } from "@/database/queries"
 import { auth } from "@/lib/auth"
 
 const MIDTRANS_CLIENT_KEY = import.meta.env.MIDTRANS_CLIENT_KEY
@@ -17,21 +17,7 @@ if (!session) {
 	return Astro.redirect("/")
 }
 
-const basket = await db
-	.selectFrom("baskets as b")
-	.leftJoin("menu as m", "m.id", "b.menu_id")
-	.leftJoin("menu_variants as mv", (join) =>
-		join.onRef("mv.menu_id", "=", "m.id").onRef("mv.id", "=", "b.variant_id")
-	)
-	.select([
-		"b.id",
-		"m.name as menu_name",
-		"m.image",
-		"b.quantity",
-		"mv.id as variant_id",
-		"mv.name as variant_name",
-		"mv.price",
-	])
+const basket = await basketQuery
 	.where("user_id", "=", session.user.id)
 	.execute()
 ---

@@ -1,15 +1,9 @@
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button"
+import type { BasketReturnType } from "@/database/queries"
 
 interface Props {
-	basketItem: {
-		id: number
-		menu_name: string
-		image: string
-		quantity: number
-		variant_name: string
-		price: number
-	}
+	basketItem: BasketReturnType[0]
 }
 
 const { basketItem: item } = defineProps<Props>()

@@ -51,3 +51,21 @@ export const ordersQuery = db
 	])
 
 export type OrderReturnType = InferResult<typeof ordersQuery>
+
+export const basketQuery = db
+	.selectFrom("baskets as b")
+	.leftJoin("menu as m", "m.id", "b.menu_id")
+	.leftJoin("menu_variants as mv", (join) =>
+		join.onRef("mv.menu_id", "=", "m.id").onRef("mv.id", "=", "b.variant_id")
+	)
+	.select([
+		"b.id",
+		"m.name as menu_name",
+		"m.image",
+		"b.quantity",
+		"mv.id as variant_id",
+		"mv.name as variant_name",
+		"mv.price",
+	])
+
+export type BasketReturnType = InferResult<typeof basketQuery>

@@ -100,7 +100,7 @@
 	}
 
 	.app-section {
-		@apply bg-white p-4 md:p-8 rounded-xl;
+		@apply bg-white p-4 md:p-8 rounded-xl ring-2 ring-primary-100;
 	}
 
 	.main-section {

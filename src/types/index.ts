@@ -41,10 +41,10 @@ const menuCompleteSchema = z.object({
 export const menuVariantSchema = z.object({
 	id: z.number(),
 	name: z.string().nonempty(),
-	price: z.number(),
+	price: z.coerce.number().or(z.string()),
 	options: z.array(
 		z.object({
-			option_value_id: z.coerce.number(),
+			option_value_id: z.coerce.number().nullable(),
 			option_name: z.string(),
 			option_value: z.string(),
 		})
@@ -68,7 +68,7 @@ export const updateableMenuVariantsSchema = z.object({
 
 export type Orders = Selectable<DBOrders> & {
 	status: string | null
-	details: OrderDetail[]
+	details: Selectable<OrderDetail>[]
 }
 export type MenuComplete = z.infer<typeof menuCompleteSchema>
 export type MenuVariant = z.infer<typeof menuVariantSchema>
@@ -76,6 +76,16 @@ export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
 	typeof insertableMenuVariantsSchema
 >
+export interface MenuItem {
+	id: number
+	name: string
+	image: string | null
+	variant: {
+		name: string
+		price: string
+	} | null
+}
+
 export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 	option_value: string
 	option_name: string
