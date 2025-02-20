@@ -38,7 +38,7 @@ async function deleteMenu(id: number) {
 
 		<div class="py-4 flex gap-2">
 			<Button variant="outline" as-child>
-				<a :href="`/admin/menu/${menu.id}`" class="flex gap-2">
+				<a :href="`/admin/menu/${menu.id}/`" class="flex gap-2">
 					<Pencil />
 					Edit
 				</a>

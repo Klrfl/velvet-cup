@@ -1,5 +1,7 @@
 # ☕ Velvet Cup
 
+![Velvet Cup home page](./public/velvet-cup-screenshot.png)
+
 This repository contains a basic website and web app for Velvet Cup, a fictional
 cafe where you can order coffee (among other menus that Velvet Cup
 offers) and pay with your favorite method, including cash, Gopay, DANA, or other
