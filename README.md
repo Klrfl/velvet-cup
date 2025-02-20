@@ -1,9 +1,18 @@
-# Astro Starter Kit: Basics
+# ☕ Velvet Cup
 
 This repository contains a basic website and web app for Velvet Cup, a fictional
-cafe. With this web app, you can order coffee (among other menus that Velvet Cup
+cafe where you can order coffee (among other menus that Velvet Cup
 offers) and pay with your favorite method, including cash, Gopay, DANA, or other
 QRIS providers.
+
+This project was made in less than a month so apologies for any bugs or unhandled
+edge cases.
+
+## 🥪 Stack
+
+This site uses Astro as the backend and API platform. Database connections and
+migrations are managed by Kysely, authentication by better-auth and and Vue &
+Tailwind for the frontend. Velvet Cup integrates with Midtrans for handling payments.
 
 ## 🧞 Commands
 
