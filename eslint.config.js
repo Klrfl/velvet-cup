@@ -5,6 +5,7 @@ import tseslint from "typescript-eslint"
 import pluginVue from "eslint-plugin-vue"
 import vueParser from "vue-eslint-parser"
 import tsParser from "@typescript-eslint/parser"
+import eslintConfigPrettier from "eslint-config-prettier"
 
 /** @type {import('eslint').Linter.Config[]} */
 export default tseslint.config(
@@ -45,5 +46,6 @@ export default tseslint.config(
 				parser: tsParser,
 			},
 		},
-	}
+	},
+	eslintConfigPrettier
 )
