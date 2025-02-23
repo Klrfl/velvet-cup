@@ -45,16 +45,16 @@ const emit = defineEmits<{
 					size="sm"
 					variant="outline"
 					class="ml-auto"
-					@click="emit('triggerAddQty')"
 					:disabled="item.quantity >= 50"
+					@click="emit('triggerAddQty')"
 					>+</Button
 				>
 				<span>{{ item.quantity }}</span>
 				<Button
 					size="sm"
 					variant="outline"
-					@click="emit('triggerSubtractQty')"
 					:disabled="item.quantity <= 1"
+					@click="emit('triggerSubtractQty')"
 				>
 					-
 				</Button>

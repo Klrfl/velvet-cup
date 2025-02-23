@@ -8,6 +8,7 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"format": "prettier --write .",
+		"lint": "eslint .",
 		"db gen types": "kysely-codegen --dialect postgres --out-file=src/database/database.types.d.ts"
 	},
 	"dependencies": {
@@ -36,11 +37,20 @@
 		"vue-sonner": "^1.3.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.21.0",
 		"@types/pg": "^8.11.11",
+		"@typescript-eslint/parser": "^8.24.1",
+		"astro-eslint-parser": "^1.2.1",
+		"eslint": "^9.21.0",
+		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-astro": "^1.3.1",
+		"eslint-plugin-vue": "^9.32.0",
+		"globals": "^16.0.0",
 		"kysely-codegen": "^0.17.0",
 		"kysely-ctl": "^0.10.1",
 		"prettier": "^3.4.2",
-		"prettier-plugin-astro": "^0.14.1"
+		"prettier-plugin-astro": "^0.14.1",
+		"typescript-eslint": "^8.24.1"
 	},
 	"packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879"
 }

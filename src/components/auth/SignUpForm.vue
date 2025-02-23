@@ -27,7 +27,7 @@ async function handleSignUp(credentials: SignUpData) {
 		toast.error("your password doesn't match.")
 	}
 
-	const { data, error } = await authClient.signUp.email({
+	const { _, error } = await authClient.signUp.email({
 		email: credentials.email,
 		name: credentials.name,
 		password: credentials.password,
@@ -45,44 +45,44 @@ async function handleSignUp(credentials: SignUpData) {
 </script>
 
 <template>
-	<form @submit.prevent="handleSignUp(credentials)" class="grid gap-4">
+	<form class="grid gap-4" @submit.prevent="handleSignUp(credentials)">
 		<Label for="name">Name</Label>
 		<Input
+			id="name"
 			v-model="credentials.name"
 			type="text"
 			name="name"
-			id="name"
 			placeholder="your name..."
 			required
 		/>
 
 		<Label for="email">Email</Label>
 		<Input
+			id="email"
 			v-model="credentials.email"
 			type="email"
 			name="email"
-			id="email"
 			placeholder="your email here..."
 			required
 		/>
 
 		<Label for="password">Password</Label>
 		<Input
+			id="password"
 			v-model="credentials.password"
 			type="password"
 			name="password"
-			id="password"
 			placeholder="your super secret password..."
 			required
 		/>
 
 		<Label for="confirm-password">Confirm Password</Label>
 		<Input
+			id="password"
 			v-model="credentials.confirmPassword"
 			type="password"
 			placeholder="your super secret password, again"
 			name="password"
-			id="password"
 			required
 		/>
 

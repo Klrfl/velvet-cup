@@ -68,14 +68,14 @@ async function handleEditMenu(e: Event, id: number) {
 	}
 }
 
-const newOptions = ref([])
+const newOptions = ref<string[]>([])
 
 const isOptionDialogOpen = ref(false)
 
 async function handleAddOption(form: HTMLFormElement) {
 	const formData = new FormData(form)
 
-	let body: Record<string, any> = {}
+	const body: Record<string, any> = {}
 
 	/** initially the input where we got the values from
    spits out a flat formData we transform it into an
@@ -110,9 +110,9 @@ async function handleAddOption(form: HTMLFormElement) {
 }
 
 const isEditOptionDialogOpen = ref(false)
-const activeOption = ref<menuAdminReturnType[0]["options"]>()
+const activeOption = ref<menuAdminReturnType[0]["options"][0]>()
 
-function handleEditOption(option: menuAdminReturnType[0]["options"]) {
+function handleEditOption(option: menuAdminReturnType[0]["options"][0]) {
 	isEditOptionDialogOpen.value = true
 	activeOption.value = option
 }
@@ -121,7 +121,7 @@ const isVariantDialogOpen = ref(false)
 async function handleAddVariant(form: HTMLFormElement) {
 	const formData = new FormData(form)
 
-	let body: Record<string, any> = {}
+	const body: Record<string, any> = {}
 
 	for (const [key, value] of formData) {
 		// if current key is not name or price
@@ -171,7 +171,11 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 
 		<img
 			v-else
-			:src="previewURL === '' ? menu.image : previewURL"
+			:src="
+				previewURL === ''
+					? (menu.image ?? '/Image_not_available.png')
+					: previewURL
+			"
 			class="object-cover aspect-video w-full"
 			alt=""
 		/>
@@ -179,23 +183,23 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 
 	<form
 		class="flex flex-col gap-2 col-span-full md:col-span-3"
-		@submit.prevent="(e) => handleEditMenu(e, menu.id)"
 		enctype="multipart/form-data"
+		@submit.prevent="(e) => handleEditMenu(e, menu.id)"
 	>
 		<Label for="menu_name">Name</Label>
 		<Input
+			id="menu_name"
+			v-model:model-value="menu.name as string"
 			type="text"
 			placeholder="nama"
-			v-model:model-value="menu.name as string"
 			name="menu_name"
-			id="menu_name"
 			required
 		/>
 
 		<Label for="menu_image">Image</Label
 		><Input
-			type="file"
 			id="menu_image"
+			type="file"
 			name="menu_image"
 			accept="image/*"
 			@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
@@ -203,10 +207,10 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 
 		<Label for="menu_description">Description</Label>
 		<Textarea
-			placeholder="deskripsi"
-			name="menu_description"
 			id="menu_description"
 			v-model:model-value="menu.description as string"
+			placeholder="deskripsi"
+			name="menu_description"
 			:default-value="menu.description ?? ''"
 			required
 		>
@@ -224,7 +228,11 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			</SelectTrigger>
 
 			<SelectContent>
-				<SelectItem v-for="category in categories" :value="String(category.id)">
+				<SelectItem
+					v-for="category in categories"
+					:key="category.id"
+					:value="String(category.id)"
+				>
 					{{ category.name }}
 				</SelectItem>
 			</SelectContent>
@@ -271,9 +279,9 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			>
 				<Label for="new_variant">Variant name</Label>
 				<Input
+					id="new_variant"
 					type="text"
 					name="new_variant"
-					id="new_variant"
 					placeholder="variant name"
 					required
 				/>
@@ -281,9 +289,9 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 				<Label for="new_variant_values">Variant values, comma separated</Label>
 
 				<TagsInput
+					id="new_variant_values"
 					v-model="newOptions"
 					name="new_variant_values"
-					id="new_variant_values"
 				>
 					<TagsInputItem
 						v-for="option in newOptions"
@@ -349,17 +357,17 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			</DialogDescription>
 
 			<MenuAddVariant
-				@variant-added="(form) => handleAddVariant(form as HTMLFormElement)"
 				:options="menu.options"
+				@variant-added="(form) => handleAddVariant(form as HTMLFormElement)"
 			/>
 		</DialogContent>
 	</Dialog>
 
 	<MenuEditVariant
+		v-if="activeVariant"
 		v-model="isEditVariantOpen"
 		:variant="activeVariant"
 		:menu-id="menu.id"
-		v-if="activeVariant"
 		@variant-edited="toast.success('successfully edited menu variant.')"
 	/>
 

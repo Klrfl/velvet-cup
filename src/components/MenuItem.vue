@@ -32,7 +32,7 @@ async function deleteMenu(id: number) {
 	<li class="p-4 border-b border-b-slate-200">
 		<p class="leading-tight text-lg font-bold">{{ menu.name }}</p>
 		<p>{{ menu.description }}</p>
-		<p class="text-sm text-primary-400" v-if="menu.category">
+		<p v-if="menu.category" class="text-sm text-primary-400">
 			{{ menu.category }}
 		</p>
 
@@ -44,7 +44,7 @@ async function deleteMenu(id: number) {
 				</a>
 			</Button>
 
-			<Button @click="deleteMenu(menu.id)" variant="outline">
+			<Button variant="outline" @click="deleteMenu(menu.id)">
 				<Trash />
 				Hapus
 			</Button>

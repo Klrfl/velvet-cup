@@ -36,11 +36,11 @@ async function handleAddCategory(category: string) {
 	<form class="grid gap-4" @submit.prevent="handleAddCategory(newCategory)">
 		<label for="new_category">Add new category</label>
 		<Input
+			id="new_category"
+			v-model:model-value="newCategory"
 			type="text"
 			required
 			placeholder="new category name..."
-			v-model:model-value="newCategory"
-			id="new_category"
 		/>
 		<Button type="submit"> Add new category </Button>
 	</form>

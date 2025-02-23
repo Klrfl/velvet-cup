@@ -10,21 +10,21 @@ import { formatCurrency } from "@/utils"
 
 interface Props {
 	variants: MenuPrice[]
-	menu_id: number
-	user_id?: string
+	menuId: number
+	userId?: string
 }
 
-const { user_id, variants, menu_id } = defineProps<Props>()
+const { userId, variants, menuId } = defineProps<Props>()
 
 const defaultVariant = computed(() => variants[0])
 const selectedVariant = ref(defaultVariant.value)
 const quantity = ref(1)
 
 async function addToCart() {
-	if (!user_id) return window.location.assign("/login")
+	if (!userId) return window.location.assign("/login")
 
 	const body = {
-		menu_id,
+		menu_id: menuId,
 		variant_id: selectedVariant.value.id,
 		quantity: quantity.value,
 	}
@@ -38,13 +38,12 @@ async function addToCart() {
 	const result = await response.json()
 
 	toast.success(result.message)
-	// console.log(result.data)
 }
 </script>
 
 <template>
 	<Tabs :default-value="defaultVariant.id" class="col-span-8">
-		<TabsList v-for="variant in variants">
+		<TabsList v-for="variant in variants" :key="variant.id">
 			<TabsTrigger
 				:value="variant.id"
 				class="data-[state=active]:text-white data-[state=active]:bg-primary"
@@ -54,7 +53,7 @@ async function addToCart() {
 			</TabsTrigger>
 		</TabsList>
 
-		<template v-for="{ id, price } in variants">
+		<template v-for="{ id, price } in variants" :key="id">
 			<TabsContent :value="id" class="text-xl font-bold">
 				{{ formatCurrency(Number(price)) }}
 			</TabsContent>
@@ -65,19 +64,19 @@ async function addToCart() {
 		class="grid grid-cols-3 col-span-2 rounded-lg ring ring-gray-100 has-[:focus-visible]:ring-primary"
 	>
 		<Button
-			@click="quantity > 0 ? quantity-- : quantity"
 			variant="ghost"
 			class="h-full rounded-none"
 			title="decrement quantity"
+			@click="quantity > 0 ? quantity-- : quantity"
 		>
 			-
 		</Button>
 		<Input
+			id="quantity"
+			v-model="quantity"
 			type="text"
 			inputmode="numeric"
-			id="quantity"
 			name="quantity"
-			v-model="quantity"
 			class="rounded-none text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			:default-value="quantity"
 			:invalid="quantity === 0"
@@ -85,10 +84,10 @@ async function addToCart() {
 			:max="30"
 		/>
 		<Button
-			@click="quantity++"
 			variant="ghost"
 			class="h-full rounded-none"
 			title="increment quantity"
+			@click="quantity++"
 		>
 			+
 		</Button>

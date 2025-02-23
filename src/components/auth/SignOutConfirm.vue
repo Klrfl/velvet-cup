@@ -15,7 +15,7 @@ const hasConfirmed = computed(() => confirmText.value === "SIGN OUT")
 async function handleSignOut() {
 	const { error } = await authClient.signOut()
 
-	if (!hasConfirmed) {
+	if (!hasConfirmed.value) {
 		return
 	}
 
@@ -38,16 +38,16 @@ async function handleSignOut() {
 		</DialogTrigger>
 
 		<DialogContent>
-			<form @submit.prevent="handleSignOut" class="grid gap-4">
+			<form class="grid gap-4" @submit.prevent="handleSignOut">
 				<Label for="confirm"
 					>Confirm that you are really signing out by typing
 					<span class="font-bold">SIGN OUT</span> in all caps.</Label
 				>
 				<Input
-					type="text"
 					id="confirm"
-					name="confirm"
 					v-model="confirmText"
+					type="text"
+					name="confirm"
 					required
 				/>
 

@@ -40,9 +40,9 @@ async function handleSignIn(credentials: SignInCredentials) {
 	<form class="grid gap-4" @submit.prevent="handleSignIn(credentials)">
 		<Label for="email">Email</Label>
 		<Input
+			id="email"
 			v-model="credentials.email"
 			type="email"
-			id="email"
 			name="email"
 			placeholder="email"
 			required
@@ -50,9 +50,9 @@ async function handleSignIn(credentials: SignInCredentials) {
 
 		<Label for="password">Password</Label>
 		<Input
+			id="password"
 			v-model="credentials.password"
 			type="password"
-			id="password"
 			name="password"
 			placeholder="your secret password"
 			required

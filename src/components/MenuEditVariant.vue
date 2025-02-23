@@ -59,17 +59,17 @@ async function handleEditVariant(variant: UpdateableMenuVariant) {
 			<form @submit.prevent="handleEditVariant(newVariant)">
 				<label for="edit_variant_name">Name</label>
 				<Input
-					type="text"
 					id="edit_variant_name"
 					v-model="newVariant.name"
+					type="text"
 					required
 				/>
 
 				<label for="edit_variant_price">Price</label>
 				<Input
-					type="number"
 					id="edit_variant_price"
 					v-model="newVariant.price"
+					type="number"
 					required
 				/>
 
