@@ -62,17 +62,17 @@ const { categories } = defineProps<Props>()
 		</figure>
 
 		<form
-			@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
 			class="flex flex-col col-span-full md:col-span-3 gap-2"
 			enctype="multipart/form-data"
+			@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
 		>
 			<Label for="menu_image">Image</Label>
 			<Input
-				type="file"
 				id="menu_image"
+				type="file"
 				name="menu_image"
-				@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
 				accept="image/*"
+				@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
 			/>
 
 			<Label for="menu_name">Name</Label>

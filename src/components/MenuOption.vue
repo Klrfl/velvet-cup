@@ -32,8 +32,8 @@ const emit = defineEmits<{
 
 		<Button
 			variant="outline"
-			@click="emit('triggerOptionEdit', option)"
 			class="ml-auto"
+			@click="emit('triggerOptionEdit', option)"
 		>
 			<Pencil fill="white" />
 			Edit

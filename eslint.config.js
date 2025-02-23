@@ -15,6 +15,9 @@ export default tseslint.config(
 			".astro",
 			"src/database/seeds/*.ts",
 			"src/database/migrations/*.ts",
+
+			// ignore components from shadcn-vue
+			"src/components/ui/*",
 		],
 	},
 	pluginJs.configs.recommended,

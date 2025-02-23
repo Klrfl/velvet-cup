@@ -47,8 +47,8 @@ watch(
 		<fieldset>
 			<Label for="name">Variant name</Label>
 			<Input
-				type="text"
 				id="name"
+				type="text"
 				name="name"
 				placeholder="Variant name"
 				required
@@ -58,12 +58,12 @@ watch(
 		<fieldset>
 			<Label for="price">Price</Label>
 			<Input
+				id="price"
 				ref="price-input"
 				v-model="price"
 				pattern="[0-9]+"
 				type="text"
 				inputmode="numeric"
-				id="price"
 				name="price"
 				placeholder="price"
 			/>

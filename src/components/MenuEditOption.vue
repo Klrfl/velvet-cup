@@ -66,11 +66,11 @@ async function handleEditOption(
 			>
 				<Label for="option">Variant name</Label>
 				<Input
+					id="option"
+					v-model="derivedOption.name"
 					type="text"
 					:default-value="option.name"
-					v-model="derivedOption.name"
 					name="option"
-					id="option"
 					placeholder="option name"
 					required
 				/>
@@ -79,10 +79,10 @@ async function handleEditOption(
 
 				{{ derivedOption.option_values }}
 				<TagsInput
+					id="option_values"
 					v-model="derivedOption.option_values"
 					:convert-value="(name) => ({ name, menu_option_id: option.id })"
 					name="option_values"
-					id="option_values"
 					disabled
 				>
 					<TagsInputItem

@@ -29,8 +29,8 @@ const emit = defineEmits<{
 
 		<Button
 			variant="outline"
-			@click="emit('triggerVariantEdit', variant)"
 			class="col-span-2 place-self-end"
+			@click="emit('triggerVariantEdit', variant)"
 		>
 			<Pencil fill="white" />
 			Edit

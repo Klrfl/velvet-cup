@@ -65,19 +65,19 @@ async function addToCart() {
 		class="grid grid-cols-3 col-span-2 rounded-lg ring ring-gray-100 has-[:focus-visible]:ring-primary"
 	>
 		<Button
-			@click="quantity > 0 ? quantity-- : quantity"
 			variant="ghost"
 			class="h-full rounded-none"
 			title="decrement quantity"
+			@click="quantity > 0 ? quantity-- : quantity"
 		>
 			-
 		</Button>
 		<Input
+			id="quantity"
+			v-model="quantity"
 			type="text"
 			inputmode="numeric"
-			id="quantity"
 			name="quantity"
-			v-model="quantity"
 			class="rounded-none text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			:default-value="quantity"
 			:invalid="quantity === 0"
@@ -85,10 +85,10 @@ async function addToCart() {
 			:max="30"
 		/>
 		<Button
-			@click="quantity++"
 			variant="ghost"
 			class="h-full rounded-none"
 			title="increment quantity"
+			@click="quantity++"
 		>
 			+
 		</Button>
