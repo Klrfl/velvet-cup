@@ -27,7 +27,7 @@ async function handleSignUp(credentials: SignUpData) {
 		toast.error("your password doesn't match.")
 	}
 
-	const { data, error } = await authClient.signUp.email({
+	const { _, error } = await authClient.signUp.email({
 		email: credentials.email,
 		name: credentials.name,
 		password: credentials.password,

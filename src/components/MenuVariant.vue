@@ -23,7 +23,11 @@ const emit = defineEmits<{
 			<span class="font-bold">{{ formatCurrency(variant.price) }}</span>
 		</span>
 
-		<div v-for="variant_option in variant.options" class="ml-4 col-span-4">
+		<div
+			v-for="variant_option in variant.options"
+			:key="`${variant_option.option_value_id}-${variant_option.option_value}`"
+			class="ml-4 col-span-4"
+		>
 			{{ variant_option.option_name }} - {{ variant_option.option_value }}
 		</div>
 

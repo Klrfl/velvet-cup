@@ -29,6 +29,7 @@ function handleDeleteMenu(targetMenu: Selectable<Menu>) {
 		<li v-if="!menuList.length">no menu items to display.</li>
 		<MenuItem
 			v-for="item in menuList"
+			:key="item.id"
 			:menu="item"
 			@menu-deleted="handleDeleteMenu(item)"
 		/>

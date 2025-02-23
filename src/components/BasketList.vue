@@ -76,7 +76,7 @@ async function handleCheckout() {
 	const result = await response.json()
 	const { data } = result
 
-	//@ts-expect-error
+	//@ts-expect-error the snap library requires me to do this.. please stop
 	return window.snap.pay(data.token)
 }
 
@@ -102,6 +102,7 @@ const total = computed(() =>
 		<template v-else>
 			<BasketItem
 				v-for="item in basket"
+				:key="item.id"
 				:basket-item="item"
 				@trigger-add-qty="handleQty(item, 'add')"
 				@trigger-subtract-qty="handleQty(item, 'subtract')"
@@ -113,14 +114,16 @@ const total = computed(() =>
 	<section class="app-section col-span-4 flex flex-col gap-4">
 		<h2 class="text-4xl">Checkout</h2>
 
-		<p v-for="item in basket" class="flex">
-			{{ item.quantity }} ×
-			{{ formatCurrency(item.price) }}
+		<template v-for="item in basket" :key="item.id">
+			<p v-if="item" class="flex">
+				{{ item.quantity }} ×
+				{{ formatCurrency(Number(item.price)) }}
 
-			<span class="ml-auto">
-				{{ formatCurrency(item.quantity * item.price) }}
-			</span>
-		</p>
+				<span class="ml-auto">
+					{{ formatCurrency(item.quantity * Number(item.price)) }}
+				</span>
+			</p>
+		</template>
 
 		<hr />
 

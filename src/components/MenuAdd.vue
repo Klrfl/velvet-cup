@@ -14,8 +14,6 @@ import type { Selectable } from "kysely"
 import type { MenuCategories } from "@/database/database.types"
 import { usePreviewImage } from "@/composables"
 
-const emit = defineEmits(["menuAdded"])
-
 const { previewImage, previewURL, newImage } = usePreviewImage()
 
 async function handleAddMenu(form: HTMLFormElement) {
@@ -95,6 +93,7 @@ const { categories } = defineProps<Props>()
 				<SelectContent>
 					<SelectItem
 						v-for="category in categories"
+						:key="category.id"
 						:value="String(category.id)"
 					>
 						{{ category.name }}

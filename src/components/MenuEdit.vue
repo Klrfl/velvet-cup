@@ -68,7 +68,7 @@ async function handleEditMenu(e: Event, id: number) {
 	}
 }
 
-const newOptions = ref([])
+const newOptions = ref<string[]>([])
 
 const isOptionDialogOpen = ref(false)
 
@@ -110,9 +110,9 @@ async function handleAddOption(form: HTMLFormElement) {
 }
 
 const isEditOptionDialogOpen = ref(false)
-const activeOption = ref<menuAdminReturnType[0]["options"]>()
+const activeOption = ref<menuAdminReturnType[0]["options"][0]>()
 
-function handleEditOption(option: menuAdminReturnType[0]["options"]) {
+function handleEditOption(option: menuAdminReturnType[0]["options"][0]) {
 	isEditOptionDialogOpen.value = true
 	activeOption.value = option
 }
@@ -171,7 +171,11 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 
 		<img
 			v-else
-			:src="previewURL === '' ? menu.image : previewURL"
+			:src="
+				previewURL === ''
+					? (menu.image ?? '/Image_not_available.png')
+					: previewURL
+			"
 			class="object-cover aspect-video w-full"
 			alt=""
 		/>
@@ -224,7 +228,11 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 			</SelectTrigger>
 
 			<SelectContent>
-				<SelectItem v-for="category in categories" :value="String(category.id)">
+				<SelectItem
+					v-for="category in categories"
+					:key="category.id"
+					:value="String(category.id)"
+				>
 					{{ category.name }}
 				</SelectItem>
 			</SelectContent>

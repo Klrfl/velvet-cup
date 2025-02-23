@@ -5,7 +5,6 @@ import {
 	TagsInput,
 	TagsInputItem,
 	TagsInputItemText,
-	TagsInputItemDelete,
 	TagsInputInput,
 } from "@/components/ui/tags-input"
 import {
@@ -18,12 +17,13 @@ import { Button } from "@/components/ui/button"
 
 import type { MenuComplete } from "@/types"
 import { ref } from "vue"
+import type { menuAdminReturnType } from "@/database/queries"
 
 const open = defineModel<boolean>({ required: true })
 
 interface Props {
 	menuId: MenuComplete["id"]
-	option: MenuComplete["options"][0]
+	option: menuAdminReturnType[0]["options"][0]
 }
 
 const props = defineProps<Props>()
@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 async function handleEditOption(
 	menuId: MenuComplete["id"],
-	option: MenuComplete["options"][0]
+	option: menuAdminReturnType[0]["options"][0]
 ) {
 	const response = await fetch(
 		`/api/admin/menu/${menuId}/options/${option.id}`,
@@ -77,7 +77,7 @@ async function handleEditOption(
 
 				<Label for="option_values">Variant values, comma separated</Label>
 
-				{{ derivedOption.option_values }}
+				<!-- {{ derivedOption.option_values }} -->
 				<TagsInput
 					id="option_values"
 					v-model="derivedOption.option_values"
@@ -87,8 +87,8 @@ async function handleEditOption(
 				>
 					<TagsInputItem
 						v-for="option_value in derivedOption.option_values"
-						:key="option_value.id"
-						:value="option_value.name"
+						:key="String(option_value.id)"
+						:value="String(option_value.name)"
 					>
 						<TagsInputItemText />
 					</TagsInputItem>
