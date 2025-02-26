@@ -19,6 +19,7 @@ import {
 } from "@tanstack/vue-table"
 import { h, ref } from "vue"
 import OrderRowAction from "./OrderRowAction.vue"
+import OrderStatus from "./OrderStatus.vue"
 
 interface Props {
 	orders: AdminOrdersReturnType
@@ -33,7 +34,7 @@ const columns = [
 	}),
 	columnHelper.accessor("status", {
 		header: "status",
-		cell: (ctx) => ctx.getValue(),
+		cell: (ctx) => h(OrderStatus, { status: ctx.getValue() ?? "" }),
 	}),
 	columnHelper.accessor(
 		(ctx) => {
