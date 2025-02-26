@@ -1,0 +1,18 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro"
+import OrdersTable from "@/components/admin/orders/OrdersTable.vue"
+import { adminOrdersQuery } from "@/database/queries"
+
+const orders = await adminOrdersQuery.execute()
+---
+
+<AdminLayout title="Orders - Velvet Cup">
+	<headers class="main-section">
+		<h1 class="text-4xl">Orders</h1>
+		<p>Showing {orders.length} orders.</p>
+	</headers>
+
+	<section class="main-section app-section">
+		<OrdersTable orders={orders} client:load />
+	</section>
+</AdminLayout>

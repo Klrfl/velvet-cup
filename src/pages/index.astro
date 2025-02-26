@@ -50,6 +50,7 @@ const session = await auth.api.getSession({
 				name="category"
 				class="bg-transparent py-2 px-3 text-sm rounded-md border border-1 border-input"
 			>
+				<option selected disabled>Choose a category</option>
 				{
 					categories.map((category) => (
 						<option class="bg-transparent" value={category.id}>
