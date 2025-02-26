@@ -61,13 +61,9 @@ const columns = [
 	columnHelper.display({
 		header: "details",
 		cell: (ctx) =>
-			h(
-				"div",
-				{ class: "text-right" },
-				h(OrderRowAction, {
-					onExpand: ctx.row.toggleExpanded,
-				})
-			),
+			h(OrderRowAction, {
+				onExpand: ctx.row.toggleExpanded,
+			}),
 	}),
 ]
 
