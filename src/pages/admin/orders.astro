@@ -3,7 +3,9 @@ import AdminLayout from "@/layouts/AdminLayout.astro"
 import OrdersTable from "@/components/admin/orders/OrdersTable.vue"
 import { adminOrdersQuery } from "@/database/queries"
 
-const orders = await adminOrdersQuery.execute()
+const orders = await adminOrdersQuery
+	.orderBy("orders.created_at desc")
+	.execute()
 ---
 
 <AdminLayout title="Orders - Velvet Cup">
