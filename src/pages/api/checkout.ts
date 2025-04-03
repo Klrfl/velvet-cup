@@ -2,7 +2,7 @@ import { db } from "@/database"
 import { auth } from "@/lib/auth"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
-import client from "midtrans-client"
+import client from "@klrfl/midtrans-client"
 
 export const POST: APIRoute = async ({ request }) => {
 	const session = await auth.api.getSession({
@@ -99,7 +99,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 	const snap = new client.Snap({
 		isProduction: import.meta.env.PROD,
-		serverKey: import.meta.env.MIDTRANS_SERVER_KEY,
+		serverKey: import.meta.env.MIDTRANS_SERVER_KEY!,
 	})
 
 	const params = {
