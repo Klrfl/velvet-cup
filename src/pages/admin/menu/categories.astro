@@ -8,7 +8,7 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 
 <AdminLayout title="Manage categories">
 	<section
-		class="grid gap-4 col-start-2 col-end-[-2] md:grid-cols-6 md:col-start-4 md:col-end-12"
+		class="grid gap-4 items-start grid-flow-dense col-start-2 col-end-[-2] md:grid-cols-6 md:col-start-4 md:col-end-12"
 	>
 		<h1 class="text-xl col-span-full">Manage categories</h1>
 
