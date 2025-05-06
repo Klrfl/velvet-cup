@@ -16,18 +16,21 @@ const categoryCount = computed(() => categories.value.length)
 
 <template>
 	<CategoryAdd
-		class="col-span-full md:col-span-2 md:row-span-2"
+		class="bg-card p-6 px-4 rounded-lg col-span-full md:col-span-2"
 		@category-added="(newCategory) => categories.push(newCategory)"
 	/>
 
-	<p class="col-span-full md:col-span-4">
+	<p class="md:order-last md:col-span-2">
 		Showing {{ categoryCount }} categories.
 	</p>
-	<ul class="grid gap-4 col-span-full md:col-span-4 md:col-start-3">
+
+	<ul
+		class="grid gap-4 col-span-full md:col-span-4 md:col-start-3 md:row-span-2"
+	>
 		<li
 			v-for="category in categories"
 			:key="category.id"
-			class="bg-primary/5 p-4 rounded-lg"
+			class="bg-card p-4 rounded-lg"
 		>
 			{{ category.name }}
 		</li>
