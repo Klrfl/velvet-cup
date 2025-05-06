@@ -38,6 +38,8 @@ async function editCategory(
 	form: HTMLFormElement,
 	id: Selectable<MenuCategories>["id"]
 ) {
+	if (!selectedCategory.value)
+		return console.error("something wrong, display toast pls")
 	const formData = new FormData(form)
 
 	const response = await fetch(`/api/admin/categories/${id}/`, {
@@ -59,18 +61,24 @@ async function editCategory(
 		return console.error("something wrong, display toast pls")
 	}
 
-	const categoryIndex = categories.value.find(
-		(c) => c.id === newCategory.data.id
-	)
-	if (!categoryIndex) return console.error("something wrong, display toast pls")
-
 	categories.value.splice(
-		categories.value.indexOf(categoryIndex),
+		categories.value.indexOf(selectedCategory.value),
 		1,
 		newCategory.data
 	)
 
-	selectedCategory.value = null
+	return (selectedCategory.value = null)
+}
+
+async function deleteCategory(id: number) {
+	const response = await fetch(`/api/admin/categories/${id}/`, {
+		method: "DELETE",
+	})
+	if (response.status === 500) {
+		return console.error("something wrong pls dipslay toast")
+	}
+
+	return (categories.value = categories.value.filter((c) => c.id !== id))
 }
 </script>
 
@@ -104,6 +112,7 @@ async function editCategory(
 			<Button
 				variant="ghost"
 				class="outline outline-1 outline-red-400 bg-red-100"
+				@click="deleteCategory(category.id)"
 			>
 				Delete
 			</Button>
