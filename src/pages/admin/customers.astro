@@ -1,6 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
-import { formatDate } from "@/utils"
+import { formatDate } from "@/lib/utils"
 import { db } from "@/database"
 
 const users = await db.selectFrom("user").selectAll().execute()
