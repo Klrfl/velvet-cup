@@ -11,10 +11,13 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog"
+import { Toaster } from "@/components/ui/sonner"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+
 import { computed, ref } from "vue"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
 import { z } from "astro/zod"
+import { toast } from "vue-sonner"
 
 interface Props {
 	categories: Selectable<MenuCategories>[]
@@ -58,7 +61,9 @@ async function editCategory(
 	const { data: newCategory, error } = schema.safeParse(result)
 
 	if (error) {
-		return console.error("something wrong, display toast pls")
+		return toast.error(
+			`there was an error while editing ${formData.get("category-name")}.`
+		)
 	}
 
 	categories.value.splice(
@@ -67,6 +72,7 @@ async function editCategory(
 		newCategory.data
 	)
 
+	toast.success("successfully edited menu category.")
 	return (selectedCategory.value = null)
 }
 
@@ -75,10 +81,13 @@ async function deleteCategory(id: number) {
 		method: "DELETE",
 	})
 	if (response.status === 500) {
-		return console.error("something wrong pls dipslay toast")
+		return toast.error(
+			`There was an error while deleting menu category. Try refreshing the page.`
+		)
 	}
 
-	return (categories.value = categories.value.filter((c) => c.id !== id))
+	categories.value = categories.value.filter((c) => c.id !== id)
+	return toast.success("Successfully deleted menu category.")
 }
 </script>
 
@@ -153,4 +162,6 @@ async function deleteCategory(id: number) {
 			</form>
 		</DialogContent>
 	</Dialog>
+
+	<Toaster rich-colors />
 </template>
