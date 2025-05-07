@@ -1,5 +1,5 @@
 ---
-import Layout from "@/layouts/Layout.astro"
+import AccountLayout from "@/layouts/AccountLayout.astro"
 import SignOutConfirm from "@/components/auth/SignOutConfirm.vue"
 
 import { auth } from "@/lib/auth"
@@ -7,52 +7,9 @@ import { auth } from "@/lib/auth"
 const session = await auth.api.getSession({
 	headers: Astro.request.headers,
 })
-
-const isCurrentRoute = (path: string) => Astro.url.pathname.includes(path)
-
-const navLinks: Record<string, string>[] = [
-	{
-		label: "Your account",
-		path: "/account",
-	},
-	{
-		label: "Your profile",
-		path: "/account/profile",
-	},
-	{
-		label: "Your orders",
-		path: "/account/orders",
-	},
-]
 ---
 
-<Layout
-	title="Your account - Velvet Cup"
-	bodyClass="content-start row-gap-4 grid-flow-row-dense"
->
-	<header class="main-section">
-		<h1 class="text-4xl">Your account</h1>
-	</header>
-
-	<nav
-		class="col-span-full md:col-start-[bleed-start] app-section md:col-span-2 row-span-4 sidebar"
-	>
-		<ul class="flex flex-col">
-			{
-				navLinks.map((link) => (
-					<li>
-						<a
-							class:list={[{ "font-bold": isCurrentRoute(link.path) }]}
-							href={link.path}
-						>
-							{link.label}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</nav>
-
+<AccountLayout heading="Your account" title="Your account - Velvet Cup">
 	<section class="app-section col-span-10">
 		<p>{session?.user.name}</p>
 		<p>{session?.user.email}</p>
@@ -63,11 +20,4 @@ const navLinks: Record<string, string>[] = [
 
 		<SignOutConfirm client:load />
 	</section>
-</Layout>
-
-<style>
-	.sidebar a {
-		display: block;
-		@apply p-4 hover:bg-slate-200;
-	}
-</style>
+</AccountLayout>
