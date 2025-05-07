@@ -93,9 +93,9 @@ const relatedMenus = await db
 		<p>Choose a variant</p>
 
 		<MenuOrder
-			user_id={session?.user?.id}
+			userId={session?.user?.id}
 			variants={menu.variants}
-			menu_id={menu.id}
+			menuId={menu.id}
 			client:load
 		/>
 	</section>
