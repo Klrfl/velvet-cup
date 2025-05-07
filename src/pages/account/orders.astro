@@ -21,7 +21,7 @@ const orders = await ordersQuery
 
 <AccountLayout heading="Your orders">
 	<section class="app-section col-span-10">
-		<ul class="grid gap-4">
+		<ul class="grid gap-8">
 			{orders.map((order) => <OrderItem {order} />)}
 		</ul>
 	</section>
