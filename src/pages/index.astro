@@ -52,8 +52,12 @@ const session = await auth.api.getSession({
 			>
 				<option selected disabled>Choose a category</option>
 				{
-					categories.map((category) => (
-						<option class="bg-transparent" value={category.id}>
+					[{ id: 0, name: "All" }].concat(categories).map((category) => (
+						<option
+							class="bg-transparent"
+							value={category.id}
+							selected={category.id === 1}
+						>
 							{category.name}
 						</option>
 					))

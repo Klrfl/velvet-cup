@@ -1,5 +1,5 @@
 ---
-import Layout from "@/layouts/Layout.astro"
+import AccountLayout from "@/layouts/AccountLayout.astro"
 import OrderItem from "@/components/order/OrderItem.astro"
 
 import { ordersQuery } from "@/database/queries"
@@ -19,14 +19,10 @@ const orders = await ordersQuery
 	.execute()
 ---
 
-<Layout>
-	<header class="bleed-section">
-		<h1 class="text-4xl">Your orders</h1>
-	</header>
-
-	<section class="main-section">
-		<ul class="grid gap-4">
+<AccountLayout heading="Your orders">
+	<section class="app-section col-span-10">
+		<ul class="grid gap-8">
 			{orders.map((order) => <OrderItem {order} />)}
 		</ul>
 	</section>
-</Layout>
+</AccountLayout>

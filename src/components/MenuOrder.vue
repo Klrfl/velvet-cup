@@ -56,6 +56,11 @@ async function addToCart() {
 		<template v-for="{ id, price } in variants" :key="id">
 			<TabsContent :value="id" class="text-xl font-bold">
 				{{ formatCurrency(Number(price)) }}
+
+				<span v-show="quantity > 1">
+					* {{ quantity }} =
+					{{ formatCurrency(Number(price) * quantity) }}</span
+				>
 			</TabsContent>
 		</template>
 	</Tabs>

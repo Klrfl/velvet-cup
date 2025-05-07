@@ -1,47 +1,71 @@
 ---
-import BaseHead from "@/components/BaseHead.astro"
-import Navbar from "@/components/Navbar.astro"
-import { auth } from "@/lib/auth"
+import Layout from "@/layouts/Layout.astro"
 
 interface Props {
-	title: string
-	description: string
+	title?: string
+	heading: string
+	description?: string
+	bodyClass?: string
 }
 
-const { title, description } = Astro.props
+const isCurrentRoute = (path: string) => Astro.url.pathname.includes(path)
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const navLinks: Record<string, string>[] = [
+	{
+		label: "Your account",
+		path: "/account",
+	},
+	{
+		label: "Your profile",
+		path: "/account/profile",
+	},
+	{
+		label: "Your orders",
+		path: "/account/orders",
+	},
+]
 ---
 
-<html>
-	<head>
-		<BaseHead {title} {description} />
-	</head>
+<Layout
+	{...Astro.props}
+	bodyClass="content-start row-gap-4 grid-flow-row-dense grid-rows-[repeat(2,max-content)_auto_1fr_auto]"
+	title={Astro.props.title ?? `${Astro.props.heading} - Velvet Cup`}
+>
+	<header class="bleed-section md:col-start-[bleed] md:col-end-[bleed]">
+		<h1 class="text-4xl">{Astro.props.heading}</h1>
+	</header>
 
-	<body class="grid">
-		<Navbar {session} />
+	<nav
+		class="bleed-section md:col-start-[bleed-start] app-section md:col-span-3 self-start sidebar"
+	>
+		<ul class="flex flex-col">
+			{
+				navLinks.map((link) => (
+					<li>
+						<a
+							class:list={[{ "font-bold": isCurrentRoute(link.path) }]}
+							href={link.path}
+						>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+
+	<div class="grid grid-cols-subgrid bleed-section md:col-span-9">
 		<slot />
-	</body>
-</html>
+	</div>
+</Layout>
 
 <style>
 	:root {
 		--col-width: 10ch;
 	}
 
-	.grid {
-		grid-template-columns:
-			[full-bleed-start]
-			minmax(0, 1fr)
-			[sidebar-start]
-			repeat(3, minmax(0, var(--col-width)))
-			[sidebar-end]
-			[main-start]
-			repeat(7, minmax(0, var(--col-width)))
-			[main-end]
-			minmax(0, 1fr)
-			[full-bleed-end];
+	.sidebar a {
+		display: block;
+		@apply p-4 hover:bg-slate-200 transition-colors;
 	}
 </style>

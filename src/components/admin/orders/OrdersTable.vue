@@ -88,8 +88,11 @@ const table = useVueTable({
 <template>
 	<Table>
 		<TableHeader>
-			<TableRow v-for="headerGroup in table.getHeaderGroups()">
-				<TableHead v-for="header in headerGroup.headers">
+			<TableRow
+				v-for="headerGroup in table.getHeaderGroups()"
+				:key="headerGroup.id"
+			>
+				<TableHead v-for="header in headerGroup.headers" :key="header.id">
 					<FlexRender
 						v-if="!header.isPlaceholder"
 						:render="header.column.columnDef.header"
@@ -121,7 +124,10 @@ const table = useVueTable({
 									<TableHead> Total </TableHead>
 								</TableHeader>
 
-								<TableRow v-for="detail in row.original.details">
+								<TableRow
+									v-for="detail in row.original.details"
+									:key="detail.id"
+								>
 									<TableCell>{{ detail.menu_name }}</TableCell>
 									<TableCell>{{ detail.quantity }}</TableCell>
 									<TableCell>
