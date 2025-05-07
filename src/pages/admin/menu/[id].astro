@@ -2,7 +2,7 @@
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuEdit from "@/components/MenuEdit.vue"
 
-import { formatDate } from "@/utils"
+import { formatDate } from "@/lib/utils"
 import { db } from "@/database"
 import { adminMenuQuery } from "@/database/queries"
 import { jsonArrayFrom } from "kysely/helpers/postgres"

@@ -2,7 +2,7 @@
 import { Pencil } from "lucide-vue-next"
 import { Button } from "@/components/ui/button"
 import type { MenuVariant } from "@/types"
-import { formatCurrency } from "@/utils"
+import { formatCurrency } from "@/lib/utils"
 
 interface Props {
 	variant: MenuVariant

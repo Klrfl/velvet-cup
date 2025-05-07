@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AdminOrdersReturnType } from "@/database/queries"
-import { formatCurrency, formatDate, valueUpdater } from "@/utils"
+import { formatCurrency, formatDate, valueUpdater } from "@/lib/utils"
 import {
 	Table,
 	TableBody,

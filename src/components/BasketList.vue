@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { computed, ref } from "vue"
 import { toast } from "vue-sonner"
 import { useDebounceFn } from "@vueuse/core"
-import { formatCurrency } from "@/utils"
+import { formatCurrency } from "@/lib/utils"
 import type { BasketReturnType } from "@/database/queries"
 
 interface Props {

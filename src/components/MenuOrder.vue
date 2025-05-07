@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs"
 import { computed, ref } from "vue"
-import { formatCurrency } from "@/utils"
+import { formatCurrency } from "@/lib/utils"
 
 interface Props {
 	variants: MenuPrice[]
