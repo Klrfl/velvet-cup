@@ -48,7 +48,7 @@ const categories = await db.selectFrom("menu_categories").selectAll().execute()
 
 <AdminLayout>
 	<header class="bleed-section">
-		<h1>Edit "{menu.name}"</h1>
+		<h1 class="text-lg">Edit "{menu.name}"</h1>
 
 		<p>Created at {formatDate(new Date(menu.created_at))}</p>
 	</header>

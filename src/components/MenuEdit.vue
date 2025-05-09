@@ -164,7 +164,12 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 </script>
 
 <template>
-	<figure class="col-span-full md:col-span-3">
+	<figure
+		:class="[
+			'col-span-full md:col-span-3 grid items-center',
+			{ 'outline-dashed outline-primary-300 text-center': !previewURL },
+		]"
+	>
 		<span v-if="!newImage && !menu.image">
 			Your image preview will show up here.
 		</span>

@@ -6,10 +6,12 @@ import { db } from "@/database"
 const categories = await db.selectFrom("menu_categories").selectAll().execute()
 ---
 
-<AdminLayout title="add new menua - Velvet Cup">
-	<section class="app-section bleed-section">
-		<h2 class="text-lg">Tambahkan menu baru</h2>
+<AdminLayout title="Add new menu - Velvet Cup">
+	<header class="bleed-section">
+		<h1 class="text-lg">Tambahkan menu baru</h1>
+	</header>
 
+	<section class="app-section bleed-section">
 		<MenuAdd categories={categories} client:load />
 	</section>
 </AdminLayout>

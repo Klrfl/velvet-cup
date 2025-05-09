@@ -43,12 +43,10 @@ const { categories } = defineProps<Props>()
 		<figure
 			:class="[
 				'col-span-full md:col-span-3 grid items-center',
-				{ 'outline-dashed outline-primary-300 ': !previewURL },
+				{ 'outline-dashed outline-primary-300 text-center': !previewURL },
 			]"
 		>
-			<span v-if="!newImage" class="text-center">
-				Your image preview will show up here.
-			</span>
+			<span v-if="!newImage"> Your image preview will show up here. </span>
 			<img
 				v-else
 				:src="previewURL"
