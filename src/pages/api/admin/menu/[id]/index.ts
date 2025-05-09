@@ -22,7 +22,6 @@ export const PUT: APIRoute = async ({ request, params }) => {
 	const category_id = formData.get("menu_category")
 	const image = formData.get("menu_image")
 
-	// TODO: add validation
 	const schema = z.object({
 		name: z.string(),
 		description: z.string(),

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { MenuCategories } from "@/database/database.types"
 import type { Selectable } from "kysely"
+import { toast } from "vue-sonner"
 
 import { ref } from "vue"
 
@@ -22,9 +23,9 @@ async function handleAddCategory(category: string) {
 
 	const { data } = await response.json()
 
-	//TODO: alert or do something to handle error
 	if (response.status !== 200) {
-		return console.error(response)
+		console.error(response)
+		return toast.error("There was something wrong when adding category.")
 	}
 
 	emit("categoryAdded", data)
@@ -33,6 +34,7 @@ async function handleAddCategory(category: string) {
 </script>
 
 <template>
+	<!-- don't add the toaster component because there's already one in CategoryList -->
 	<form class="grid gap-4" @submit.prevent="handleAddCategory(newCategory)">
 		<label for="new_category">Add new category</label>
 		<Input
