@@ -8,6 +8,7 @@ import type {
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
+import type { Prettify } from "better-auth"
 
 /**
  * TODO:
@@ -15,12 +16,19 @@ import { z } from "astro:content"
  * - export all types generated from zod schemas (less important)
  * */
 
+// categories
+export type SelectableCategory = Selectable<MenuCategories>
+/**
+ * This type is used to be in conjunction with Menu
+ * so that when we fetch menu with categories, the category object will be
+ * merged and be flattened together with Menu
+ * */
 type ModifiedCategories = {
 	[K in keyof Selectable<MenuCategories> as K extends "name"
 		? "category"
 		: K]: Selectable<MenuCategories>[K]
 }
-export type MenuWithCategories = Selectable<Menu> & ModifiedCategories
+export type MenuWithCategories = Prettify<Selectable<Menu> & ModifiedCategories>
 
 const menuCompleteSchema = z.object({
 	id: z.number(),
@@ -77,7 +85,7 @@ export type Orders = Selectable<DBOrders> & {
 	status: string | null
 	details: Selectable<OrderDetail>[]
 }
-export type MenuComplete = z.infer<typeof menuCompleteSchema>
+export type MenuComplete = Prettify<z.infer<typeof menuCompleteSchema>>
 export type MenuVariant = z.infer<typeof menuVariantSchema>
 export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
 export type InsertableMenuVariants = z.infer<
