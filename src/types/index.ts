@@ -5,6 +5,7 @@ import type {
 	MenuVariants as DBMenuVariants,
 	OrderDetail,
 	Baskets,
+	MenuOptions,
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
@@ -81,16 +82,6 @@ export const updateableMenuVariantsSchema = z.object({
 	price: z.coerce.number(),
 })
 
-export type Orders = Selectable<DBOrders> & {
-	status: string | null
-	details: Selectable<OrderDetail>[]
-}
-export type MenuComplete = Prettify<z.infer<typeof menuCompleteSchema>>
-export type MenuVariant = z.infer<typeof menuVariantSchema>
-export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
-export type InsertableMenuVariants = z.infer<
-	typeof insertableMenuVariantsSchema
->
 export interface MenuItem {
 	id: number
 	name: string
@@ -100,6 +91,19 @@ export interface MenuItem {
 		price: string
 	} | null
 }
+
+export type Orders = Selectable<DBOrders> & {
+	status: string | null
+	details: Selectable<OrderDetail>[]
+}
+export type MenuComplete = Prettify<z.infer<typeof menuCompleteSchema>>
+
+export type MenuVariant = z.infer<typeof menuVariantSchema>
+export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
+export type InsertableMenuVariant = z.infer<typeof insertableMenuVariantsSchema>
+
+export type SelectableMenuOption = Selectable<MenuOptions>
+export type InsertableMenuOption = Insertable<MenuOptions>
 
 export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 	option_value: string
