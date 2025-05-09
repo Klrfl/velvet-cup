@@ -1,12 +1,19 @@
-import type { Selectable } from "kysely"
+import type { Insertable, Selectable } from "kysely"
 import type {
 	Orders as DBOrders,
 	Menu,
 	MenuVariants as DBMenuVariants,
 	OrderDetail,
+	Baskets,
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
+
+/**
+ * TODO:
+ * - export all types from @/database/queries.ts, type them manually idc
+ * - export all types generated from zod schemas (less important)
+ * */
 
 type ModifiedCategories = {
 	[K in keyof Selectable<MenuCategories> as K extends "name"
@@ -90,3 +97,6 @@ export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 	option_value: string
 	option_name: string
 }
+
+export type InsertableBasket = Insertable<Baskets>
+export type SelectableBasket = Selectable<Baskets>
