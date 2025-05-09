@@ -1,24 +1,41 @@
+---
+import { Plus, Tag } from "lucide-vue-next"
+---
+
 <nav class="bleed-section bg-white border border-black my-4">
-	<ul class="flex gap-4">
-		<li><a class="block p-4" href="/">home</a></li>
-		<li><a class="block p-4" href="/admin/">dashboard</a></li>
+	<ul class="nav-links flex gap-4">
+		<li><a href="/">home</a></li>
+		<li><a href="/admin/">dashboard</a></li>
 		<li class="relative">
-			<a class="peer block p-4" href="/admin/menu">menu</a>
+			<a class="peer" href="/admin/menu">menu</a>
 
 			<ul
-				class="absolute top-full hidden peer-hover:flex left-0 hover:flex flex-col border border-black border-t-0 bg-white"
+				class="absolute top-full hidden peer-hover:flex left-0 hover:flex flex-col border border-black bg-white"
 			>
 				<li>
-					<a class="block p-4 hover:bg-gray-200" href="/admin/menu/categories"
-						>Categories</a
+					<a
+						class="flex gap-4 p-4 hover:bg-gray-200"
+						href="/admin/menu/categories"
 					>
+						<Tag />
+						<span>Categories</span>
+					</a>
 				</li>
 				<li>
-					<a class="block p-4 hover:bg-gray-200" href="/admin/menu/add">Add</a>
+					<a class="flex gap-4 p-4 hover:bg-gray-200" href="/admin/menu/add">
+						<Plus />
+						<span class="flex-1">Add</span>
+					</a>
 				</li>
 			</ul>
 		</li>
-		<li><a class="block p-4" href="/admin/orders">orders</a></li>
-		<li><a class="block p-4" href="/admin/customers">customers</a></li>
+		<li><a href="/admin/orders">orders</a></li>
+		<li><a href="/admin/customers">customers</a></li>
 	</ul>
 </nav>
+
+<style>
+	.nav-links > li > a {
+		@apply block p-4 hover:bg-slate-200;
+	}
+</style>
