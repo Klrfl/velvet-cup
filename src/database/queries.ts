@@ -50,7 +50,7 @@ export const adminMenuQuery = db
 	])
 	.where("m.deleted_at", "is", null)
 
-export type menuAdminReturnType = InferResult<typeof adminMenuQuery>
+export type AdminMenuReturnType = InferResult<typeof adminMenuQuery>
 
 export const ordersQuery = db
 	.selectFrom("orders")

@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/select"
 
 import { ref, useTemplateRef, watch } from "vue"
-import type { menuAdminReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/database/queries"
 
 interface Props {
-	options: menuAdminReturnType[0]["options"]
+	options: AdminMenuReturnType[0]["options"]
 }
 
 const { options } = defineProps<Props>()
