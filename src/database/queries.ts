@@ -19,8 +19,6 @@ export const menuQuery = db
 	])
 	.where("deleted_at", "is", null)
 
-export type menuReturnType = InferResult<typeof menuQuery>
-
 export const adminMenuQuery = db
 	.selectFrom("menu as m")
 	.leftJoin("menu_categories as c", "c.id", "m.category_id")

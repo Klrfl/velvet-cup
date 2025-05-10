@@ -19,6 +19,7 @@ import type { Prettify } from "better-auth"
 
 // categories
 export type SelectableCategory = Selectable<MenuCategories>
+
 /**
  * This type is used to be in conjunction with Menu
  * so that when we fetch menu with categories, the category object will be
@@ -29,6 +30,10 @@ type ModifiedCategories = {
 		? "category"
 		: K]: Selectable<MenuCategories>[K]
 }
+
+/**
+ * should have been named MenuWithCategory but whatever
+ * */
 export type MenuWithCategories = Prettify<Selectable<Menu> & ModifiedCategories>
 
 const menuCompleteSchema = z.object({

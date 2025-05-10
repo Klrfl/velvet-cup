@@ -10,9 +10,10 @@ import { Search } from "lucide-vue-next"
 
 import { db } from "@/database"
 import { auth } from "@/lib/auth"
-import { menuQuery } from "@/database/queries"
+import MenuServiceImpl from "@/lib/services/menu"
 
-const menus = await menuQuery.limit(9).execute()
+const menuService = new MenuServiceImpl()
+const menus = await menuService.getMenus({ limit: 9 })
 
 const categories = await db.selectFrom("menu_categories").selectAll().execute()
 
