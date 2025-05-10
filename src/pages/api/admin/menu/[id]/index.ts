@@ -1,7 +1,6 @@
-import { db } from "@/database"
+import MenuServiceImpl from "@/lib/services/menu"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
-import { sql } from "kysely"
 
 export const PUT: APIRoute = async ({ request, params }) => {
 	const formData = await request.formData()
@@ -60,30 +59,24 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		newMenu = { ...newMenu, image: encodedImage }
 	}
 
-	const results = await db
-		.updateTable("menu")
-		.set({ ...newMenu, updated_at: new Date().toISOString() })
-		.where("id", "=", Number(id))
-		.returning("id")
-		.execute()
+	const menuService = new MenuServiceImpl()
 
-	for (const result of results) {
-		if (!result.id) {
-			return new Response(
-				JSON.stringify({
-					message: `failed to update menu with id ${id}`,
-				}),
-				{ status: 500 }
-			)
-		}
+	try {
+		const menu = await menuService.addMenu(newMenu)
+		return new Response(
+			JSON.stringify({
+				message: `successfully edited menu with id ${id}`,
+				data: menu,
+			})
+		)
+	} catch (error) {
+		return new Response(
+			JSON.stringify({
+				message: `failed to update menu with id ${id}`,
+			}),
+			{ status: 500 }
+		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: `successfully edited menu with id ${id}`,
-			data: newMenu,
-		})
-	)
 }
 
 export const DELETE: APIRoute = async ({ params }) => {
@@ -100,26 +93,24 @@ export const DELETE: APIRoute = async ({ params }) => {
 		)
 	}
 
-	const results = await db
-		.updateTable("menu")
-		.set("deleted_at", sql`now()`)
-		.where("id", "=", menuId)
-		.execute()
+	const menuService = new MenuServiceImpl()
 
-	for (const result of results) {
-		if (Number(result.numUpdatedRows) === 0) {
-			return new Response(
-				JSON.stringify({
-					message: "nothing was deleted",
-				}),
-				{ status: 500 }
-			)
-		}
+	try {
+		menuService.deleteMenu(menuId)
+
+		return new Response(
+			JSON.stringify({
+				message: "successfully deleted menu.",
+			})
+		)
+	} catch (error) {
+		console.error(error)
+
+		return new Response(
+			JSON.stringify({
+				message: "there was an error deleting menu",
+			}),
+			{ status: 500 }
+		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully deleted menu.",
-		})
-	)
 }
