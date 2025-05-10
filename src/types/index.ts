@@ -1,4 +1,4 @@
-import type { Insertable, Selectable } from "kysely"
+import type { Insertable, Selectable, Updateable } from "kysely"
 import type {
 	Orders as DBOrders,
 	Menu,
@@ -19,6 +19,8 @@ import type { Prettify } from "better-auth"
 
 // categories
 export type SelectableCategory = Selectable<MenuCategories>
+export type InsertableCategory = Insertable<MenuCategories>
+export type UpdateableCategory = Updateable<MenuCategories>
 
 /**
  * This type is used to be in conjunction with Menu
