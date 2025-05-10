@@ -4,9 +4,9 @@ import MenuEdit from "@/components/MenuEdit.vue"
 
 import { formatDate } from "@/lib/utils"
 import { db } from "@/database"
-import { adminMenuQuery } from "@/database/queries"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
+import MenuServiceImpl from "@/lib/services/menu"
 
 const { id } = Astro.params
 
@@ -15,7 +15,8 @@ if (!id || isNaN(menuId)) {
 	return Astro.rewrite("/404")
 }
 
-const menu = await adminMenuQuery.where("m.id", "=", menuId).executeTakeFirst()
+const menuService = new MenuServiceImpl()
+const menu = await menuService.getAdminMenu(menuId)
 
 if (!menu) {
 	return Astro.rewrite("/404")

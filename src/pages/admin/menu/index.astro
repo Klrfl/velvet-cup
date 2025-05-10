@@ -1,26 +1,10 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuList from "@/components/MenuList.vue"
-import type { MenuWithCategories } from "@/types"
-import { db } from "@/database"
-import { sql } from "kysely"
+import MenuServiceImpl from "@/lib/services/menu"
 
-const menus = await db
-	.selectFrom("menu as m")
-	.leftJoin("menu_categories as c", "c.id", "m.category_id")
-	.select([
-		"m.id",
-		"m.name",
-		"m.image",
-		"m.category_id",
-		"m.created_at",
-		"m.description",
-	])
-	.select(({ fn }) =>
-		fn.coalesce("c.name", sql.lit("no category")).as("category")
-	)
-	.where("deleted_at", "is", null)
-	.execute()
+const menuService = new MenuServiceImpl()
+const menus = await menuService.getMenus({ with: "category" })
 ---
 
 <AdminLayout>
@@ -30,6 +14,6 @@ const menus = await db
 	</header>
 
 	<section class="app-section bleed-section grid grid-cols-subgrid">
-		<MenuList menu={menus as MenuWithCategories[]} client:load />
+		<MenuList menu={menus} client:load />
 	</section>
 </AdminLayout>
