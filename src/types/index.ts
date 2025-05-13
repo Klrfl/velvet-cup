@@ -8,7 +8,6 @@ import type {
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
 import { z } from "astro:content"
-import type { Prettify } from "better-auth"
 
 /**
  * TODO:

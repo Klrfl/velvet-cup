@@ -3,8 +3,10 @@ import type { APIRoute } from "astro"
 import { z } from "astro:content"
 import client from "@klrfl/midtrans-client"
 
-export const POST: APIRoute = async ({ locals }) => {
+export const POST: APIRoute = async ({ locals, redirect }) => {
 	const session = locals.session
+
+	if (!session) return redirect("/login")
 
 	const rawBasket = await db
 		.selectFrom("baskets")

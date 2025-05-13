@@ -2,7 +2,10 @@ import { db } from "@/database"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const GET: APIRoute = async ({ request, redirect }) => {
+export const GET: APIRoute = async ({ request, redirect, locals }) => {
+	const session = locals.session
+	if (!session) return redirect("/login")
+
 	const rawSearchParams = new URL(request.url).searchParams
 
 	const schema = z.object({
@@ -35,6 +38,7 @@ export const GET: APIRoute = async ({ request, redirect }) => {
 		})
 	}
 
+	// TODO: redirect to order page
 	if (existingOrder.status_id === 2) {
 		return redirect("/")
 	}

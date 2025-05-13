@@ -2,8 +2,9 @@ import BasketServiceImpl from "@/lib/services/basket"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const POST: APIRoute = async ({ locals, request }) => {
+export const POST: APIRoute = async ({ locals, request, redirect }) => {
 	const session = locals.session
+	if (!session) return redirect("/login")
 
 	const cartSchema = z.object({
 		menu_id: z.number(),

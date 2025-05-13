@@ -1,4 +1,4 @@
-/// <reference types="astro/client">
+/// <reference types="astro/client" />
 
 import type { Session } from "@/lib/auth"
 
@@ -17,8 +17,10 @@ interface ImportMeta {
 	readonly env: ImportMetaEnv
 }
 
-declare namespace App {
-	interface Locals {
-		session: Session
+declare global {
+	namespace App {
+		interface Locals {
+			session: Session | null
+		}
 	}
 }
