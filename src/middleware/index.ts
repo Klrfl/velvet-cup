@@ -28,8 +28,13 @@ const authMiddleware = defineMiddleware(
 		locals.session = session
 
 		// if not authenticated
-		if (!session && micromatch.isMatch(url.pathname, protectedRoutes)) {
-			return redirect("/login")
+		if (!session) {
+			// user is trying to authenticate
+			if (micromatch.isMatch(url.pathname, "/api/auth/**")) return next()
+
+			if (micromatch.isMatch(url.pathname, protectedRoutes)) {
+				return redirect("/login")
+			}
 		}
 
 		// if authenticated
