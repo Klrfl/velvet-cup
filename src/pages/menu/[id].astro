@@ -4,7 +4,6 @@ import { Image } from "astro:assets"
 import MenuOrder from "@/components/MenuOrder.vue"
 import MenuItem from "@/components/MenuItem.astro"
 
-import { auth } from "@/lib/auth"
 import MenuServiceImpl from "@/lib/services/menu"
 
 const { id: menuId } = Astro.params
@@ -13,10 +12,7 @@ if (isNaN(Number(menuId))) {
 	return Astro.rewrite("/404")
 }
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
-
+const session = Astro.locals.session
 const menuService = new MenuServiceImpl()
 const menu = await menuService.getMenu(Number(menuId))
 

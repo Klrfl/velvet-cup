@@ -1,22 +1,8 @@
 import { db } from "@/database"
-import { auth } from "@/lib/auth"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const GET: APIRoute = async ({ request, redirect }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	})
-
-	if (!session) {
-		return new Response(
-			JSON.stringify({
-				message: "unauthorized",
-			}),
-			{ status: 401 }
-		)
-	}
-
 	const rawSearchParams = new URL(request.url).searchParams
 
 	const schema = z.object({

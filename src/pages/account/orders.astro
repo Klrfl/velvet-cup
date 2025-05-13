@@ -3,11 +3,8 @@ import AccountLayout from "@/layouts/AccountLayout.astro"
 import OrderItem from "@/components/order/OrderItem.astro"
 
 import { ordersQuery } from "@/database/queries"
-import { auth } from "@/lib/auth"
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 
 if (!session) {
 	return Astro.redirect("/")
