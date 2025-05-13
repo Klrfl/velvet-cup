@@ -1,9 +1,10 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import CategoryList from "@/components/CategoryList.vue"
-import { db } from "@/database"
+import CategoryServiceImpl from "@/lib/services/category"
 
-const categories = await db.selectFrom("menu_categories").selectAll().execute()
+const categoryService = new CategoryServiceImpl()
+const categories = await categoryService.getCategories()
 ---
 
 <AdminLayout title="Manage categories">

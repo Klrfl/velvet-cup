@@ -3,8 +3,8 @@ import Layout from "@/layouts/Layout.astro"
 import BasketList from "@/components/BasketList.vue"
 import { Button } from "@/components/ui/button"
 
-import { basketQuery } from "@/database/queries"
 import { auth } from "@/lib/auth"
+import BasketServiceImpl from "@/lib/services/basket"
 
 const MIDTRANS_CLIENT_KEY = import.meta.env.MIDTRANS_CLIENT_KEY
 
@@ -17,9 +17,8 @@ if (!session) {
 	return Astro.redirect("/")
 }
 
-const basket = await basketQuery
-	.where("user_id", "=", session.user.id)
-	.execute()
+const basketService = new BasketServiceImpl()
+const basket = await basketService.getBasketItems({ userId: session.user.id })
 ---
 
 <Layout

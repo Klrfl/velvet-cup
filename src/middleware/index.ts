@@ -17,6 +17,7 @@ const adminMiddleware = defineMiddleware(
 
 /**
  * middleware for both authenticated and anon routes.
+ * TODO: pass user_id in middleware to minimize calls auth.api
  * */
 const authMiddleware = defineMiddleware(
 	async ({ request, redirect, url }, next) => {
