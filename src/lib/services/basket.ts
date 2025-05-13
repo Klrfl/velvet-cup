@@ -1,6 +1,5 @@
 import { db } from "@/database"
 import type { User } from "@/database/database.types"
-import type { BasketReturnType } from "@/database/queries"
 import type { InsertableBasket, BasketComplete, BasketItem } from "@/types"
 import { sql, type Selectable } from "kysely"
 
@@ -10,8 +9,8 @@ interface GetBasketOptions {
 }
 
 interface BasketService {
-	getBasketItems(opts: GetBasketOptions): Promise<BasketReturnType>
-	getBasketItem(id: InsertableBasket["id"]): Promise<BasketReturnType[number]>
+	getBasketItems(opts: GetBasketOptions): Promise<BasketItem[]>
+	getBasketItem(id: InsertableBasket["id"]): Promise<BasketItem>
 	getBasketCount(userId: string): Promise<{ value: number }>
 	addItemToBasket(
 		item: Pick<BasketItem, "menu_id" | "variant_id" | "quantity">,
@@ -34,12 +33,14 @@ export default class BasketServiceImpl implements BasketService {
 					.onRef("mv.menu_id", "=", "m.id")
 					.onRef("mv.id", "=", "b.variant_id")
 			)
-			.select([
+			.select((eb) => [
 				"b.id",
+				"b.menu_id",
+				"b.user_id",
 				"m.name as menu_name",
 				"m.image",
 				"b.quantity",
-				"mv.id as variant_id",
+				eb.fn.coalesce("mv.id", sql<number>`0`).as("variant_id"),
 				"mv.name as variant_name",
 				"mv.price",
 			])
