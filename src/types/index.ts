@@ -38,28 +38,46 @@ type ModifiedCategories = {
  * */
 export type MenuWithCategories = Prettify<Selectable<Menu> & ModifiedCategories>
 
-const menuCompleteSchema = z.object({
-	id: z.number(),
-	name: z.string(),
-	image: z.string().optional(),
-	category_id: z.number(),
-	category: z.string(),
-	created_at: z.coerce.date(),
-	description: z.string().optional(),
-	options: z.array(
-		z.object({
-			id: z.number(),
-			name: z.string(),
-			option_values: z.array(
-				z.object({
-					id: z.number(),
-					menu_option_id: z.number(),
-					name: z.string(),
-				})
-			),
-		})
-	),
-})
+/**
+ * base type for menu, with all the possible attributes
+ * a menu item could have
+ * */
+export type MenuComplete = {
+	created_at: Date
+	deleted_at: Date | null
+	updated_at: Date | null
+	description: string | null
+	id: number
+	image: string | null
+	name: string
+	variant?: {
+		name: string
+		price: string
+	} | null
+	category?: string | undefined
+	options?: {
+		id: number
+		name: string
+		option_values: {
+			id: number
+			menu_option_id: number
+			name: string
+		}[]
+	}[]
+} & {
+	variants?: Prettify<
+		{
+			id: number
+			name: number
+			price: number
+		} & {
+			option_name: string
+			option_value: string
+		}
+	>
+}
+
+export type MenuItem = Omit<MenuComplete, "options">
 
 export const menuVariantSchema = z.object({
 	id: z.number(),
@@ -89,21 +107,10 @@ export const updateableMenuVariantsSchema = z.object({
 	price: z.coerce.number(),
 })
 
-export interface MenuItem {
-	id: number
-	name: string
-	image: string | null
-	variant: {
-		name: string
-		price: string
-	} | null
-}
-
 export type Orders = Selectable<DBOrders> & {
 	status: string | null
 	details: Selectable<OrderDetail>[]
 }
-export type MenuComplete = Prettify<z.infer<typeof menuCompleteSchema>>
 
 export type MenuVariant = z.infer<typeof menuVariantSchema>
 export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>

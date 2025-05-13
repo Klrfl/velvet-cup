@@ -17,6 +17,7 @@ const menuService = new MenuServiceImpl()
 const menus = await menuService.getMenus({
 	search_term: searchQuery,
 	category_id: Number(categoryQuery),
+	with: ["price"],
 })
 
 const categories = await db.selectFrom("menu_categories").selectAll().execute()

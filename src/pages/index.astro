@@ -13,7 +13,7 @@ import MenuServiceImpl from "@/lib/services/menu"
 import CategoryServiceImpl from "@/lib/services/category"
 
 const menuService = new MenuServiceImpl()
-const menus = await menuService.getMenus({ limit: 9 })
+const menus = await menuService.getMenus({ limit: 9, with: ["price"] })
 
 const categoryService = new CategoryServiceImpl()
 const categories = await categoryService.getCategories()

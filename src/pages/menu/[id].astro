@@ -24,7 +24,7 @@ if (!menu) {
 	return Astro.rewrite("/404")
 }
 
-const relatedMenus = await menuService.getMenus({ limit: 9 })
+const relatedMenus = await menuService.getMenus({ limit: 9, with: ["price"] })
 ---
 
 <Layout title={`${menu.name} - Velvet Cup`} bodyClass="content-start">

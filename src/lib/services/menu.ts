@@ -1,26 +1,8 @@
 import { db } from "@/database"
 import type { Menu } from "@/database/database.types"
-import { type AdminMenuReturnType } from "@/database/queries"
-import type { MenuComplete, MenuItem, MenuWithCategories } from "@/types"
-import { sql, type Insertable, type Selectable } from "kysely"
+import type { MenuItem } from "@/types"
+import { sql, type InferResult, type Insertable, type Selectable } from "kysely"
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
-
-const menuQuery = db
-	.selectFrom("menu")
-	.select((eb) => [
-		"menu.id",
-		"menu.name",
-		"menu.image",
-		jsonObjectFrom(
-			eb
-				.selectFrom("menu_variants as mv")
-				.select(["mv.name", "mv.price"])
-				.whereRef("mv.menu_id", "=", "menu.id")
-				.orderBy("mv.price asc")
-				.limit(1)
-		).as("variant"),
-	])
-	.where("deleted_at", "is", null)
 
 const adminMenuQuery = db
 	.selectFrom("menu as m")
@@ -50,11 +32,16 @@ const adminMenuQuery = db
 		).as("options"),
 	])
 
+type AdminMenuReturnType = InferResult<typeof adminMenuQuery>
+
+const menuAttributes = ["variants", "price", "category", "regular"] as const
+type MenuAttributes = (typeof menuAttributes)[number]
+
 interface GetMenuOptions {
 	limit?: number
 	category_id?: number
 	search_term?: string
-	with?: "variant" | "category" | "variant_and_category" | "regular"
+	with?: MenuAttributes[]
 	with_trashed?: boolean
 }
 
@@ -62,21 +49,9 @@ interface GetAdminMenuOptions {
 	limit?: number
 	with_trashed?: boolean
 }
-
-/**
- * when `with` is set to `category`, I want to return MenuWithCategories[]
- * when `with` is set to `variant`, I want to return something else
- * */
-type ReturnableMenu<T extends GetMenuOptions> = T["with"] extends "category"
-	? MenuWithCategories[]
-	: MenuItem[]
-
 // TODO: design a robust error system
 interface MenuService {
-	getMenus<T extends GetMenuOptions>(
-		opts: GetMenuOptions
-	): Promise<ReturnableMenu<T>>
-	getMenu(id: number): Promise<MenuComplete | null>
+	getMenus(opts: GetMenuOptions): Promise<MenuItem[]>
 	// TODO: infer menu used in /admin/menu/[id] correctly
 	getAdminMenus(opts: GetAdminMenuOptions): Promise<AdminMenuReturnType>
 	getAdminMenu(id: number): Promise<AdminMenuReturnType[0]>
@@ -91,7 +66,7 @@ export default class MenuServiceImpl implements MenuService {
 		category_id = 0,
 		search_term,
 		with_trashed = false,
-		with: withArg = "category",
+		with: withArg = ["category"],
 	}: GetMenuOptions) {
 		const menus = await db
 			.selectFrom("menu")
@@ -101,9 +76,12 @@ export default class MenuServiceImpl implements MenuService {
 				"menu.image",
 				"menu.created_at",
 				"menu.description",
+				"deleted_at",
+				"updated_at",
 			])
-			// for home page and search, we need variants to get the price
-			.$if(withArg === "variant", (qb) =>
+			// for individual menu items, we need only
+			// one of the variants to get the base price
+			.$if(withArg.includes("price"), (qb) =>
 				qb.select((eb) => [
 					jsonObjectFrom(
 						eb
@@ -116,7 +94,7 @@ export default class MenuServiceImpl implements MenuService {
 				])
 			)
 			// for admin menu we need to fetch with categories
-			.$if(withArg === "category", (qb) =>
+			.$if(withArg.includes("category"), (qb) =>
 				qb
 					.leftJoin("menu_categories as c", "c.id", "menu.category_id")
 					.select(({ fn }) =>
@@ -175,7 +153,7 @@ export default class MenuServiceImpl implements MenuService {
 			.$if(limit !== 0, (qb) => qb.limit(limit))
 			.$if(!with_trashed, (qb) => qb.where("deleted_at", "is", null))
 			.where("m.deleted_at", "is", null)
-			.executeTakeFirst()
+			.execute()
 
 		if (!menus) return []
 

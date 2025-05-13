@@ -4,7 +4,7 @@ import MenuList from "@/components/MenuList.vue"
 import MenuServiceImpl from "@/lib/services/menu"
 
 const menuService = new MenuServiceImpl()
-const menus = await menuService.getMenus({ with: "category" })
+const menus = await menuService.getMenus({ with: ["category"] })
 ---
 
 <AdminLayout>
