@@ -1,7 +1,6 @@
 import type { Insertable, Selectable, Updateable } from "kysely"
 import type {
 	Orders as DBOrders,
-	Menu,
 	MenuVariants as DBMenuVariants,
 	OrderDetail,
 	Baskets,
@@ -116,4 +115,20 @@ export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 }
 
 export type InsertableBasket = Insertable<Baskets>
-export type SelectableBasket = Selectable<Baskets>
+export type BasketItem = {
+	id: number
+	menu_id: number
+	quantity: number
+	user_id: string
+	variant_id: number
+}
+
+export type BasketComplete = {
+	id: number
+	quantity: number
+	image: string | null
+	price: string | null
+	menu_name: string | null
+	variant_id: number | null
+	variant_name: string | null
+}

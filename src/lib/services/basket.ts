@@ -1,32 +1,136 @@
+import { db } from "@/database"
+import type { User } from "@/database/database.types"
 import type { BasketReturnType } from "@/database/queries"
-import type { InsertableBasket, SelectableBasket } from "@/types"
+import type { InsertableBasket, BasketComplete, BasketItem } from "@/types"
+import { sql, type Selectable } from "kysely"
+
+interface GetBasketOptions {
+	limit?: number
+	userId: Selectable<User>["id"]
+}
 
 interface BasketService {
-	getBasketItems(limit: number): BasketReturnType
-	getBasketItem(id: InsertableBasket["id"]): BasketReturnType[number]
-	getBasketCount(userId: number): number
-	addItemToBasket(item: InsertableBasket): BasketReturnType
-	updateBasketItem(id: SelectableBasket["id"]): BasketReturnType
-	deleteBasketItem(id: SelectableBasket["id"]): BasketReturnType[number]["id"]
+	getBasketItems(opts: GetBasketOptions): Promise<BasketReturnType>
+	getBasketItem(id: InsertableBasket["id"]): Promise<BasketReturnType[number]>
+	getBasketCount(userId: string): Promise<{ value: number }>
+	addItemToBasket(
+		item: Pick<BasketItem, "menu_id" | "variant_id" | "quantity">,
+		userId: string
+	): Promise<BasketItem | null>
+	updateBasketItem(
+		id: BasketItem["id"],
+		item: Pick<BasketItem, "quantity" | "variant_id">
+	): Promise<BasketItem>
+	deleteBasketItem(id: BasketItem["id"]): Promise<BasketItem["id"]>
 }
 
 export default class BasketServiceImpl implements BasketService {
-	getBasketItems(limit: number): BasketReturnType {
+	async getBasketItems({ limit = 0, userId }: GetBasketOptions) {
+		const baskets = await db
+			.selectFrom("baskets as b")
+			.leftJoin("menu as m", "m.id", "b.menu_id")
+			.leftJoin("menu_variants as mv", (join) =>
+				join
+					.onRef("mv.menu_id", "=", "m.id")
+					.onRef("mv.id", "=", "b.variant_id")
+			)
+			.select([
+				"b.id",
+				"m.name as menu_name",
+				"m.image",
+				"b.quantity",
+				"mv.id as variant_id",
+				"mv.name as variant_name",
+				"mv.price",
+			])
+			.where("b.user_id", "=", userId)
+			.$if(limit !== 0, (qb) => qb.limit(limit))
+			.execute()
+
+		return baskets
+	}
+
+	async getBasketItem(id: BasketComplete["id"]) {
 		throw new Error("Method not implemented.")
 	}
-	getBasketItem(id: InsertableBasket["id"]): BasketReturnType[number] {
-		throw new Error("Method not implemented.")
+
+	async getBasketCount(userId: string) {
+		const result = await db
+			.selectFrom("baskets")
+			.select((eb) => [
+				eb.fn.coalesce(eb.fn.sum<number>("quantity"), sql`0`).as("value"),
+			])
+			.where("user_id", "=", userId)
+			.executeTakeFirst()
+
+		if (!result) throw Error("error when getting count")
+
+		return result
 	}
-	getBasketCount(userId: number): number {
-		throw new Error("Method not implemented.")
+
+	// TODO: refactor query to an upsert
+	async addItemToBasket(
+		item: Pick<BasketItem, "menu_id" | "variant_id" | "quantity">,
+		userId: string
+	) {
+		const existing = await db
+			.selectFrom("baskets")
+			.selectAll()
+			.where("baskets.menu_id", "=", item.menu_id)
+			.where("baskets.variant_id", "=", item.variant_id)
+			.where("baskets.user_id", "=", userId)
+			.executeTakeFirst()
+
+		let result
+		if (!existing) {
+			console.log("existing basket item doesn't exist, adding a new one...")
+
+			result = await db
+				.insertInto("baskets")
+				.values({
+					...item,
+					user_id: userId,
+				})
+				.returningAll()
+				.executeTakeFirst()
+		} else {
+			result = await db
+				.updateTable("baskets")
+				.set("quantity", existing.quantity + 1)
+				.where("baskets.id", "=", existing.id)
+				.returningAll()
+				.executeTakeFirst()
+		}
+
+		if (!result) return null
+		return result
 	}
-	addItemToBasket(item: InsertableBasket): BasketReturnType {
-		throw new Error("Method not implemented.")
+
+	async updateBasketItem(
+		id: BasketItem["id"],
+		data: Pick<BasketItem, "variant_id" | "quantity">
+	) {
+		const result = await db
+			.updateTable("baskets")
+			.set(data)
+			.where("id", "=", id)
+			.returningAll()
+			.executeTakeFirst()
+
+		if (!result) throw new Error("error when updating basket item")
+
+		return result
 	}
-	updateBasketItem(id: SelectableBasket["id"]): BasketReturnType {
-		throw new Error("Method not implemented.")
-	}
-	deleteBasketItem(id: SelectableBasket["id"]) {
-		throw new Error("Method not implemented.")
+
+	async deleteBasketItem(id: BasketComplete["id"]) {
+		const result = await db
+			.deleteFrom("baskets")
+			.where("id", "=", id)
+			.returning("id")
+			.executeTakeFirst()
+
+		if (!result) throw new Error("error when deleting basket item")
+
+		return result.id
 	}
 }
