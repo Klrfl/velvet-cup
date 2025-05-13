@@ -52,6 +52,7 @@ interface GetAdminMenuOptions {
 // TODO: design a robust error system
 interface MenuService {
 	getMenus(opts: GetMenuOptions): Promise<MenuItem[]>
+	getMenu(id: number): Promise<MenuItem | null>
 	// TODO: infer menu used in /admin/menu/[id] correctly
 	getAdminMenus(opts: GetAdminMenuOptions): Promise<AdminMenuReturnType>
 	getAdminMenu(id: number): Promise<AdminMenuReturnType[0]>
@@ -74,6 +75,7 @@ export default class MenuServiceImpl implements MenuService {
 				"menu.id",
 				"menu.name",
 				"menu.image",
+				"menu.category_id",
 				"menu.created_at",
 				"menu.description",
 				"deleted_at",
@@ -115,12 +117,19 @@ export default class MenuServiceImpl implements MenuService {
 	}
 
 	async getMenu(id: number) {
-		const menu = await menuQuery
-			.leftJoin("menu_categories as c", "c.id", "menu.category_id")
-			.select((eb) => [
+		const menu = await db
+			.selectFrom("menu")
+			.select([
+				"menu.id",
+				"menu.name",
+				"menu.image",
 				"menu.category_id",
 				"menu.description",
-				"c.name as category_name",
+				"menu.created_at",
+				"menu.updated_at",
+				"menu.deleted_at",
+			])
+			.select((eb) => [
 				jsonArrayFrom(
 					eb
 						.selectFrom("menu_variants as mv")
@@ -135,16 +144,18 @@ export default class MenuServiceImpl implements MenuService {
 							"mv.id",
 							"mv.name",
 							"mv.price",
-							eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
 							eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
+							eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
 						])
 						.whereRef("mv.menu_id", "=", "menu.id")
 				).as("variants"),
 			])
 			.where("menu.id", "=", id)
+			.where("deleted_at", "is", null)
 			.executeTakeFirst()
 
 		if (!menu) return null
+
 		return menu
 	}
 
