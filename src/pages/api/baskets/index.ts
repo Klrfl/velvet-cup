@@ -1,21 +1,9 @@
-import { auth } from "@/lib/auth"
 import BasketServiceImpl from "@/lib/services/basket"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const POST: APIRoute = async ({ request }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	})
-
-	if (!session) {
-		return new Response(
-			JSON.stringify({
-				message: "unauthorized",
-			}),
-			{ status: 401 }
-		)
-	}
+export const POST: APIRoute = async ({ locals, request }) => {
+	const session = locals.session
 
 	const cartSchema = z.object({
 		menu_id: z.number(),

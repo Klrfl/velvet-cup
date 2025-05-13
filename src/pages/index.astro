@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Image } from "astro:assets"
 import { Search } from "lucide-vue-next"
 
-import { auth } from "@/lib/auth"
 import MenuServiceImpl from "@/lib/services/menu"
 import CategoryServiceImpl from "@/lib/services/category"
 
@@ -18,9 +17,7 @@ const menus = await menuService.getMenus({ limit: 9, with: ["price"] })
 const categoryService = new CategoryServiceImpl()
 const categories = await categoryService.getCategories()
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 ---
 
 <Layout title="Home - Velvet Cup">
