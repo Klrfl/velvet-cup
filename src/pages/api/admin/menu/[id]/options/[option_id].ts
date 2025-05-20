@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import MenuOptionServiceImpl from "@/lib/services/menu-option"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -27,10 +27,8 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		})
 		.required()
 
-	let newVariant
-	try {
-		newVariant = variantSchema.parse(body)
-	} catch (error) {
+	const { data: newOption, error } = variantSchema.safeParse(body)
+	if (!newOption || error) {
 		console.error(error)
 
 		return new Response(
@@ -42,14 +40,19 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const result = await db
-		.updateTable("menu_options")
-		.set(newVariant)
-		.where("id", "=", option_id)
-		.returning("id")
-		.executeTakeFirst()
+	const service = new MenuOptionServiceImpl()
+	try {
+		const result = service.editMenuOption(option_id, newOption)
 
-	if (!result) {
+		return new Response(
+			JSON.stringify({
+				message: "successfully updated menu option.",
+				data: result,
+			})
+		)
+	} catch (err) {
+		console.error(err)
+
 		return new Response(
 			JSON.stringify({
 				message: "error when updating option",
@@ -83,11 +86,4 @@ export const PUT: APIRoute = async ({ request, params }) => {
 	// 		option_values: [...option_values],
 	// 	}
 	// })
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully updated menu option.",
-			data: result,
-		})
-	)
 }

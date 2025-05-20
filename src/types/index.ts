@@ -106,7 +106,20 @@ export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
 export type InsertableMenuVariant = z.infer<typeof insertableMenuVariantsSchema>
 
 export type SelectableMenuOption = Selectable<MenuOptions>
-export type InsertableMenuOption = Insertable<MenuOptions>
+export type InsertableMenuOption = {
+	name: string
+	values: {
+		name: string
+	}[]
+}
+/**
+ * TODO:
+ * change this type when I figure out the logic
+ * to update other props of the menu option
+ * */
+export type UpdateableMenuOption = {
+	name: string
+}
 
 export type MenuPrice = Omit<Selectable<DBMenuVariants>, "menu_id"> & {
 	option_value: string
