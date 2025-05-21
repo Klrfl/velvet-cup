@@ -15,7 +15,7 @@ interface OrderService {
 	getOrders(user_id: OrderUser["id"]): Promise<Order[]>
 	getAdminOrders(): Promise<AdminOrder[]>
 	checkout(user: OrderUser): Promise<MidtransToken>
-	cancelOrder(order_id: Order["id"]): Promise<Order>
+	cancelOrder(order_id: Order["id"]): Promise<Order["id"]>
 	confirmOrder(
 		user_id: OrderUser["id"],
 		order_id: Order["id"]
@@ -69,7 +69,33 @@ export default class OrderServiceImpl implements OrderService {
 		return result as AdminOrder[]
 	}
 
-	async checkout(user: OrderUser): Promise<MidtransToken> {
+	async checkout(
+		user: OrderUser
+		// orderId: Order["id"]
+	): Promise<MidtransToken> {
+		const snap = new client.Snap({
+			isProduction: import.meta.env.PROD,
+			serverKey: import.meta.env.MIDTRANS_SERVER_KEY!,
+		})
+
+		// /**
+		//  * attempt to check out existing order
+		//  * */
+		// if (orderId) {
+		// 	const existingOrder = await db.selectFrom("orders")
+		// 	const params = {
+		// 		transaction_details: {
+		// 			order_id,
+		// 			gross_amount: total,
+		// 		},
+		// 		item_details: basket,
+		// 		customer_details: {
+		// 			name: user.name,
+		// 			email: user.email,
+		// 		},
+		// 	}
+		// }
+
 		const rawBasket = await db
 			.selectFrom("baskets")
 			.leftJoin("menu as m", "m.id", "baskets.menu_id")
@@ -144,11 +170,6 @@ export default class OrderServiceImpl implements OrderService {
 			0
 		)
 
-		const snap = new client.Snap({
-			isProduction: import.meta.env.PROD,
-			serverKey: import.meta.env.MIDTRANS_SERVER_KEY!,
-		})
-
 		const params = {
 			transaction_details: {
 				order_id: orderResult.order.id,
@@ -182,8 +203,33 @@ export default class OrderServiceImpl implements OrderService {
 		}
 	}
 
-	cancelOrder(order_id: Order["id"]): Promise<Order> {
-		throw new Error("Method not implemented.")
+	async cancelOrder(order_id: Order["id"]): Promise<Order["id"]> {
+		const existingOrder = await db
+			.selectFrom("orders")
+			.selectAll()
+			.where("id", "=", order_id)
+			.executeTakeFirst()
+		if (!existingOrder) {
+			throw new TransactionError("order not found", "ORDER_NOT_FOUND")
+		}
+
+		// 5 is code for status cancelled
+		// see migration file
+		const updateResult = await db
+			.updateTable("orders")
+			.set("status_id", 5)
+			.where("orders.id", "=", order_id)
+			.returning("id")
+			.executeTakeFirst()
+
+		if (!updateResult) {
+			throw new TransactionError(
+				"failed to cancel order",
+				"ORDER_CANCELLATION_FAILURE"
+			)
+		}
+
+		return updateResult.id
 	}
 
 	async confirmOrder(
