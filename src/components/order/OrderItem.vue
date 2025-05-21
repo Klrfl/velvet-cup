@@ -18,6 +18,13 @@ interface Props {
 const { order } = defineProps<Props>()
 
 async function attemptPaying(orderId: Order["id"]) {
+	const response = await fetch(`/api/checkout/${orderId}`)
+
+	const result = await response.json()
+	const { data } = result
+
+	//@ts-expect-error the snap library requires me to do this.. please stop
+	return window.snap.pay(data.token)
 }
 
 async function cancelOrder(orderId: Order["id"]) {

@@ -20,6 +20,7 @@ interface OrderService {
 		user_id: OrderUser["id"],
 		order_id: Order["id"]
 	): Promise<Order["id"]>
+	repayOrder(order_id: Order["id"]): Promise<MidtransToken>
 }
 
 const ordersQuery = db
@@ -30,6 +31,7 @@ const ordersQuery = db
 		"orders.user_id",
 		"orders.status_id",
 		"orders.created_at",
+		"orders.token",
 		"os.name as status",
 		jsonArrayFrom(
 			eb
@@ -56,7 +58,11 @@ export default class OrderServiceImpl implements OrderService {
 			.orderBy("created_at desc")
 			.execute()
 
-		return result
+		// result.status returns a string... should have used an enum
+		// but thinking back my decision is already correct, we'll just
+		// validate it in runtime
+		// it is not the end of the world even if it's not `"pending" | "completed"`
+		return result as Order[]
 	}
 
 	async getAdminOrders(): Promise<AdminOrder[]> {
@@ -69,32 +75,11 @@ export default class OrderServiceImpl implements OrderService {
 		return result as AdminOrder[]
 	}
 
-	async checkout(
-		user: OrderUser
-		// orderId: Order["id"]
-	): Promise<MidtransToken> {
+	async checkout(user: OrderUser): Promise<MidtransToken> {
 		const snap = new client.Snap({
 			isProduction: import.meta.env.PROD,
 			serverKey: import.meta.env.MIDTRANS_SERVER_KEY!,
 		})
-
-		// /**
-		//  * attempt to check out existing order
-		//  * */
-		// if (orderId) {
-		// 	const existingOrder = await db.selectFrom("orders")
-		// 	const params = {
-		// 		transaction_details: {
-		// 			order_id,
-		// 			gross_amount: total,
-		// 		},
-		// 		item_details: basket,
-		// 		customer_details: {
-		// 			name: user.name,
-		// 			email: user.email,
-		// 		},
-		// 	}
-		// }
 
 		const rawBasket = await db
 			.selectFrom("baskets")
@@ -197,6 +182,17 @@ export default class OrderServiceImpl implements OrderService {
 				throw new Error("response is unexpected")
 			}
 
+			/**
+			 * The payment popup on the frontend is closable, and
+			 * the customer can resume payment via /account/orders page
+			 * insert Midtrans token to database to retry payment
+			 * */
+			await db
+				.updateTable("orders")
+				.set("token", data.token)
+				.where("id", "=", orderResult.order.id)
+				.execute()
+
 			return data
 		} catch (error) {
 			throw new Error("error when creating transaction token")
@@ -277,5 +273,22 @@ export default class OrderServiceImpl implements OrderService {
 			.execute()
 
 		return targetOrder.id
+	}
+
+	/**
+	 * returns the midtrans API token for the existing order.
+	 * */
+	async repayOrder(order_id: Order["id"]): Promise<MidtransToken> {
+		const existingOrder = await db
+			.selectFrom("orders")
+			.selectAll()
+			.where("id", "=", order_id)
+			.executeTakeFirst()
+
+		if (!existingOrder || existingOrder.token === "") {
+			throw new TransactionError("order not found", "ORDER_NOT_FOUND")
+		}
+
+		return { token: existingOrder.token, redirect_url: "" }
 	}
 }

@@ -19,6 +19,7 @@ export type {
 	UpdateableMenuVariant,
 } from "./menu-variant"
 export type { Order, OrderStatus, AdminOrder, OrderUser } from "./order"
+export * from "./menu-option"
 
 /**
  * TODO:

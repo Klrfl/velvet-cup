@@ -17,7 +17,7 @@ export type OrderDetail = {
 
 export type Order = Prettify<
 	Selectable<DBOrders> & {
-		status: string | null
+		status: OrderStatus
 		details: OrderDetail[]
 	}
 >
