@@ -60,30 +60,4 @@ export const PUT: APIRoute = async ({ request, params }) => {
 			{ status: 500 }
 		)
 	}
-
-	// const variantValues = await db.transaction().execute(async (trx) => {
-	// 	const menu_option = await trx
-	// 		.updateTable("menu_options")
-	// 		.set({ name: newVariant.name, menu_id })
-	// 		.where("menu_options.id", "=", option_id)
-	// 		.returningAll()
-	// 		.executeTakeFirstOrThrow()
-	//
-	// 	const option_values = await trx
-	// 		.updateTable("menu_option_values")
-	// 		.set(
-	// 			newVariant.values.map(({ name }) => ({
-	// 				name,
-	// 				menu_option_id: menu_option.id,
-	// 			}))
-	// 		)
-	// 		.where("menu_option_values.id", "=")
-	// 		.returningAll()
-	// 		.execute()
-	//
-	// 	return {
-	// 		...menu_option,
-	// 		option_values: [...option_values],
-	// 	}
-	// })
 }

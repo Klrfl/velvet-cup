@@ -7,7 +7,6 @@ import type {
 	MenuOptions,
 } from "@/database/database.types.ts"
 import type { MenuCategories } from "@/database/database.types.js"
-import { z } from "astro:content"
 
 /**
  * TODO:
@@ -68,42 +67,48 @@ export type MenuWithCategories = Omit<
 	"options" | "variant" | "variants"
 >
 
-export const menuVariantSchema = z.object({
-	id: z.number(),
-	name: z.string().nonempty(),
-	price: z.coerce.number().or(z.string()),
-	options: z.array(
-		z.object({
-			option_value_id: z.coerce.number().nullable(),
-			option_name: z.string(),
-			option_value: z.string(),
-		})
-	),
-})
-
-export const insertableMenuVariantsSchema = z.object({
-	name: z.string().nonempty(),
-	price: z.coerce.number(),
-	options: z.array(
-		z.object({
-			option_value_id: z.coerce.number(),
-		})
-	),
-})
-
-export const updateableMenuVariantsSchema = z.object({
-	name: z.string().nonempty(),
-	price: z.coerce.number(),
-})
-
 export type Orders = Selectable<DBOrders> & {
 	status: string | null
 	details: Selectable<OrderDetail>[]
 }
 
-export type MenuVariant = z.infer<typeof menuVariantSchema>
-export type UpdateableMenuVariant = z.infer<typeof updateableMenuVariantsSchema>
-export type InsertableMenuVariant = z.infer<typeof insertableMenuVariantsSchema>
+/**
+ * I would like to change the name of this type
+ * at some point in the future. Currently it touches
+ * too many lines of code
+ *
+ * It should be named MenuVariantComplete
+ * */
+export type MenuVariant = {
+	id: number
+	name: string
+	price: string | number
+	options: {
+		option_value_id: number | null
+		option_name: string
+		option_value: string
+	}[]
+}
+
+export type BaseMenuVariant = {
+	id: number
+	menu_id: number
+	name: string
+	price: number | string /* Postgres's numeric type is weird */
+}
+
+export type UpdateableMenuVariant = {
+	name: string
+	price: number
+}
+
+export type InsertableMenuVariant = {
+	options: {
+		option_value_id: number
+	}[]
+	name: string
+	price: number
+}
 
 export type SelectableMenuOption = Selectable<MenuOptions>
 export type InsertableMenuOption = {
