@@ -1,6 +1,6 @@
 import { db } from "@/database"
 import type { User } from "@/database/database.types"
-import type { InsertableBasket, BasketComplete, BasketItem } from "@/types"
+import type { BasketComplete, BasketItem } from "@/types"
 import { sql, type Selectable } from "kysely"
 
 interface GetBasketOptions {
@@ -10,7 +10,6 @@ interface GetBasketOptions {
 
 interface BasketService {
 	getBasketItems(opts: GetBasketOptions): Promise<BasketItem[]>
-	getBasketItem(id: InsertableBasket["id"]): Promise<BasketItem>
 	getBasketCount(userId: string): Promise<{ value: number }>
 	addItemToBasket(
 		item: Pick<BasketItem, "menu_id" | "variant_id" | "quantity">,
@@ -49,10 +48,6 @@ export default class BasketServiceImpl implements BasketService {
 			.execute()
 
 		return baskets
-	}
-
-	async getBasketItem(id: BasketComplete["id"]) {
-		throw new Error("Method not implemented.")
 	}
 
 	async getBasketCount(userId: string) {
