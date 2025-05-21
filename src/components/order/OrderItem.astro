@@ -1,5 +1,5 @@
 ---
-import type { OrderReturnType } from "@/database/queries"
+import { Order } from "@/types/"
 import { formatDate, formatCurrency } from "@/lib/utils"
 import {
 	Table,
@@ -11,7 +11,7 @@ import {
 import OrderStatus from "../admin/orders/OrderStatus.vue"
 
 interface Props {
-	order: OrderReturnType[0]
+	order: Order
 }
 
 const { order } = Astro.props

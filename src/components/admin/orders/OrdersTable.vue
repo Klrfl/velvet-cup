@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminOrdersReturnType } from "@/database/queries"
+import type { AdminOrder } from "@/types/"
 import { formatCurrency, formatDate, valueUpdater } from "@/lib/utils"
 import {
 	Table,
@@ -32,10 +32,10 @@ import OrderRowAction from "./OrderRowAction.vue"
 import OrderStatus from "./OrderStatus.vue"
 
 interface Props {
-	orders: AdminOrdersReturnType
+	orders: AdminOrder[]
 }
 
-const columnHelper = createColumnHelper<AdminOrdersReturnType[0]>()
+const columnHelper = createColumnHelper<AdminOrder>()
 
 const columns = [
 	columnHelper.accessor("user_name", {

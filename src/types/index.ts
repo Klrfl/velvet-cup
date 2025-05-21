@@ -1,9 +1,5 @@
 import type { Selectable } from "kysely"
-import type {
-	Orders as DBOrders,
-	MenuVariants,
-	OrderDetail,
-} from "@/database/database.types.ts"
+import type { MenuVariants } from "@/database/database.types.ts"
 export type { BasketItem, BasketComplete, InsertableBasket } from "./basket"
 export type {
 	MenuItem,
@@ -22,16 +18,12 @@ export type {
 	InsertableMenuVariant,
 	UpdateableMenuVariant,
 } from "./menu-variant"
+export type { Order, OrderStatus, AdminOrder } from "./order"
 
 /**
  * TODO:
  * - export all types from @/database/queries.ts, type them manually idc
  * */
-
-export type Orders = Selectable<DBOrders> & {
-	status: string | null
-	details: Selectable<OrderDetail>[]
-}
 
 export type MenuPrice = Omit<Selectable<MenuVariants>, "menu_id"> & {
 	option_value: string

@@ -2,7 +2,7 @@
 import AccountLayout from "@/layouts/AccountLayout.astro"
 import OrderItem from "@/components/order/OrderItem.astro"
 
-import { ordersQuery } from "@/database/queries"
+import { OrderServiceImpl } from "@/lib/services/order"
 
 const session = Astro.locals.session
 
@@ -10,10 +10,8 @@ if (!session) {
 	return Astro.redirect("/")
 }
 
-const orders = await ordersQuery
-	.where("user_id", "=", session.user.id)
-	.orderBy("orders.created_at desc")
-	.execute()
+const orderService = new OrderServiceImpl()
+const orders = await orderService.getOrders(session.user.id)
 ---
 
 <AccountLayout heading="Your orders">
