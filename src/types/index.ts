@@ -18,7 +18,7 @@ export type {
 	InsertableMenuVariant,
 	UpdateableMenuVariant,
 } from "./menu-variant"
-export type { Order, OrderStatus, AdminOrder } from "./order"
+export type { Order, OrderStatus, AdminOrder, OrderUser } from "./order"
 
 /**
  * TODO:

@@ -27,3 +27,9 @@ export type AdminOrder = Prettify<
 		user_name: Selectable<User>["name"]
 	}
 >
+
+export type OrderUser = {
+	id: string
+	name: string
+	email: string
+}

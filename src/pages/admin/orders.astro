@@ -1,7 +1,7 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import OrdersTable from "@/components/admin/orders/OrdersTable.vue"
-import { OrderServiceImpl } from "@/lib/services/order"
+import OrderServiceImpl from "@/lib/services/order"
 
 const orderService = new OrderServiceImpl()
 const orders = await orderService.getAdminOrders()
