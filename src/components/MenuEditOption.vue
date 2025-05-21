@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button"
 
 import type { MenuComplete } from "@/types"
 import { ref } from "vue"
-import type { AdminMenuReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 const open = defineModel<boolean>({ required: true })
 

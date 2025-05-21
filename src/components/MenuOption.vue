@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Pencil } from "lucide-vue-next"
 import { Button } from "@/components/ui/button"
-import type { AdminMenuReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 interface Props {
 	option: AdminMenuReturnType[0]["options"][0]

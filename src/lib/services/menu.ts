@@ -32,7 +32,7 @@ const adminMenuQuery = db
 		).as("options"),
 	])
 
-type AdminMenuReturnType = InferResult<typeof adminMenuQuery>
+export type AdminMenuReturnType = InferResult<typeof adminMenuQuery>
 
 const menuAttributes = ["variants", "price", "category", "regular"] as const
 type MenuAttributes = (typeof menuAttributes)[number]

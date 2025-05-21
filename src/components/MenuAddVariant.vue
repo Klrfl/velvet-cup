@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 
 import { ref, useTemplateRef, watch } from "vue"
-import type { AdminMenuReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 interface Props {
 	options: AdminMenuReturnType[0]["options"]

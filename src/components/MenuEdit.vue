@@ -37,7 +37,7 @@ import type { MenuVariant } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
-import type { AdminMenuReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 interface Props {
 	menu: AdminMenuReturnType[0]
