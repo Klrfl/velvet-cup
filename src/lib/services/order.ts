@@ -4,7 +4,7 @@ import { z } from "astro:content"
 import client from "@klrfl/midtrans-client"
 
 import type { Order, AdminOrder, OrderUser } from "@/types"
-import type { Selectable } from "kysely"
+import { TransactionError } from "@/lib/errors"
 
 type MidtransToken = {
 	token: string
@@ -16,7 +16,10 @@ interface OrderService {
 	getAdminOrders(): Promise<AdminOrder[]>
 	checkout(user: OrderUser): Promise<MidtransToken>
 	cancelOrder(order_id: Order["id"]): Promise<Order>
-	confirmOrder(order_id: Order["id"]): Promise<Order>
+	confirmOrder(
+		user_id: OrderUser["id"],
+		order_id: Order["id"]
+	): Promise<Order["id"]>
 }
 
 const ordersQuery = db
@@ -182,7 +185,51 @@ export default class OrderServiceImpl implements OrderService {
 	cancelOrder(order_id: Order["id"]): Promise<Order> {
 		throw new Error("Method not implemented.")
 	}
-	confirmOrder(order_id: Order["id"]): Promise<Order> {
-		throw new Error("Method not implemented.")
+
+	async confirmOrder(
+		user_id: OrderUser["id"],
+		order_id: Order["id"]
+	): Promise<Order["id"]> {
+		const existingOrder = await db
+			.selectFrom("orders")
+			.select(["id", "status_id"])
+			.where("orders.id", "=", order_id)
+			.executeTakeFirst()
+
+		if (!existingOrder) {
+			throw new TransactionError("order not found", "ORDER_NOT_FOUND")
+		}
+
+		if (existingOrder.status_id === 2) {
+			throw new TransactionError(
+				"Order already confirmed",
+				"ORDER_ALREADY_CONFIRMED"
+			)
+		}
+
+		const targetOrder = await db
+			.updateTable("orders")
+			.set({ status_id: 2 })
+			.where("id", "=", existingOrder.id)
+			.returningAll()
+			.executeTakeFirst()
+
+		if (!targetOrder) {
+			throw new TransactionError(
+				"error when updating order status",
+				"ORDER_STATUS_UPDATE_FAILURE"
+			)
+		}
+
+		/**
+		 * clear basket after ordering
+		 * TODO: move into transaction to guarantee atomicity
+		 * */
+		const deleteResult = await db
+			.deleteFrom("baskets")
+			.where("user_id", "=", user_id)
+			.execute()
+
+		return targetOrder.id
 	}
 }
