@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { OrderStatus } from "@/types"
 import type { HTMLAttributes } from "vue"
 
 interface Props {
-	status: "pending" | "completed"
+	status: OrderStatus
 	class?: HTMLAttributes["class"]
 }
 

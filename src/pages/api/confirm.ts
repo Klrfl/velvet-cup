@@ -1,21 +1,11 @@
-import { db } from "@/database"
-import { auth } from "@/lib/auth"
+import { TransactionError } from "@/lib/errors"
+import OrderServiceImpl from "@/lib/services/order"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const GET: APIRoute = async ({ request, redirect }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	})
-
-	if (!session) {
-		return new Response(
-			JSON.stringify({
-				message: "unauthorized",
-			}),
-			{ status: 401 }
-		)
-	}
+export const GET: APIRoute = async ({ request, redirect, locals }) => {
+	const session = locals.session
+	if (!session) return redirect("/login")
 
 	const rawSearchParams = new URL(request.url).searchParams
 
@@ -37,45 +27,46 @@ export const GET: APIRoute = async ({ request, redirect }) => {
 		})
 	}
 
-	const existingOrder = await db
-		.selectFrom("orders")
-		.select(["id", "status_id"])
-		.where("orders.id", "=", searchParams.order_id)
-		.executeTakeFirst()
+	const service = new OrderServiceImpl()
 
-	if (!existingOrder) {
-		return new Response(JSON.stringify({ message: "order not found" }), {
-			status: 404,
-		})
-	}
+	try {
+		const orderId = await service.confirmOrder(
+			session.user.id,
+			searchParams.order_id
+		)
 
-	if (existingOrder.status_id === 2) {
-		return redirect("/")
-	}
-
-	const targetOrder = await db
-		.updateTable("orders")
-		.set({ status_id: 2 })
-		.where("id", "=", existingOrder.id)
-		.returningAll()
-		.executeTakeFirst()
-
-	if (!targetOrder) {
 		return new Response(
-			JSON.stringify({ message: "error when updating order status" }),
-			{ status: 404 }
+			JSON.stringify({
+				message: "successfully updated order status",
+				data: orderId,
+			})
+		)
+	} catch (err) {
+		console.error(err)
+
+		if (err instanceof TransactionError) {
+			switch (err.code) {
+				case "ORDER_NOT_FOUND":
+					// TODO: do something better other than returning a JSON obj
+					return new Response(JSON.stringify({ message: "invalid order id" }), {
+						status: 400,
+					})
+				case "ORDER_STATUS_UPDATE_FAILURE":
+					return new Response(
+						JSON.stringify({ message: "failed to mark status as completed" }),
+						{ status: 500 }
+					)
+				case "ORDER_ALREADY_CONFIRMED":
+					return redirect(`/accounts/orders`)
+			}
+		}
+
+		// TODO: redirect to an error page or something
+		return new Response(
+			JSON.stringify({
+				message: "there was an error while confirming your order.",
+			}),
+			{ status: 500 }
 		)
 	}
-
-	const deleteResult = await db
-		.deleteFrom("baskets")
-		.where("user_id", "=", session.user.id)
-		.execute()
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully updated order status",
-			data: targetOrder,
-		})
-	)
 }

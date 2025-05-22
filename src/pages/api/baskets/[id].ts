@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import BasketServiceImpl from "@/lib/services/basket"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -33,12 +33,8 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const result = await db
-		.updateTable("baskets")
-		.set(data)
-		.where("id", "=", basket_id)
-		.returningAll()
-		.executeTakeFirst()
+	const basketService = new BasketServiceImpl()
+	const result = await basketService.updateBasketItem(basket_id, data)
 
 	if (!result) {
 		return new Response(
@@ -70,13 +66,19 @@ export const DELETE: APIRoute = async ({ params }) => {
 		)
 	}
 
-	const deletedId = await db
-		.deleteFrom("baskets")
-		.where("id", "=", basket_id)
-		.returning("id")
-		.executeTakeFirst()
+	const basketService = new BasketServiceImpl()
+	try {
+		const deletedId = await basketService.deleteBasketItem(basket_id)
 
-	if (!deletedId) {
+		return new Response(
+			JSON.stringify({
+				message: "successfully deleted basket item.",
+				data: deletedId,
+			})
+		)
+	} catch (error) {
+		console.error(error)
+
 		return new Response(
 			JSON.stringify({
 				message: "there was an error deleting basket item.",
@@ -84,11 +86,4 @@ export const DELETE: APIRoute = async ({ params }) => {
 			{ status: 500 }
 		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully deleted basket item.",
-			data: deletedId,
-		})
-	)
 }

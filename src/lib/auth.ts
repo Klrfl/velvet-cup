@@ -10,3 +10,5 @@ export const auth = betterAuth({
 		import.meta.env.DEV ? "http://localhost:4321" : import.meta.env.SITE,
 	],
 })
+
+export type Session = typeof auth.$Infer.Session

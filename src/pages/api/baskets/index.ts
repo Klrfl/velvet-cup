@@ -1,21 +1,10 @@
-import { db } from "@/database"
-import { auth } from "@/lib/auth"
+import BasketServiceImpl from "@/lib/services/basket"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
-export const POST: APIRoute = async ({ request }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	})
-
-	if (!session) {
-		return new Response(
-			JSON.stringify({
-				message: "unauthorized",
-			}),
-			{ status: 401 }
-		)
-	}
+export const POST: APIRoute = async ({ locals, request, redirect }) => {
+	const session = locals.session
+	if (!session) return redirect("/login")
 
 	const cartSchema = z.object({
 		menu_id: z.number(),
@@ -38,37 +27,27 @@ export const POST: APIRoute = async ({ request }) => {
 		)
 	}
 
-	const existing = await db
-		.selectFrom("baskets")
-		.selectAll()
-		.where("baskets.menu_id", "=", inputCart.menu_id)
-		.where("baskets.variant_id", "=", inputCart.variant_id)
-		.where("baskets.user_id", "=", session.user.id)
-		.executeTakeFirst()
+	const basketService = new BasketServiceImpl()
+	try {
+		const result = await basketService.addItemToBasket(
+			inputCart,
+			session.user.id
+		)
 
-	let result
-	if (!existing) {
-		result = await db
-			.insertInto("baskets")
-			.values({
-				user_id: session.user.id,
-				...inputCart,
+		return new Response(
+			JSON.stringify({
+				message: "successfully added new item to cart.",
+				data: result,
 			})
-			.returningAll()
-			.execute()
-	} else {
-		result = await db
-			.updateTable("baskets")
-			.set("quantity", existing.quantity + 1)
-			.where("baskets.id", "=", existing.id)
-			.returningAll()
-			.executeTakeFirst()
-	}
+		)
+	} catch (error) {
+		console.error(error)
 
-	return new Response(
-		JSON.stringify({
-			message: "successfully added new item to cart.",
-			data: result,
-		})
-	)
+		return new Response(
+			JSON.stringify({
+				message: "there was an error when adding a new item to basket.",
+			}),
+			{ status: 500 }
+		)
+	}
 }

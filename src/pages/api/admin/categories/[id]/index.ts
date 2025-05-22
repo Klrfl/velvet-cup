@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import CategoryServiceImpl from "@/lib/services/category"
 import type { APIRoute } from "astro"
 import { z } from "astro:schema"
 
@@ -34,14 +34,20 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const result = await db
-		.updateTable("menu_categories")
-		.set("name", name)
-		.where("id", "=", id)
-		.returning(["name", "id"])
-		.executeTakeFirst()
+	const categoryService = new CategoryServiceImpl()
 
-	if (!result) {
+	try {
+		const result = await categoryService.editCategory({ id, name })
+
+		return new Response(
+			JSON.stringify({
+				message: "successfully updated menu category",
+				data: result,
+			})
+		)
+	} catch (error) {
+		console.error(error)
+
 		return new Response(
 			JSON.stringify({
 				message: "something went wrong when updating menu category",
@@ -49,13 +55,6 @@ export const PUT: APIRoute = async ({ request, params }) => {
 			{ status: 500 }
 		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully updated menu category",
-			data: result,
-		})
-	)
 }
 
 export const DELETE: APIRoute = async ({ params }) => {
@@ -70,13 +69,21 @@ export const DELETE: APIRoute = async ({ params }) => {
 		)
 	}
 
-	const result = await db
-		.deleteFrom("menu_categories")
-		.where("id", "=", id)
-		.returning("id")
-		.executeTakeFirst()
+	const categoryService = new CategoryServiceImpl()
 
-	if (!result) {
+	try {
+		const result = await categoryService.deleteCategory(id)
+
+		return new Response(
+			JSON.stringify({
+				message: "successfully deleted menu category",
+				data: { id: result },
+			}),
+			{ status: 201 }
+		)
+	} catch (error) {
+		console.error(error)
+
 		return new Response(
 			JSON.stringify({
 				message: "something went wrong when deleted menu category",
@@ -84,12 +91,4 @@ export const DELETE: APIRoute = async ({ params }) => {
 			{ status: 500 }
 		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully deleted menu category",
-			data: { id },
-		}),
-		{ status: 201 }
-	)
 }

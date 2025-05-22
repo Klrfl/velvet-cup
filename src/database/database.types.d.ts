@@ -91,6 +91,7 @@ export interface Orders {
   created_at: Generated<Timestamp>;
   id: Generated<string>;
   status_id: number;
+  token: Generated<string>;
   user_id: string;
 }
 
