@@ -1,7 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import { formatDate } from "@/lib/utils"
-import { db } from "@/database"
 import {
 	Table,
 	TableHeader,
@@ -9,8 +8,10 @@ import {
 	TableRow,
 	TableCell,
 } from "@/components/ui/table"
+import { ConcreteUserServiceFactory } from "@/lib/services/user"
 
-const users = await db.selectFrom("user").selectAll().execute()
+const userService = new ConcreteUserServiceFactory().createService()
+const users = await userService.getAll()
 ---
 
 <AdminLayout title="Customers - Velvet Cup">
