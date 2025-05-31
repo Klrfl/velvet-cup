@@ -5,15 +5,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-vue-next"
 
-import MenuServiceImpl from "@/lib/services/menu"
 import CategoryServiceImpl from "@/lib/services/category"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
+import { db } from "@/database"
 
 const params = Astro.url.searchParams
 
 const searchQuery = params.get("query") ?? ""
 const categoryQuery = params.get("category") ?? 0
 
-const menuService = new MenuServiceImpl()
+const menuService = new KyselyMenuServiceFactory().createService(db)
 const menus = await menuService.getMenus({
 	search_term: searchQuery,
 	category_id: Number(categoryQuery),

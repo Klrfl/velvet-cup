@@ -4,7 +4,8 @@ import { Image } from "astro:assets"
 import MenuOrder from "@/components/MenuOrder.vue"
 import MenuItem from "@/components/MenuItem.astro"
 
-import MenuServiceImpl from "@/lib/services/menu"
+import { db } from "@/database"
+import { KyselyMenuServiceFactory } from "@/lib/factories/menu.factory"
 
 const { id: menuId } = Astro.params
 
@@ -13,7 +14,8 @@ if (isNaN(Number(menuId))) {
 }
 
 const session = Astro.locals.session
-const menuService = new MenuServiceImpl()
+
+const menuService = new KyselyMenuServiceFactory().createService(db)
 const menu = await menuService.getMenu(Number(menuId))
 
 if (!menu) {

@@ -1,9 +1,20 @@
 import { db } from "@/database"
-import type { Menu } from "@/database/database.types"
+import type { DB, Menu } from "@/database/database.types"
 import type { MenuItem } from "@/types"
-import { sql, type InferResult, type Insertable, type Selectable } from "kysely"
+import {
+	Kysely,
+	sql,
+	type InferResult,
+	type Insertable,
+	type Selectable,
+} from "kysely"
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
 
+/**
+ * TOOD: get rid of this
+ * do I directly just copy the queries one by one?
+ * I think that's the only solution
+ * */
 const adminMenuQuery = db
 	.selectFrom("menu as m")
 	.leftJoin("menu_categories as c", "c.id", "m.category_id")
@@ -32,8 +43,14 @@ const adminMenuQuery = db
 		).as("options"),
 	])
 
+/**
+ * TODO: move this type somewhere else
+ * */
 export type AdminMenuReturnType = InferResult<typeof adminMenuQuery>
 
+/**
+ * TODO: move this type somewhere else
+ * */
 const menuAttributes = ["variants", "price", "category", "regular"] as const
 type MenuAttributes = (typeof menuAttributes)[number]
 
@@ -50,7 +67,7 @@ interface GetAdminMenuOptions {
 	with_trashed?: boolean
 }
 // TODO: design a robust error system
-interface MenuService {
+export interface MenuService {
 	getMenus(opts: GetMenuOptions): Promise<MenuItem[]>
 	getMenu(id: number): Promise<MenuItem | null>
 	// TODO: infer menu used in /admin/menu/[id] correctly
@@ -61,7 +78,13 @@ interface MenuService {
 	deleteMenu(id: number): Promise<MenuItem["id"]>
 }
 
-export default class MenuServiceImpl implements MenuService {
+export default class KyselyMenuService implements MenuService {
+	private db: Kysely<DB>
+
+	constructor(db: Kysely<DB>) {
+		this.db = db
+	}
+
 	async getMenus({
 		limit,
 		category_id = 0,
@@ -69,7 +92,7 @@ export default class MenuServiceImpl implements MenuService {
 		with_trashed = false,
 		with: withArg = ["category"],
 	}: GetMenuOptions) {
-		const menus = await db
+		const menus = await this.db
 			.selectFrom("menu")
 			.select([
 				"menu.id",
@@ -117,7 +140,7 @@ export default class MenuServiceImpl implements MenuService {
 	}
 
 	async getMenu(id: number) {
-		const menu = await db
+		const menu = await this.db
 			.selectFrom("menu")
 			.select([
 				"menu.id",
@@ -183,7 +206,7 @@ export default class MenuServiceImpl implements MenuService {
 	}
 
 	async addMenu(menu: Insertable<Menu>) {
-		const result = await db
+		const result = await this.db
 			.insertInto("menu")
 			.values(menu)
 			.returningAll()
@@ -195,7 +218,7 @@ export default class MenuServiceImpl implements MenuService {
 	}
 
 	async editMenu(id: number, menu: Insertable<Menu>) {
-		const result = await db
+		const result = await this.db
 			.updateTable("menu")
 			.set({ ...menu, updated_at: new Date().toISOString() })
 			.where("id", "=", id)
@@ -208,7 +231,7 @@ export default class MenuServiceImpl implements MenuService {
 	}
 
 	async deleteMenu(id: number) {
-		const result = await db
+		const result = await this.db
 			.updateTable("menu")
 			.set("deleted_at", sql`now()`)
 			.where("id", "=", id)

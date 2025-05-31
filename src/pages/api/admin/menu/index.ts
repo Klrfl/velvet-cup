@@ -1,4 +1,5 @@
-import MenuServiceImpl from "@/lib/services/menu"
+import { db } from "@/database"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -49,7 +50,7 @@ export const POST: APIRoute = async ({ request }) => {
 		inputMenu = { ...inputMenu, image: null }
 	}
 
-	const menuService = new MenuServiceImpl()
+	const menuService = new KyselyMenuServiceFactory().createService(db)
 	try {
 		const menu = await menuService.addMenu(inputMenu)
 

@@ -7,8 +7,8 @@ import { db } from "@/database"
 import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { sql } from "kysely"
 
-import MenuServiceImpl from "@/lib/services/menu"
 import CategoryServiceImpl from "@/lib/services/category"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 
 const { id } = Astro.params
 
@@ -17,7 +17,7 @@ if (!id || isNaN(menuId)) {
 	return Astro.rewrite("/404")
 }
 
-const menuService = new MenuServiceImpl()
+const menuService = new KyselyMenuServiceFactory().createService(db)
 const menu = await menuService.getAdminMenu(menuId)
 
 if (!menu) {
