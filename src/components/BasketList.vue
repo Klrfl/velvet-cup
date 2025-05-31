@@ -6,10 +6,10 @@ import { computed, ref } from "vue"
 import { toast } from "vue-sonner"
 import { useDebounceFn } from "@vueuse/core"
 import { formatCurrency } from "@/lib/utils"
-import type { BasketReturnType } from "@/database/queries"
+import type { BasketComplete } from "@/types"
 
 interface Props {
-	basket: BasketReturnType
+	basket: BasketComplete[]
 }
 
 const props = defineProps<Props>()

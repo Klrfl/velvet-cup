@@ -1,9 +1,8 @@
 ---
-import { db } from "@/database"
 import { authClient } from "@/lib/auth-client"
-import { sql } from "kysely"
 import { Image } from "astro:assets"
 import { Menu, X } from "lucide-vue-next"
+import BasketServiceImpl from "@/lib/services/basket"
 
 interface Props {
 	session: typeof authClient.$Infer.Session | null
@@ -14,17 +13,10 @@ const { session } = Astro.props
 const isAdmin = session?.user.role === "admin"
 
 let basketCount = { value: 0 }
+const basketService = new BasketServiceImpl()
 
 if (session) {
-	const result = await db
-		.selectFrom("baskets")
-		.select((eb) => [
-			eb.fn.coalesce(eb.fn.sum<number>("quantity"), sql`0`).as("value"),
-		])
-		.where("user_id", "=", session.user.id)
-		.executeTakeFirst()
-
-	basketCount = result ?? basketCount
+	basketCount = await basketService.getBasketCount(session.user.id)
 }
 ---
 

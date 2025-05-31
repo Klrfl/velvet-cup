@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import MenuOptionServiceImpl from "@/lib/services/menu-option"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -14,17 +14,15 @@ export const POST: APIRoute = async ({ request, params }) => {
 
 	const body = await request.json()
 
-	const variantSchema = z
+	const variantOptionSchema = z
 		.object({
 			name: z.string(),
 			values: z.array(z.object({ name: z.string() })),
 		})
 		.required()
 
-	let newVariant
-	try {
-		newVariant = variantSchema.parse(body)
-	} catch (error) {
+	const { data: newMenuOption, error } = variantOptionSchema.safeParse(body)
+	if (!newMenuOption || error) {
 		console.error(error)
 
 		return new Response(
@@ -36,34 +34,25 @@ export const POST: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const variantValues = await db.transaction().execute(async (trx) => {
-		const menu_option = await trx
-			.insertInto("menu_options")
-			.values({ name: newVariant.name, menu_id })
-			.returningAll()
-			.executeTakeFirstOrThrow()
+	const service = new MenuOptionServiceImpl()
+	try {
+		const menuOptionValues = await service.addMenuOption(menu_id, newMenuOption)
 
-		const option_values = await trx
-			.insertInto("menu_option_values")
-			.values(
-				newVariant.values.map(({ name }) => ({
-					name,
-					menu_option_id: menu_option.id,
-				}))
-			)
-			.returningAll()
-			.execute()
+		return new Response(
+			JSON.stringify({
+				message: "successfully added new menu variant option.",
+				data: menuOptionValues,
+			})
+		)
+	} catch (err) {
+		console.error(err)
 
-		return {
-			...menu_option,
-			option_values: [...option_values],
-		}
-	})
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully added new menu variant.",
-			data: variantValues,
-		})
-	)
+		return new Response(
+			JSON.stringify({
+				status: "error",
+				message: "error when adding new menu option",
+			}),
+			{ status: 500 }
+		)
+	}
 }

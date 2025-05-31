@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminOrdersReturnType } from "@/database/queries"
+import type { AdminOrder } from "@/types/"
 import { formatCurrency, formatDate, valueUpdater } from "@/lib/utils"
 import {
 	Table,
@@ -9,12 +9,22 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import {
+	Select,
+	SelectValue,
+	SelectTrigger,
+	SelectContent,
+	SelectItem,
+} from "@/components/ui/select"
 import {
 	createColumnHelper,
 	FlexRender,
 	getCoreRowModel,
 	getExpandedRowModel,
+	getFilteredRowModel,
 	useVueTable,
+	type ColumnFiltersState,
 	type ExpandedState,
 } from "@tanstack/vue-table"
 import { h, ref } from "vue"
@@ -22,10 +32,10 @@ import OrderRowAction from "./OrderRowAction.vue"
 import OrderStatus from "./OrderStatus.vue"
 
 interface Props {
-	orders: AdminOrdersReturnType
+	orders: AdminOrder[]
 }
 
-const columnHelper = createColumnHelper<AdminOrdersReturnType[0]>()
+const columnHelper = createColumnHelper<AdminOrder>()
 
 const columns = [
 	columnHelper.accessor("user_name", {
@@ -34,7 +44,7 @@ const columns = [
 	}),
 	columnHelper.accessor("status", {
 		header: "status",
-		cell: (ctx) => h(OrderStatus, { status: ctx.getValue() ?? "" }),
+		cell: (ctx) => h(OrderStatus, { status: ctx.getValue() }),
 	}),
 	columnHelper.accessor(
 		(ctx) => {
@@ -68,6 +78,7 @@ const columns = [
 ]
 
 const isExpanded = ref<ExpandedState>({})
+const columnFilters = ref<ColumnFiltersState>([])
 const { orders } = defineProps<Props>()
 
 const table = useVueTable({
@@ -77,15 +88,53 @@ const table = useVueTable({
 	getExpandedRowModel: getExpandedRowModel(),
 	onExpandedChange: (updaterOrValue) =>
 		valueUpdater(updaterOrValue, isExpanded),
+	getFilteredRowModel: getFilteredRowModel(),
+	onColumnFiltersChange: (updaterOrValue) =>
+		valueUpdater(updaterOrValue, columnFilters),
 	state: {
 		get expanded() {
 			return isExpanded.value
+		},
+		get columnFilters() {
+			return columnFilters.value
 		},
 	},
 })
 </script>
 
 <template>
+	<div class="flex gap-4">
+		<Input
+			placeholder="filter by username"
+			:model-value="table?.getColumn('user_name')?.getFilterValue() as string"
+			@update:model-value="
+				table?.getColumn('user_name')?.setFilterValue($event)
+			"
+		/>
+
+		<Select
+			:model-value="table.getColumn('status')?.getFilterValue() as string"
+			@update:model-value="
+				(value) => {
+					return value === 'all'
+						? table.getColumn('status')?.setFilterValue(null)
+						: table?.getColumn('status')?.setFilterValue(value)
+				}
+			"
+		>
+			<SelectTrigger>
+				<SelectValue placeholder="Filter by status" />
+			</SelectTrigger>
+
+			<!-- TODO: get statuses from database -->
+			<SelectContent>
+				<SelectItem value="all"> All </SelectItem>
+				<SelectItem value="completed"> Completed </SelectItem>
+				<SelectItem value="pending"> Pending </SelectItem>
+			</SelectContent>
+		</Select>
+	</div>
+
 	<Table>
 		<TableHeader>
 			<TableRow

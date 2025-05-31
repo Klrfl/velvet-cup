@@ -17,13 +17,13 @@ import { Button } from "@/components/ui/button"
 
 import type { MenuComplete } from "@/types"
 import { ref } from "vue"
-import type { menuAdminReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 const open = defineModel<boolean>({ required: true })
 
 interface Props {
 	menuId: MenuComplete["id"]
-	option: menuAdminReturnType[0]["options"][0]
+	option: AdminMenuReturnType[0]["options"][0]
 }
 
 const props = defineProps<Props>()
@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 async function handleEditOption(
 	menuId: MenuComplete["id"],
-	option: menuAdminReturnType[0]["options"][0]
+	option: AdminMenuReturnType[0]["options"][0]
 ) {
 	const response = await fetch(
 		`/api/admin/menu/${menuId}/options/${option.id}`,

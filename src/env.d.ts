@@ -1,3 +1,7 @@
+/// <reference types="astro/client" />
+
+import type { Session } from "@/lib/auth"
+
 interface ImportMetaEnv {
 	readonly DB_DATABASE: string | null
 	readonly DB_PASSWORD: string | null
@@ -11,4 +15,12 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
 	readonly env: ImportMetaEnv
+}
+
+declare global {
+	namespace App {
+		interface Locals {
+			session: Session | null
+		}
+	}
 }

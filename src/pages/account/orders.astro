@@ -1,28 +1,30 @@
 ---
 import AccountLayout from "@/layouts/AccountLayout.astro"
-import OrderItem from "@/components/order/OrderItem.astro"
+import OrderItem from "@/components/order/OrderItem.vue"
 
-import { ordersQuery } from "@/database/queries"
-import { auth } from "@/lib/auth"
+import OrderServiceImpl from "@/lib/services/order"
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 
 if (!session) {
 	return Astro.redirect("/")
 }
 
-const orders = await ordersQuery
-	.where("user_id", "=", session.user.id)
-	.orderBy("orders.created_at desc")
-	.execute()
+const MIDTRANS_CLIENT_KEY = import.meta.env.MIDTRANS_CLIENT_KEY
+
+const orderService = new OrderServiceImpl()
+const orders = await orderService.getOrders(session.user.id)
 ---
 
 <AccountLayout heading="Your orders">
 	<section class="app-section col-span-10">
 		<ul class="grid gap-8">
-			{orders.map((order) => <OrderItem {order} />)}
+			{orders.map((order) => <OrderItem {order} client:load />)}
 		</ul>
 	</section>
+
+	<script
+		is:inline
+		src="https://app.sandbox.midtrans.com/snap/snap.js"
+		data-client-key={MIDTRANS_CLIENT_KEY}></script>
 </AccountLayout>

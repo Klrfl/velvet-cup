@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button"
-import type { BasketReturnType } from "@/database/queries"
+import type { BasketComplete } from "@/types"
 
 interface Props {
-	basketItem: BasketReturnType[0]
+	basketItem: BasketComplete
 }
 
 const { basketItem: item } = defineProps<Props>()
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 					new Intl.NumberFormat("id-ID", {
 						style: "currency",
 						currency: "IDR",
-					}).format(item.price)
+					}).format(Number(item.price))
 				}}
 			</span>
 

@@ -8,7 +8,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-	<Button @click="emit('expand')" variant="outline" title="See order details">
+	<Button variant="outline" title="See order details" @click="emit('expand')">
 		<Ellipsis />
 	</Button>
 </template>

@@ -37,10 +37,10 @@ import type { MenuVariant } from "@/types"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
-import type { menuAdminReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 interface Props {
-	menu: menuAdminReturnType[0]
+	menu: AdminMenuReturnType[0]
 	variants: MenuVariant[]
 	categories: {
 		id: number
@@ -110,9 +110,9 @@ async function handleAddOption(form: HTMLFormElement) {
 }
 
 const isEditOptionDialogOpen = ref(false)
-const activeOption = ref<menuAdminReturnType[0]["options"][0]>()
+const activeOption = ref<AdminMenuReturnType[0]["options"][0]>()
 
-function handleEditOption(option: menuAdminReturnType[0]["options"][0]) {
+function handleEditOption(option: AdminMenuReturnType[0]["options"][0]) {
 	isEditOptionDialogOpen.value = true
 	activeOption.value = option
 }
