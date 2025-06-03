@@ -6,9 +6,11 @@ import type {
 	MenuVariant,
 	UpdateableMenuVariant,
 } from "@/types"
+import { sql } from "kysely"
+import { jsonArrayFrom } from "kysely/helpers/postgres"
 
-interface MenuVariantService {
-	//TODO: implement select variant based on menu id
+export interface MenuVariantService {
+	getVariants(id: MenuItem["id"]): Promise<MenuVariant[]>
 	addVariant(
 		menu_id: MenuItem["id"],
 		variant: InsertableMenuVariant
@@ -19,7 +21,38 @@ interface MenuVariantService {
 	): Promise<BaseMenuVariant>
 }
 
-export default class MenuVariantServiceImpl implements MenuVariantService {
+export default class KyselyMenuVariantService implements MenuVariantService {
+	async getVariants(id: MenuItem["id"]): Promise<MenuVariant[]> {
+		const variants = await db
+			.selectFrom("menu_variants as mv")
+			.select((eb) => [
+				"mv.id",
+				"mv.name",
+				"mv.price",
+				jsonArrayFrom(
+					eb
+						.selectFrom("menu_variant_options as mvo")
+						.leftJoin(
+							"menu_option_values as mov",
+							"mov.id",
+							"mvo.option_value_id"
+						)
+						.leftJoin("menu_options as mo", "mo.id", "mov.menu_option_id")
+						.whereRef("mvo.variant_id", "=", "mv.id")
+						.select((eb) => [
+							"option_value_id",
+							eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
+							eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
+						])
+				).as("options"),
+			])
+			.where("mv.menu_id", "=", Number(id))
+			.execute()
+
+		if (!variants) throw new Error("failed to get variant")
+		return variants
+	}
+
 	async addVariant(menu_id: MenuItem["id"], variant: InsertableMenuVariant) {
 		const newVariant = await db.transaction().execute(async (tx) => {
 			const newVariant = await tx

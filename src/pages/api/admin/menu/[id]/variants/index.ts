@@ -1,5 +1,5 @@
+import KyselyMenuVariantServiceFactory from "@/lib/factories/menu-variant.factory"
 import type { APIRoute } from "astro"
-import MenuVariantServiceImpl from "@/lib/services/menu-variant"
 import { z } from "astro:content"
 
 export const POST: APIRoute = async ({ request, params }) => {
@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request, params }) => {
 		)
 	}
 
-	const service = new MenuVariantServiceImpl()
+	const service = new KyselyMenuVariantServiceFactory().createService()
 	try {
 		const result = await service.addVariant(menu_id, newVariant)
 
