@@ -1,4 +1,3 @@
-import { db } from "@/database"
 import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
@@ -60,7 +59,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		newMenu = { ...newMenu, image: encodedImage }
 	}
 
-	const menuService = new KyselyMenuServiceFactory().createService(db)
+	const menuService = new KyselyMenuServiceFactory().createService()
 
 	try {
 		const menu = await menuService.addMenu(newMenu)
@@ -94,7 +93,7 @@ export const DELETE: APIRoute = async ({ params }) => {
 		)
 	}
 
-	const menuService = new KyselyMenuServiceFactory().createService(db)
+	const menuService = new KyselyMenuServiceFactory().createService()
 
 	try {
 		menuService.deleteMenu(menuId)

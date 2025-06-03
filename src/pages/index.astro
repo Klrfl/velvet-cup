@@ -8,11 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Image } from "astro:assets"
 import { Search } from "lucide-vue-next"
 
-import { db } from "@/database"
 import CategoryServiceImpl from "@/lib/services/category"
 import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 
-const menuService = new KyselyMenuServiceFactory().createService(db)
+const menuService = new KyselyMenuServiceFactory().createService()
 const menus = await menuService.getMenus({ limit: 9, with: ["price"] })
 
 const categoryService = new CategoryServiceImpl()

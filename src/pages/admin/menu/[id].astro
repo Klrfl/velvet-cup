@@ -17,7 +17,7 @@ if (!id || isNaN(menuId)) {
 	return Astro.rewrite("/404")
 }
 
-const menuService = new KyselyMenuServiceFactory().createService(db)
+const menuService = new KyselyMenuServiceFactory().createService()
 const menu = await menuService.getAdminMenu(menuId)
 
 if (!menu) {

@@ -2,9 +2,8 @@
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuList from "@/components/MenuList.vue"
 import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
-import { db } from "@/database"
 
-const menuService = new KyselyMenuServiceFactory().createService(db)
+const menuService = new KyselyMenuServiceFactory().createService()
 const menus = await menuService.getMenus({ with: ["category"] })
 ---
 

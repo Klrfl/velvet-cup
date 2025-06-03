@@ -8,6 +8,7 @@ import type {
 } from "@/types"
 
 interface MenuVariantService {
+	//TODO: implement select variant based on menu id
 	addVariant(
 		menu_id: MenuItem["id"],
 		variant: InsertableMenuVariant
