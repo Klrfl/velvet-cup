@@ -1,6 +1,6 @@
-import { db } from "@/database"
-import { updateableMenuVariantsSchema } from "@/types"
+import KyselyMenuVariantServiceFactory from "@/lib/factories/menu-variant.factory"
 import type { APIRoute } from "astro"
+import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
 	const { variant_id: raw_variant_id } = params
@@ -14,6 +14,11 @@ export const PUT: APIRoute = async ({ request, params }) => {
 
 	const body = await request.json()
 
+	const updateableMenuVariantsSchema = z.object({
+		name: z.string().nonempty(),
+		price: z.coerce.number(),
+	})
+
 	const { data: inputVariant, error } =
 		updateableMenuVariantsSchema.safeParse(body)
 	if (error || !inputVariant) {
@@ -24,17 +29,24 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		})
 	}
 
-	const newVariant = db
-		.updateTable("menu_variants as mv")
-		.set(inputVariant)
-		.where("id", "=", variant_id)
-		.returningAll()
-		.executeTakeFirst()
+	const service = new KyselyMenuVariantServiceFactory().createService()
+	try {
+		const result = await service.updateVariant(variant_id, inputVariant)
 
-	return new Response(
-		JSON.stringify({
-			message: "successfully updated variant.",
-			data: newVariant,
-		})
-	)
+		return new Response(
+			JSON.stringify({
+				message: "successfully updated variant.",
+				data: result,
+			})
+		)
+	} catch (error) {
+		console.error(error)
+
+		return new Response(
+			JSON.stringify({
+				message: "error when updating variant",
+			}),
+			{ status: 500 }
+		)
+	}
 }

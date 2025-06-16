@@ -5,26 +5,23 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-vue-next"
 
-import { db } from "@/database/"
-import { menuQuery as initialMenuQuery } from "@/database/queries"
+import CategoryServiceImpl from "@/lib/services/category"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 
 const params = Astro.url.searchParams
 
 const searchQuery = params.get("query") ?? ""
 const categoryQuery = params.get("category") ?? 0
 
-let menuQuery = initialMenuQuery
+const menuService = new KyselyMenuServiceFactory().createService()
+const menus = await menuService.getMenus({
+	search_term: searchQuery,
+	category_id: Number(categoryQuery),
+	with: ["price"],
+})
 
-if (searchQuery !== "") {
-	menuQuery = menuQuery.where("menu.name", "ilike", `%${searchQuery}%`)
-}
-
-if (categoryQuery !== 0) {
-	menuQuery = menuQuery.where("menu.category_id", "=", Number(categoryQuery))
-}
-
-const menus = await menuQuery.where("deleted_at", "is", null).execute()
-const categories = await db.selectFrom("menu_categories").selectAll().execute()
+const categoryService = new CategoryServiceImpl()
+const categories = await categoryService.getCategories()
 ---
 
 <Layout title="Our menu - Velvet Cup" description="List of our menu">

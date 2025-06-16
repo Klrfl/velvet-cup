@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Pencil } from "lucide-vue-next"
 import { Button } from "@/components/ui/button"
-import type { menuAdminReturnType } from "@/database/queries"
+import type { AdminMenuReturnType } from "@/lib/services/menu"
 
 interface Props {
-	option: menuAdminReturnType[0]["options"][0]
+	option: AdminMenuReturnType[0]["options"][0]
 }
 
 const props = defineProps<Props>()

@@ -1,11 +1,10 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import OrdersTable from "@/components/admin/orders/OrdersTable.vue"
-import { adminOrdersQuery } from "@/database/queries"
+import OrderServiceImpl from "@/lib/services/order"
 
-const orders = await adminOrdersQuery
-	.orderBy("orders.created_at desc")
-	.execute()
+const orderService = new OrderServiceImpl()
+const orders = await orderService.getAdminOrders()
 ---
 
 <AdminLayout title="Orders - Velvet Cup">

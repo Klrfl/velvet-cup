@@ -4,11 +4,7 @@ import { Image } from "astro:assets"
 import MenuOrder from "@/components/MenuOrder.vue"
 import MenuItem from "@/components/MenuItem.astro"
 
-import { db } from "@/database"
-import { menuQuery } from "@/database/queries"
-import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres"
-import { auth } from "@/lib/auth"
-import { sql } from "kysely"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 
 const { id: menuId } = Astro.params
 
@@ -16,58 +12,16 @@ if (isNaN(Number(menuId))) {
 	return Astro.rewrite("/404")
 }
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 
-const menu = await menuQuery
-	.leftJoin("menu_categories as c", "c.id", "menu.category_id")
-	.select((eb) => [
-		"menu.category_id",
-		"menu.description",
-		"c.name as category_name",
-		jsonArrayFrom(
-			eb
-				.selectFrom("menu_variants as mv")
-				.leftJoin("menu_variant_options as mvo", "mvo.variant_id", "mv.id")
-				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
-				.leftJoin("menu_options as mo", "mov.menu_option_id", "mo.id")
-				.select((eb) => [
-					"mv.id",
-					"mv.name",
-					"mv.price",
-					eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
-					eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
-				])
-				.whereRef("mv.menu_id", "=", "menu.id")
-		).as("variants"),
-	])
-	.where("menu.id", "=", Number(menuId))
-	.executeTakeFirst()
+const menuService = new KyselyMenuServiceFactory().createService()
+const menu = await menuService.getMenu(Number(menuId))
 
 if (!menu) {
 	return Astro.rewrite("/404")
 }
 
-const relatedMenus = await db
-	.selectFrom("menu")
-	.select((eb) => [
-		"menu.id",
-		"menu.name",
-		"menu.image",
-		jsonObjectFrom(
-			eb
-				.selectFrom("menu_variants as mv")
-				.select(["mv.name", "mv.price"])
-				.whereRef("mv.menu_id", "=", "menu.id")
-				.orderBy("mv.price asc")
-				.limit(1)
-		).as("variant"),
-	])
-	.where("category_id", "=", menu.category_id)
-	.where("deleted_at", "is", null)
-	.limit(9)
-	.execute()
+const relatedMenus = await menuService.getMenus({ limit: 9, with: ["price"] })
 ---
 
 <Layout title={`${menu.name} - Velvet Cup`} bodyClass="content-start">

@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -34,6 +34,11 @@ export const POST: APIRoute = async ({ request }) => {
 		)
 	}
 
+	/** TODO:
+	 * figure out an architecture solution for
+	 * adding a separate but tightly coupled resource
+	 * for example, an image to a menu
+	 * */
 	if (inputMenu.image) {
 		const imageBuf = await inputMenu.image.arrayBuffer()
 		let encodedImage = Buffer.from(imageBuf).toString("base64")
@@ -44,13 +49,19 @@ export const POST: APIRoute = async ({ request }) => {
 		inputMenu = { ...inputMenu, image: null }
 	}
 
-	const menu = await db
-		.insertInto("menu")
-		.values(inputMenu)
-		.returningAll()
-		.executeTakeFirst()
+	const menuService = new KyselyMenuServiceFactory().createService()
+	try {
+		const menu = await menuService.addMenu(inputMenu)
 
-	if (!menu) {
+		return new Response(
+			JSON.stringify({
+				message: "added a new menu successfully.",
+				data: menu,
+			})
+		)
+	} catch (error) {
+		console.error(error)
+
 		return new Response(
 			JSON.stringify({
 				message: "there was an error adding a new menu.",
@@ -58,11 +69,4 @@ export const POST: APIRoute = async ({ request }) => {
 			{ status: 500 }
 		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "added a new menu successfully.",
-			data: menu,
-		})
-	)
 }

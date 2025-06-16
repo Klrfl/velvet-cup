@@ -1,9 +1,17 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
 import { formatDate } from "@/lib/utils"
-import { db } from "@/database"
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableCell,
+} from "@/components/ui/table"
+import { ConcreteUserServiceFactory } from "@/lib/services/user"
 
-const users = await db.selectFrom("user").selectAll().execute()
+const userService = new ConcreteUserServiceFactory().createService()
+const users = await userService.getAll()
 ---
 
 <AdminLayout title="Customers - Velvet Cup">
@@ -12,16 +20,34 @@ const users = await db.selectFrom("user").selectAll().execute()
 	</header>
 
 	<section class="app-section main-section">
-		<ul>
-			{
-				users.map((user) => (
-					<li class="flex gap-4">
-						<span>{user.name}</span>
-						<span>{user.email}</span>
-						<span class="ml-auto">{formatDate(user.createdAt)}</span>
-					</li>
-				))
-			}
-		</ul>
+		<Table>
+			<TableHeader>
+				<TableRow>
+					<TableCell> Nama </TableCell>
+					<TableCell> Email </TableCell>
+					<TableCell> Bergabung pada </TableCell>
+				</TableRow>
+			</TableHeader>
+
+			<TableBody>
+				{
+					users.map((user) => (
+						<TableRow>
+							<TableCell>
+								<span>{user.name}</span>
+							</TableCell>
+
+							<TableCell>
+								<span>{user.email}</span>
+							</TableCell>
+
+							<TableCell>
+								<span class="ml-auto">{formatDate(user.createdAt)}</span>
+							</TableCell>
+						</TableRow>
+					))
+				}
+			</TableBody>
+		</Table>
 	</section>
 </AdminLayout>

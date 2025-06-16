@@ -1,4 +1,4 @@
-import { db } from "@/database"
+import CategoryServiceImpl from "@/lib/services/category"
 import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
@@ -9,7 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
 		.nonempty()
 		.safeParse(inputName)
 
-	if (!error || !name) {
+	if (error || !name) {
 		console.error(error)
 
 		return new Response(JSON.stringify({ message: "body malformed" }), {
@@ -17,13 +17,20 @@ export const POST: APIRoute = async ({ request }) => {
 		})
 	}
 
-	const result = await db
-		.insertInto("menu_categories")
-		.values({ name })
-		.returningAll()
-		.executeTakeFirst()
+	const categoryService = new CategoryServiceImpl()
 
-	if (!result) {
+	try {
+		const result = await categoryService.addCategory({ name })
+
+		return new Response(
+			JSON.stringify({
+				message: "successfully added new category",
+				data: result,
+			})
+		)
+	} catch (error) {
+		console.error()
+
 		return new Response(
 			JSON.stringify({
 				message: "failed to insert new menu category.",
@@ -31,11 +38,4 @@ export const POST: APIRoute = async ({ request }) => {
 			{ status: 500 }
 		)
 	}
-
-	return new Response(
-		JSON.stringify({
-			message: "successfully added new category",
-			data: result,
-		})
-	)
 }

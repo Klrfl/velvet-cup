@@ -8,17 +8,16 @@ import { Input } from "@/components/ui/input"
 import { Image } from "astro:assets"
 import { Search } from "lucide-vue-next"
 
-import { db } from "@/database"
-import { auth } from "@/lib/auth"
-import { menuQuery } from "@/database/queries"
+import CategoryServiceImpl from "@/lib/services/category"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
 
-const menus = await menuQuery.limit(9).execute()
+const menuService = new KyselyMenuServiceFactory().createService()
+const menus = await menuService.getMenus({ limit: 9, with: ["price"] })
 
-const categories = await db.selectFrom("menu_categories").selectAll().execute()
+const categoryService = new CategoryServiceImpl()
+const categories = await categoryService.getCategories()
 
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 ---
 
 <Layout title="Home - Velvet Cup">

@@ -2,11 +2,7 @@
 import AccountLayout from "@/layouts/AccountLayout.astro"
 import SignOutConfirm from "@/components/auth/SignOutConfirm.vue"
 
-import { auth } from "@/lib/auth"
-
-const session = await auth.api.getSession({
-	headers: Astro.request.headers,
-})
+const session = Astro.locals.session
 ---
 
 <AccountLayout heading="Your account" title="Your account - Velvet Cup">

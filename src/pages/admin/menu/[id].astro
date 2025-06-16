@@ -3,10 +3,10 @@ import AdminLayout from "@/layouts/AdminLayout.astro"
 import MenuEdit from "@/components/MenuEdit.vue"
 
 import { formatDate } from "@/lib/utils"
-import { db } from "@/database"
-import { adminMenuQuery } from "@/database/queries"
-import { jsonArrayFrom } from "kysely/helpers/postgres"
-import { sql } from "kysely"
+
+import CategoryServiceImpl from "@/lib/services/category"
+import KyselyMenuServiceFactory from "@/lib/factories/menu.factory"
+import KyselyMenuVariantServiceFactory from "@/lib/factories/menu-variant.factory"
 
 const { id } = Astro.params
 
@@ -15,35 +15,18 @@ if (!id || isNaN(menuId)) {
 	return Astro.rewrite("/404")
 }
 
-const menu = await adminMenuQuery.where("m.id", "=", menuId).executeTakeFirst()
+const menuService = new KyselyMenuServiceFactory().createService()
+const menu = await menuService.getAdminMenu(menuId)
 
 if (!menu) {
 	return Astro.rewrite("/404")
 }
 
-const variants = await db
-	.selectFrom("menu_variants as mv")
-	.select((eb) => [
-		"mv.id",
-		"mv.name",
-		"mv.price",
-		jsonArrayFrom(
-			eb
-				.selectFrom("menu_variant_options as mvo")
-				.leftJoin("menu_option_values as mov", "mov.id", "mvo.option_value_id")
-				.leftJoin("menu_options as mo", "mo.id", "mov.menu_option_id")
-				.whereRef("mvo.variant_id", "=", "mv.id")
-				.select((eb) => [
-					"option_value_id",
-					eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
-					eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
-				])
-		).as("options"),
-	])
-	.where("mv.menu_id", "=", Number(id))
-	.execute()
+const variantsService = new KyselyMenuVariantServiceFactory().createService()
+const variants = await variantsService.getVariants(menuId)
 
-const categories = await db.selectFrom("menu_categories").selectAll().execute()
+const categoryService = new CategoryServiceImpl()
+const categories = await categoryService.getCategories()
 ---
 
 <AdminLayout>
