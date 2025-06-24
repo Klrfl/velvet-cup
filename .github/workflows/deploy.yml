@@ -1,0 +1,37 @@
+name: 'Deploy to premiere'
+
+on:
+  push: 
+    branches: 
+      - main
+
+env:
+  BETTER_AUTH_SECRET=${{ SECRETS.BETTER_AUTH_SECRET }}
+  BETTER_AUTH_URL=https://velvet-cup.munthe.dev/
+  DATABASE_URL=${{ vars.DATABASE_URL }}
+  MIDTRANS_CLIENT_KEY=${{ vars.MIDTRANS_CLIENT_KEY }}
+  MIDTRANS_SERVER_KEY=${{ vars.MIDTRANS_SERVER_KEY }}
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+
+      - name: 'Setup pnpm'
+        uses: pnpm/action-setup@v4
+
+      - run: 'pnpm build'
+
+      - name: 'Copy app to EC2 Premiere'
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete
+          path: .
+          remote_path: /var/www/velvet-cup.munthe.dev
+          remote_host: ${{ SECRETS.EC2_HOST }}
+          remote_user: ${{ SECRETS.EC2_USER }}
+          remote_key: ${{ SECRETS.EC2_PRIVATE_KEY }}
+
