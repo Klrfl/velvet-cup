@@ -26,7 +26,7 @@ jobs:
       - run: 'pnpm build'
 
       - name: 'Copy app to EC2 Premiere'
-        uses: burnett01/rsync-deployments@5.1
+        uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: -avzr --delete
           path: .
