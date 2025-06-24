@@ -2,15 +2,14 @@ name: 'Deploy to premiere'
 
 on:
   push: 
-    branches: 
-      - main
+    branches: [main]
 
 env:
-  BETTER_AUTH_SECRET=${{ SECRETS.BETTER_AUTH_SECRET }}
-  BETTER_AUTH_URL=https://velvet-cup.munthe.dev/
-  DATABASE_URL=${{ vars.DATABASE_URL }}
-  MIDTRANS_CLIENT_KEY=${{ vars.MIDTRANS_CLIENT_KEY }}
-  MIDTRANS_SERVER_KEY=${{ vars.MIDTRANS_SERVER_KEY }}
+  BETTER_AUTH_SECRET: ${{ SECRETS.BETTER_AUTH_SECRET }}
+  BETTER_AUTH_URL: https://velvet-cup.munthe.dev/
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+  MIDTRANS_CLIENT_KEY: ${{ vars.MIDTRANS_CLIENT_KEY }}
+  MIDTRANS_SERVER_KEY: ${{ vars.MIDTRANS_SERVER_KEY }}
 
 
 jobs:
