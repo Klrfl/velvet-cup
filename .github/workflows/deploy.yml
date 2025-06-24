@@ -21,15 +21,29 @@ jobs:
 
       - name: 'Setup pnpm'
         uses: pnpm/action-setup@v4
+        with:
+          run_install: true
 
       - run: 'pnpm build'
+
+      - run: |
+          echo "BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET" >> .env
+          echo "BETTER_AUTH_URL=$BETTER_AUTH_URL" >> .env
+
+          echo "DB_DATABASE=$DB_DATABASE" >> .env
+          echo "DB_USERNAME=$DB_USERNAME" >> .env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+          echo "DB_PORT=$DB_PORT" >> .env
+          echo "DB_HOST=$DB_HOST" >> .env
+
+          echo "DATABASE_URL=$DATABASE_URL" >> .env
 
       - name: 'Copy app to EC2 Premiere'
         uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: -avzr --delete
           path: .
-          remote_path: /var/www/velvet-cup.munthe.dev
+          remote_path: /var/www/velvet-cup.munthe.dev/
           remote_host: ${{ SECRETS.EC2_HOST }}
           remote_user: ${{ SECRETS.EC2_USER }}
           remote_key: ${{ SECRETS.EC2_PRIVATE_KEY }}
