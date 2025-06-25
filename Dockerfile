@@ -1,4 +1,4 @@
-FROM node:lts AS base
+FROM node:22-alpine AS base
 WORKDIR /app
 RUN corepack enable
 

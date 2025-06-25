@@ -57,7 +57,6 @@ const corsMiddleware = defineMiddleware(async (_, next) => {
 	response.headers.set("Access-Control-Allow-Credentials", "true")
 	response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 
-	console.log(response.headers)
 	return response
 })
 
