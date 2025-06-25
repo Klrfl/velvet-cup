@@ -16,4 +16,5 @@ ENV PORT=4321
 
 EXPOSE 4321
 
+CMD ["pnpx", "@better-auth/cli", "migrate", "--y", "&&", "pnpm", "kysely", "migrate:latest"]
 CMD ["pnpm", "start"]
