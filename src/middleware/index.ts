@@ -46,4 +46,23 @@ const authMiddleware = defineMiddleware(
 	}
 )
 
-export const onRequest = sequence(adminMiddleware, authMiddleware)
+const corsMiddleware = defineMiddleware(async (_, next) => {
+	const response = await next()
+
+	response.headers.set("Access-Control-Allow-Origin", import.meta.env.SITE)
+	response.headers.set(
+		"Access-Control-Allow-Headers",
+		"Origin, Content-Type, Accept"
+	)
+	response.headers.set("Access-Control-Allow-Credentials", "true")
+	response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+
+	console.log(response.headers)
+	return response
+})
+
+export const onRequest = sequence(
+	corsMiddleware,
+	adminMiddleware,
+	authMiddleware
+)
