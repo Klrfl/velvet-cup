@@ -1,0 +1,50 @@
+services:
+  web:
+    build: .
+    ports:
+      - "80:4321"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: ./.env
+        required: true
+
+    networks:
+      - velvet-cup_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:4321"]
+
+    command: ["pnpm", "start"]
+
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USER}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Health check configuration to verify PostgreSQL readiness
+    ports:
+      - 5432:5432
+    networks:
+      - velvet-cup_network
+    healthcheck:
+      test: 
+        - "CMD-SHELL"                         # Use the shell form to execute the health check command
+        - "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" # Check if PostgreSQL is ready
+      interval: 5s                             # Time between health check attempts
+      timeout: 5s                              # Time to wait for a response from the health check command
+      retries: 5                               # Number of retries before marking the container as unhealthy
+
+networks:
+  velvet-cup_network:
+    driver: bridge
+
+volumes:
+  pgdata:

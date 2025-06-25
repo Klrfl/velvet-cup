@@ -16,4 +16,5 @@ export default defineConfig({
 	}),
 
 	integrations: [vue(), tailwind({ applyBaseStyles: false })],
+	site: "https://velvet-cup.munthe.dev",
 })
