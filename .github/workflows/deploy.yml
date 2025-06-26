@@ -23,6 +23,8 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           run_install: true
+          args: --prod
+          cache: pnpm
 
       - run: 'pnpm build'
 
@@ -41,7 +43,7 @@ jobs:
       - name: 'Copy app to EC2 Premiere'
         uses: burnett01/rsync-deployments@7.0.2
         with:
-          switches: -avzr --delete
+          switches: -avzr --delete --include=".env" --include="node_modules/***" --include="dist/***" --include="package.json" --include="pnpm-lock.yaml" --exclude="*/"
           path: .
           remote_path: /var/www/velvet-cup.munthe.dev/
           remote_host: ${{ SECRETS.EC2_HOST }}
