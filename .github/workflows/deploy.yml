@@ -26,19 +26,14 @@ jobs:
           args: --prod
           cache: pnpm
 
-      - run: 'pnpm build'
-
       - run: |
           echo "BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET" >> .env
           echo "BETTER_AUTH_URL=$BETTER_AUTH_URL" >> .env
 
-          echo "DB_DATABASE=$DB_DATABASE" >> .env
-          echo "DB_USERNAME=$DB_USERNAME" >> .env
-          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-          echo "DB_PORT=$DB_PORT" >> .env
-          echo "DB_HOST=$DB_HOST" >> .env
-
+          echo "MIDTRANS_CLIENT_KEY= $MIDTRANS_CLIENT_KEY" >> .env
+          echo "MIDTRANS_SERVER_KEY= $MIDTRANS_SERVER_KEY" >> .env
           echo "DATABASE_URL=$DATABASE_URL" >> .env
+      - run: 'pnpm build'
 
       - name: 'Copy app to EC2 Premiere'
         uses: burnett01/rsync-deployments@7.0.2
