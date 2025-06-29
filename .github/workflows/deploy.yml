@@ -33,7 +33,7 @@ jobs:
           echo "MIDTRANS_CLIENT_KEY= $MIDTRANS_CLIENT_KEY" >> .env
           echo "MIDTRANS_SERVER_KEY= $MIDTRANS_SERVER_KEY" >> .env
           echo "DATABASE_URL=$DATABASE_URL" >> .env
-      - run: 'pnpm build'
+      - run: 'export $(cat .env) && pnpm build'
 
       - name: 'Copy app to EC2 Premiere'
         uses: burnett01/rsync-deployments@7.0.2
