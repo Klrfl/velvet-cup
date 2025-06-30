@@ -10,9 +10,11 @@ import {
 	SelectContent,
 	SelectItem,
 } from "@/components/ui/select"
+import { Toaster } from "@/components/ui/sonner"
 import type { Selectable } from "kysely"
 import type { MenuCategories } from "@/database/database.types"
 import { usePreviewImage } from "@/composables"
+import { toast } from "vue-sonner"
 
 const { previewImage, previewURL, newImage } = usePreviewImage()
 
@@ -26,9 +28,11 @@ async function handleAddMenu(form: HTMLFormElement) {
 
 	const { data: menu } = await res.json()
 
-	if (res.status === 200) {
-		window.location.assign(`/admin/menu/${menu.id}`)
+	if (res.status !== 200) {
+		return toast.error("failed to add new menu.")
 	}
+
+	window.location.assign(`/admin/menu/${menu.id}`)
 }
 
 interface Props {
@@ -102,4 +106,6 @@ const { categories } = defineProps<Props>()
 			<Button type="submit">tambahkan menu baru</Button>
 		</form>
 	</div>
+
+	<Toaster :rich-colors="true" />
 </template>
