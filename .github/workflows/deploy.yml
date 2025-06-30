@@ -48,12 +48,24 @@ jobs:
           remote_user: ${{ SECRETS.EC2_USER }}
           remote_key: ${{ SECRETS.EC2_PRIVATE_KEY }}
 
-      - name: 'Delete target directory before copying'
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ SECRETS.EC2_HOST }}
-          username: ${{ SECRETS.EC2_USER }}
-          key: ${{ SECRETS.EC2_PRIVATE_KEY }}
-          script: |
-            pm2 restart 'velvet cup'
+      - name: 'Configure SSH to restart app'
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host prod
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ SECRETS.EC2_USER }}
+          SSH_KEY: ${{ SECRETS.EC2_PRIVATE_KEY }}
+          SSH_HOST: ${{ SECRETS.EC2_HOST }}
+
+      - name: 'Restart app'
+        run: |
+          ssh prod 'pm2 restart "velvet cup"'
 
