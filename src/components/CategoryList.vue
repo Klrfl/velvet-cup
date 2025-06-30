@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { computed, ref } from "vue"
 import { z } from "astro/zod"
 import { toast } from "vue-sonner"
+import { useFetch } from "@vueuse/core"
 
 interface Props {
 	categories: Selectable<MenuCategories>[]
@@ -41,15 +42,22 @@ async function editCategory(
 	form: HTMLFormElement,
 	id: Selectable<MenuCategories>["id"]
 ) {
-	if (!selectedCategory.value)
+	if (!selectedCategory.value) {
 		return console.error("something wrong, display toast pls")
-	const formData = new FormData(form)
+	}
 
-	const response = await fetch(`/api/admin/categories/${id}/`, {
-		method: "PUT",
-		body: JSON.stringify({ name: formData.get("category-name") }),
-	})
-	const result = await response.json()
+	const formData = new FormData(form)
+	const { data, error } = await useFetch(`/api/admin/categories/${id}`)
+		.put({
+			name: formData.get("category-name"),
+		})
+		.json()
+
+	if (error.value) {
+		return toast.error(
+			`There was an error while editing ${formData.get("category-name")}.`
+		)
+	}
 
 	const schema = z.object({
 		message: z.string(),
@@ -58,9 +66,9 @@ async function editCategory(
 			name: z.string().nonempty(),
 		}),
 	})
-	const { data: newCategory, error } = schema.safeParse(result)
+	const { data: newCategory, error: parseError } = schema.safeParse(data.value)
 
-	if (error) {
+	if (parseError) {
 		return toast.error(
 			`there was an error while editing ${formData.get("category-name")}.`
 		)
