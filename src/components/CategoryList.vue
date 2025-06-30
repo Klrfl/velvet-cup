@@ -85,10 +85,16 @@ async function editCategory(
 }
 
 async function deleteCategory(id: number) {
-	const response = await fetch(`/api/admin/categories/${id}/`, {
-		method: "DELETE",
+	const { error } = await useFetch(`/api/admin/categories/${id}/`, {
+		headers: {
+			"Content-Type": "application/json",
+		},
 	})
-	if (response.status === 500) {
+		.delete()
+		.json()
+
+	if (error.value) {
+		console.error(error.value)
 		return toast.error(
 			`There was an error while deleting menu category. Try refreshing the page.`
 		)
