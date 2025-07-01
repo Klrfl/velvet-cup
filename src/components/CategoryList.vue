@@ -85,7 +85,11 @@ async function editCategory(
 }
 
 async function deleteCategory(id: number) {
-	const { error } = await useFetch(`/api/admin/categories/${id}/`)
+	const { error } = await useFetch(`/api/admin/categories/${id}/`, {
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
 		.delete()
 		.json()
 

@@ -48,27 +48,20 @@ const authMiddleware = defineMiddleware(
 
 const corsMiddleware = defineMiddleware(async ({ request }, next) => {
 	const response = await next()
+
 	response.headers.set(
 		"Access-Control-Allow-Origin",
 		import.meta.env.DEV ? "*" : import.meta.env.SITE
 	)
-
-	// don't respond to anything other than preflights
-	if (request.method !== "OPTIONS") return response
-
 	response.headers.set(
 		"Access-Control-Allow-Headers",
-		"Origin, Content-Type, Accept"
+		"Origin, Content-Type, Accept, X-TIMESTAMP"
 	)
 	response.headers.set("Access-Control-Allow-Credentials", "true")
 	response.headers.set(
 		"Access-Control-Allow-Methods",
 		"GET, POST, PUT, DELETE, OPTIONS"
 	)
-	// response.headers.set(
-	// 	"Access-Control-Request-Headers",
-	// 	"X-TIMESTAMP,Content-Type"
-	// )
 
 	return response
 })

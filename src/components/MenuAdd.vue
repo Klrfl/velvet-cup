@@ -26,6 +26,7 @@ async function handleAddMenu(form: HTMLFormElement) {
 	const res = await fetch(`/api/admin/menu/`, {
 		method: "POST",
 		mode: "same-origin",
+		credentials: "include",
 		headers,
 		body: formData,
 	})
