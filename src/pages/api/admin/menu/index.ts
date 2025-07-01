@@ -3,29 +3,19 @@ import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const POST: APIRoute = async ({ request }) => {
-	const formData = await request.formData()
-
-	const name = formData.get("menu_name")
-	const description = formData.get("menu_description")
-	const category_id = formData.get("menu_category")
-	const image = formData.get("menu_image")
+	const body = await request.json()
 
 	const inputSchema = z.object({
 		name: z.string(),
 		description: z.string(),
-		category_id: z.number(),
-		image: z.instanceof(File).optional(),
+		category_id: z.coerce.number(),
+		image: z.string().optional().nullable().default(null),
 	})
 
-	let inputMenu
-	try {
-		inputMenu = inputSchema.parse({
-			name,
-			description,
-			category_id: Number(category_id),
-			image,
-		})
-	} catch (error) {
+	let { data: inputMenu, error } = inputSchema.safeParse(body)
+
+	if (inputMenu === undefined || error) {
+		console.error(inputMenu)
 		console.error(error)
 
 		return new Response(
@@ -39,15 +29,15 @@ export const POST: APIRoute = async ({ request }) => {
 	 * adding a separate but tightly coupled resource
 	 * for example, an image to a menu
 	 * */
-	if (inputMenu.image) {
-		const imageBuf = await inputMenu.image.arrayBuffer()
-		let encodedImage = Buffer.from(imageBuf).toString("base64")
-		encodedImage = `data:${request.headers.get("content-type")};charset=utf-8;base64,${encodedImage}`
-
-		inputMenu = { ...inputMenu, image: encodedImage }
-	} else {
-		inputMenu = { ...inputMenu, image: null }
-	}
+	// if (inputMenu.image) {
+	// 	const imageBuf = await inputMenu.image.arrayBuffer()
+	// 	let encodedImage = Buffer.from(imageBuf).toString("base64")
+	// 	encodedImage = `data:${request.headers.get("content-type")};charset=utf-8;base64,${encodedImage}`
+	//
+	// 	inputMenu = { ...inputMenu, image: encodedImage }
+	// } else {
+	// 	inputMenu = { ...inputMenu, image: null }
+	// }
 
 	const menuService = new KyselyMenuServiceFactory().createService()
 	try {

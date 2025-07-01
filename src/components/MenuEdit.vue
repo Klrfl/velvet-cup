@@ -38,6 +38,8 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "vue-sonner"
 import { usePreviewImage } from "@/composables"
 import type { AdminMenuReturnType } from "@/lib/services/menu"
+import { encodeImageToBase64 } from "@/lib/utils"
+import { useFetch } from "@vueuse/core"
 
 interface Props {
 	menu: AdminMenuReturnType[0]
@@ -54,18 +56,32 @@ const categories = ref(props.categories)
 const menu = ref(props.menu)
 const variants = ref(props.variants)
 
+const MAX_FILE_SIZE = 250 * 1000 // 250 kb
+
 async function handleEditMenu(e: Event, id: number) {
 	const form = e.currentTarget as HTMLFormElement
 	const formData = new FormData(form)
 
-	const res = await fetch(`/api/admin/menu/${id}`, {
-		method: "PUT",
-		body: formData,
-	})
+	const rawImage = formData.get("image") as File
 
-	if (res.status === 200) {
-		toast.success("Successfully edited menu item")
+	const fileSize = rawImage.size
+	if (fileSize > MAX_FILE_SIZE) {
+		return toast.error("image is too big, please select a smaller image")
 	}
+
+	const encoded = await encodeImageToBase64(rawImage)
+
+	const body = {
+		...Object.fromEntries(formData.entries()),
+		image: encoded,
+	}
+
+	const { error } = await useFetch(`/api/admin/menu/${id}`).put(body).json()
+
+	if (error.value) {
+		return toast.error("something went wrong when editing menu item")
+	}
+	toast.success("Successfully edited menu item")
 }
 
 const newOptions = ref<string[]>([])
@@ -167,7 +183,9 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 	<figure
 		:class="[
 			'col-span-full md:col-span-3 grid items-center',
-			{ 'outline-dashed outline-primary-300 text-center': !previewURL },
+			{
+				'outline-dashed outline-primary-300 text-center': previewURL === '',
+			},
 		]"
 	>
 		<span v-if="!newImage && !menu.image">
@@ -191,41 +209,41 @@ const { previewURL, previewImage, newImage } = usePreviewImage()
 		enctype="multipart/form-data"
 		@submit.prevent="(e) => handleEditMenu(e, menu.id)"
 	>
-		<Label for="menu_name">Name</Label>
+		<Label for="name">Name</Label>
 		<Input
-			id="menu_name"
+			id="name"
 			v-model:model-value="menu.name as string"
 			type="text"
 			placeholder="nama"
-			name="menu_name"
+			name="name"
 			required
 		/>
 
-		<Label for="menu_image">Image</Label
+		<Label for="image">Image (max {{ MAX_FILE_SIZE / 1000 }} KB)</Label
 		><Input
-			id="menu_image"
+			id="image"
 			type="file"
-			name="menu_image"
+			name="image"
 			accept="image/*"
 			@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
 		/>
 
-		<Label for="menu_description">Description</Label>
+		<Label for="description">Description</Label>
 		<Textarea
-			id="menu_description"
+			id="description"
 			v-model:model-value="menu.description as string"
 			placeholder="deskripsi"
-			name="menu_description"
+			name="description"
 			:default-value="menu.description ?? ''"
 			required
 		>
 		</Textarea>
 
-		<Label for="menu_category">Category</Label>
+		<Label for="category">Category</Label>
 
 		<Select
-			id="menu_category"
-			name="menu_category"
+			id="category"
+			name="category_id"
 			:default-value="String(menu.category_id)"
 		>
 			<SelectTrigger>

@@ -41,3 +41,15 @@ export function formatCurrency(
 
 	return Intl.NumberFormat("id-ID", opts).format(amount)
 }
+
+export async function encodeImageToBase64(image: File) {
+	return new Promise((resolve, reject) => {
+		const fileReader = new FileReader()
+		fileReader.readAsDataURL(image)
+
+		fileReader.onloadend = () => {
+			if (!fileReader.result) return reject("cannot read file for some reason")
+			return resolve(fileReader.result)
+		}
+	})
+}

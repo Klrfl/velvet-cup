@@ -15,29 +15,40 @@ import type { Selectable } from "kysely"
 import type { MenuCategories } from "@/database/database.types"
 import { usePreviewImage } from "@/composables"
 import { toast } from "vue-sonner"
+import { useFetch } from "@vueuse/core"
+import { encodeImageToBase64 } from "@/lib/utils"
 
 const { previewImage, previewURL, newImage } = usePreviewImage()
 
+const MAX_FILE_SIZE = 250 * 1000 // 250 kb
+
 async function handleAddMenu(form: HTMLFormElement) {
 	const formData = new FormData(form)
-	const headers = new Headers()
-	headers.set("X-TIMESTAMP", new Date().getTime().toString())
 
-	const res = await fetch(`/api/admin/menu/`, {
-		method: "POST",
-		mode: "same-origin",
-		credentials: "include",
-		headers,
-		body: formData,
-	})
+	const rawImage = formData.get("image") as File
 
-	const { data: menu } = await res.json()
+	const fileSize = rawImage.size
+	if (fileSize > MAX_FILE_SIZE) {
+		return toast.error("image is too big, please select a smaller image")
+	}
 
-	if (res.status !== 200) {
+	const encoded = await encodeImageToBase64(rawImage)
+
+	const body = {
+		...Object.fromEntries(formData.entries()),
+		image: encoded,
+	}
+
+	const { data: menu, error } = await useFetch(`/api/admin/menu/`)
+		.post(body)
+		.json()
+
+	if (error.value) {
 		return toast.error("failed to add new menu.")
 	}
 
-	window.location.assign(`/admin/menu/${menu.id}`)
+	console.log(menu.value)
+	window.location.assign(`/admin/menu/${menu.value.id}`)
 }
 
 interface Props {
@@ -71,28 +82,24 @@ const { categories } = defineProps<Props>()
 			enctype="multipart/form-data"
 			@submit.prevent="(e) => handleAddMenu(e.currentTarget as HTMLFormElement)"
 		>
-			<Label for="menu_image">Image</Label>
+			<Label for="image">Image (max {{ MAX_FILE_SIZE / 1000 }} KB)</Label>
 			<Input
-				id="menu_image"
+				id="image"
 				type="file"
-				name="menu_image"
+				name="image"
 				accept="image/*"
 				@change="(e: Event) => previewImage(e.currentTarget as HTMLFormElement)"
 			/>
 
-			<Label for="menu_name">Name</Label>
-			<Input type="text" name="menu_name" placeholder="nama" required />
+			<Label for="name">Name</Label>
+			<Input type="text" name="name" placeholder="nama" required />
 
-			<Label for="menu_description">Deskripsi</Label>
-			<Textarea
-				placeholder="deskripsi"
-				name="menu_description"
-				required
-			></Textarea>
+			<Label for="description">Deskripsi</Label>
+			<Textarea placeholder="deskripsi" name="description" required></Textarea>
 
-			<Label for="menu_category">Category</Label>
+			<Label for="category">Category</Label>
 
-			<Select id="menu_category" name="menu_category">
+			<Select id="category" name="category_id">
 				<SelectTrigger>
 					<SelectValue placeholder="select a category" />
 				</SelectTrigger>
