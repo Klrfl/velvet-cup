@@ -49,7 +49,10 @@ const authMiddleware = defineMiddleware(
 const corsMiddleware = defineMiddleware(async (_, next) => {
 	const response = await next()
 
-	response.headers.set("Access-Control-Allow-Origin", import.meta.env.SITE)
+	response.headers.set(
+		"Access-Control-Allow-Origin",
+		import.meta.env.DEV ? "*" : import.meta.env.SITE
+	)
 	response.headers.set(
 		"Access-Control-Allow-Headers",
 		"Origin, Content-Type, Accept"

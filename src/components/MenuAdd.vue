@@ -20,9 +20,13 @@ const { previewImage, previewURL, newImage } = usePreviewImage()
 
 async function handleAddMenu(form: HTMLFormElement) {
 	const formData = new FormData(form)
+	const headers = new Headers()
+	headers.set("X-TIMESTAMP", new Date().getTime().toString())
 
 	const res = await fetch(`/api/admin/menu/`, {
 		method: "POST",
+		mode: "same-origin",
+		headers,
 		body: formData,
 	})
 
