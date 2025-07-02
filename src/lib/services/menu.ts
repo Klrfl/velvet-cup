@@ -142,7 +142,7 @@ export default class KyselyMenuService implements MenuService {
 	async getMenu(id: number) {
 		const menu = await this.db
 			.selectFrom("menu")
-			.select([
+			.select((eb) => [
 				"menu.id",
 				"menu.name",
 				"menu.image",
@@ -151,25 +151,11 @@ export default class KyselyMenuService implements MenuService {
 				"menu.created_at",
 				"menu.updated_at",
 				"menu.deleted_at",
-			])
-			.select((eb) => [
+
 				jsonArrayFrom(
 					eb
 						.selectFrom("menu_variants as mv")
-						.leftJoin("menu_variant_options as mvo", "mvo.variant_id", "mv.id")
-						.leftJoin(
-							"menu_option_values as mov",
-							"mov.id",
-							"mvo.option_value_id"
-						)
-						.leftJoin("menu_options as mo", "mov.menu_option_id", "mo.id")
-						.select((eb) => [
-							"mv.id",
-							"mv.name",
-							"mv.price",
-							eb.fn.coalesce("mo.name", sql<string>`''`).as("option_name"),
-							eb.fn.coalesce("mov.name", sql<string>`''`).as("option_value"),
-						])
+						.select(["mv.id", "mv.name", "mv.price"])
 						.whereRef("mv.menu_id", "=", "menu.id")
 				).as("variants"),
 			])
