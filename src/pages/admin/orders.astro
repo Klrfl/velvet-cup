@@ -5,6 +5,7 @@ import OrderServiceImpl from "@/lib/services/order"
 
 const orderService = new OrderServiceImpl()
 const orders = await orderService.getAdminOrders()
+const orderStatuses = await orderService.getAllOrderStatus()
 ---
 
 <AdminLayout title="Orders - Velvet Cup">
@@ -14,6 +15,6 @@ const orders = await orderService.getAdminOrders()
 	</headers>
 
 	<section class="main-section app-section">
-		<OrdersTable orders={orders} client:load />
+		<OrdersTable orders={orders} orderStatuses={orderStatuses} client:load />
 	</section>
 </AdminLayout>

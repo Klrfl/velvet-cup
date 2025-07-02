@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminOrder } from "@/types/"
+import type { AdminOrder, OrderStatus } from "@/types/"
 import { formatCurrency, formatDate, valueUpdater } from "@/lib/utils"
 import {
 	Table,
@@ -29,10 +29,11 @@ import {
 } from "@tanstack/vue-table"
 import { h, ref } from "vue"
 import OrderRowAction from "./OrderRowAction.vue"
-import OrderStatus from "./OrderStatus.vue"
+import OrderStatusChip from "./OrderStatus.vue"
 
 interface Props {
 	orders: AdminOrder[]
+	orderStatuses: OrderStatus[]
 }
 
 const columnHelper = createColumnHelper<AdminOrder>()
@@ -44,7 +45,7 @@ const columns = [
 	}),
 	columnHelper.accessor("status", {
 		header: "status",
-		cell: (ctx) => h(OrderStatus, { status: ctx.getValue() }),
+		cell: (ctx) => h(OrderStatusChip, { status: ctx.getValue() }),
 	}),
 	columnHelper.accessor(
 		(ctx) => {
@@ -126,11 +127,15 @@ const table = useVueTable({
 				<SelectValue placeholder="Filter by status" />
 			</SelectTrigger>
 
-			<!-- TODO: get statuses from database -->
 			<SelectContent>
 				<SelectItem value="all"> All </SelectItem>
-				<SelectItem value="completed"> Completed </SelectItem>
-				<SelectItem value="pending"> Pending </SelectItem>
+				<SelectItem
+					v-for="orderStatus in orderStatuses"
+					:key="orderStatus.id"
+					:value="orderStatus.name"
+				>
+					{{ orderStatus.name }}
+				</SelectItem>
 			</SelectContent>
 		</Select>
 	</div>

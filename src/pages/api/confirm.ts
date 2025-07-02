@@ -35,6 +35,9 @@ export const GET: APIRoute = async ({ request, redirect, locals }) => {
 			searchParams.order_id
 		)
 
+		/**
+		 * TODO: redirect to a web apge instead of responding with JSON
+		 * */
 		return new Response(
 			JSON.stringify({
 				message: "successfully updated order status",
@@ -57,7 +60,7 @@ export const GET: APIRoute = async ({ request, redirect, locals }) => {
 						{ status: 500 }
 					)
 				case "ORDER_ALREADY_CONFIRMED":
-					return redirect(`/accounts/orders`)
+					return redirect(`/account/orders`)
 			}
 		}
 
