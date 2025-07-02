@@ -3,6 +3,7 @@ import AccountLayout from "@/layouts/AccountLayout.astro"
 import OrderItem from "@/components/order/OrderItem.vue"
 
 import OrderServiceImpl from "@/lib/services/order"
+import { Button } from "@/components/ui/button"
 
 const session = Astro.locals.session
 
@@ -20,6 +21,23 @@ const orders = await orderService.getOrders(session.user.id)
 	<section class="app-section col-span-10">
 		<ul class="grid gap-8">
 			{orders.map((order) => <OrderItem {order} client:load />)}
+
+			{
+				orders.length === 0 ? (
+					<li class="app-section flex flex-col items-center text-gray-600">
+						<h2 class="text-xl">No orders yet.</h2>
+						<p>Grab yourself something to eat!</p>
+
+						<Button class="mt-4" as="a" href="/menu">
+							Go to menu
+						</Button>
+					</li>
+				) : (
+					<li class="text-center text-sm text-gray-600">
+						You're all caught up!
+					</li>
+				)
+			}
 		</ul>
 	</section>
 

@@ -17,7 +17,7 @@ const basket = ref(props.basket)
 
 async function handleDeleteItem(basketItem: (typeof basket.value)[0]) {
 	const { error } = await useFetch(`/api/baskets/${basketItem.id}`)
-		.delete()
+		.delete({})
 		.json()
 
 	if (error.value) {
@@ -69,7 +69,7 @@ async function handleQty(
 
 async function handleCheckout() {
 	const { data: response, error } = await useFetch("/api/checkout")
-		.post()
+		.post({})
 		.json()
 
 	if (error.value) {
