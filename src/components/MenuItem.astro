@@ -10,9 +10,9 @@ interface Props {
 const { menu } = Astro.props
 ---
 
-<li class="bg-white">
+<li>
 	<a
-		class="flex flex-col hover:bg-primary-200/20 transition-colors ring-2 ring-primary-100 rounded-lg"
+		class="h-full bg-white flex flex-col hover:bg-primary-200/20 transition-colors ring-2 ring-primary-100 rounded-lg overflow-hidden"
 		href={`/menu/${menu.id}`}
 	>
 		<figure>
@@ -20,16 +20,23 @@ const { menu } = Astro.props
 				src={menu.image ?? "/Image_not_available.png"}
 				width={800}
 				height={450}
-				class="block object-cover aspect-video max-w-full"
+				class="block object-cover aspect-video max-w-full rounded-lg"
 				alt=""
 			/>
 		</figure>
 		<figcaption class="flex flex-col p-4">
 			<span class="text-lg text-primary-900">{menu.name}</span>
-			<span class="text-primary-800/60">{menu.variant?.name}</span>
-			<span class="text-primary-900 font-bold my-3">
-				{formatCurrency(Number(menu.variant?.price))}
-			</span>
+
+			{
+				menu.variant && (
+					<>
+						<span class="text-primary-800/60">{menu.variant.name}</span>
+						<span class="text-primary-900 font-bold my-3">
+							{formatCurrency(Number(menu.variant.price))}
+						</span>
+					</>
+				)
+			}
 		</figcaption>
 	</a>
 </li>
