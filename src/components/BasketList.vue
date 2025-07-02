@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { Button } from "@/components/ui/button"
 import { computed, ref } from "vue"
 import { toast } from "vue-sonner"
-import { useDebounceFn } from "@vueuse/core"
+import { useDebounceFn, useFetch } from "@vueuse/core"
 import { formatCurrency } from "@/lib/utils"
 import type { BasketComplete } from "@/types"
 
@@ -16,15 +16,19 @@ const props = defineProps<Props>()
 const basket = ref(props.basket)
 
 async function handleDeleteItem(basketItem: (typeof basket.value)[0]) {
-	const response = await fetch(`/api/baskets/${basketItem.id}`, {
-		method: "DELETE",
-	})
+	const { error } = await useFetch(`/api/baskets/${basketItem.id}`)
+		.delete()
+		.json()
 
-	if (response.status === 200) {
-		toast.success("sucessfully deleted item.")
-
-		basket.value = basket.value.filter((item) => item.id !== basketItem.id)
+	if (error.value) {
+		console.log(error.value)
+		return toast.error("something went wrong when deleting menu item")
 	}
+
+	toast.success("sucessfully deleted item.")
+	return (basket.value = basket.value.filter(
+		(item) => item.id !== basketItem.id
+	))
 }
 
 async function handleQty(
@@ -47,19 +51,14 @@ async function handleQty(
 
 	const debouncedPost = useDebounceFn(
 		async () => {
-			const response = await fetch(`/api/baskets/${basketItem.id}`, {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(basketItem),
-			})
+			const { error } = await useFetch(`/api/baskets/${basketItem.id}`)
+				.put(basketItem)
+				.json()
 
-			if (response.status !== 200) {
-				if (import.meta.env.DEV) console.error(response)
-
-				toast.error("an error occured when adding quantity.")
+			if (error.value) {
+				if (import.meta.env.DEV) console.error(error.value)
+				return toast.error("an error occured when adding quantity.")
 			}
-
-			console.log(await response.json())
 		},
 		1000,
 		{ maxWait: 5000 }
@@ -69,12 +68,18 @@ async function handleQty(
 }
 
 async function handleCheckout() {
-	const response = await fetch("/api/checkout", {
-		method: "POST",
-	})
+	const { data: response, error } = await useFetch("/api/checkout")
+		.post()
+		.json()
 
-	const result = await response.json()
-	const { data } = result
+	if (error.value) {
+		console.error(error.value)
+		console.error(response.value)
+
+		return toast.error("failed to checkout")
+	}
+
+	const { data } = response.value
 
 	//@ts-expect-error the snap library requires me to do this.. please stop
 	return window.snap.pay(data.token)
