@@ -46,7 +46,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 	const menuService = new KyselyMenuServiceFactory().createService()
 
 	try {
-		const menu = await menuService.addMenu(newMenu)
+		const menu = await menuService.editMenu(Number(id), newMenu)
 		return new Response(
 			JSON.stringify({
 				message: `successfully edited menu with id ${id}`,

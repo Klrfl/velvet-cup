@@ -81,6 +81,7 @@ async function handleEditMenu(e: Event, id: number) {
 	if (error.value) {
 		return toast.error("something went wrong when editing menu item")
 	}
+
 	toast.success("Successfully edited menu item")
 }
 

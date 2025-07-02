@@ -39,16 +39,14 @@ async function handleAddMenu(form: HTMLFormElement) {
 		image: encoded,
 	}
 
-	const { data: menu, error } = await useFetch(`/api/admin/menu/`)
-		.post(body)
-		.json()
+	const { data, error } = await useFetch(`/api/admin/menu/`).post(body).json()
 
 	if (error.value) {
 		return toast.error("failed to add new menu.")
 	}
 
-	console.log(menu.value)
-	window.location.assign(`/admin/menu/${menu.value.id}`)
+	const menu = data.value.data
+	window.location.assign(`/admin/menu/${menu.id}`)
 }
 
 interface Props {
