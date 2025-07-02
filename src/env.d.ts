@@ -3,7 +3,7 @@
 import type { Session } from "@/lib/auth"
 
 interface ImportMetaEnv {
-	readonly DATABASE_URL string | null
+	readonly DATABASE_URL: string | null
 }
 
 interface ImportMeta {

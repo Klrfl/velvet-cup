@@ -46,7 +46,7 @@ const authMiddleware = defineMiddleware(
 	}
 )
 
-const corsMiddleware = defineMiddleware(async ({ request }, next) => {
+const corsMiddleware = defineMiddleware(async (_, next) => {
 	const response = await next()
 
 	response.headers.set(
