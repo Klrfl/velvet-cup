@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { OrderStatus } from "@/types"
+import type { OrderStatusName } from "@/types"
 import type { HTMLAttributes } from "vue"
 
 interface Props {
-	status: OrderStatus
+	status: OrderStatusName
 	class?: HTMLAttributes["class"]
 }
 

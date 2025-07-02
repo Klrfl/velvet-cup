@@ -3,7 +3,7 @@ import { jsonArrayFrom } from "kysely/helpers/postgres"
 import { z } from "astro:content"
 import client from "@klrfl/midtrans-client"
 
-import type { Order, AdminOrder, OrderUser } from "@/types"
+import type { Order, AdminOrder, OrderUser, OrderStatus } from "@/types"
 import { TransactionError } from "@/lib/errors"
 
 type MidtransToken = {
@@ -13,6 +13,7 @@ type MidtransToken = {
 
 interface OrderService {
 	getOrders(user_id: OrderUser["id"]): Promise<Order[]>
+	getAllOrderStatus(): Promise<OrderStatus[]>
 	getAdminOrders(): Promise<AdminOrder[]>
 	checkout(user: OrderUser): Promise<MidtransToken>
 	cancelOrder(order_id: Order["id"]): Promise<Order["id"]>
@@ -63,6 +64,13 @@ export default class OrderServiceImpl implements OrderService {
 		// validate it in runtime
 		// it is not the end of the world even if it's not `"pending" | "completed"`
 		return result as Order[]
+	}
+
+	/**
+	 * TODO: make statuses as enum */
+	async getAllOrderStatus(): Promise<OrderStatus[]> {
+		const result = await db.selectFrom("order_status").selectAll().execute()
+		return (result as OrderStatus[]) ?? []
 	}
 
 	async getAdminOrders(): Promise<AdminOrder[]> {

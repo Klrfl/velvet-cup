@@ -2,7 +2,12 @@ import type { Orders as DBOrders, User } from "@/database/database.types"
 import type { Prettify } from "better-auth"
 import type { Selectable } from "kysely"
 
-export type OrderStatus = "pending" | "completed" | "cancelled"
+export type OrderStatusName = "pending" | "completed" | "cancelled"
+
+export type OrderStatus = {
+	id: number
+	name: OrderStatusName
+}
 
 export type OrderDetail = {
 	id: number
@@ -17,7 +22,7 @@ export type OrderDetail = {
 
 export type Order = Prettify<
 	Selectable<DBOrders> & {
-		status: OrderStatus
+		status: OrderStatusName
 		details: OrderDetail[]
 	}
 >
