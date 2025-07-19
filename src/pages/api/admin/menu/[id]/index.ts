@@ -3,9 +3,15 @@ import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
-	const { id } = params
+	const { id: rawId } = params
+	const { data: menuId, error: idError } = z.coerce
+		.number()
+		.positive()
+		.safeParse(rawId)
 
-	if (!id || isNaN(Number(id))) {
+	if (idError || !menuId) {
+		console.error(idError)
+
 		return new Response(
 			JSON.stringify({
 				message: "invalid menu id.",
@@ -64,17 +70,14 @@ export const PUT: APIRoute = async ({ request, params }) => {
 }
 
 export const DELETE: APIRoute = async ({ params }) => {
-	const { id } = params
+	const { id: rawId } = params
+	const { data: menuId, error } = z.coerce.number().positive().safeParse(rawId)
 
-	const menuId = Number(id)
-
-	if (!id || isNaN(menuId)) {
-		return new Response(
-			JSON.stringify({
-				mesage: "invalid id",
-			}),
-			{ status: 400 }
-		)
+	if (error || !menuId) {
+		console.error(error)
+		return new Response(JSON.stringify({ message: "invalid id" }), {
+			status: 400,
+		})
 	}
 
 	const menuService = new KyselyMenuServiceFactory().createService()

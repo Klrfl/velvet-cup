@@ -3,10 +3,10 @@ import type { APIRoute } from "astro"
 import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
-	const { id } = params
-	const basket_id = Number(id)
+	const { id: rawId } = params
+	const { data: basket_id, error: idError } = z.coerce.number().safeParse(rawId)
 
-	if (isNaN(basket_id)) {
+	if (!basket_id || idError) {
 		return new Response(
 			JSON.stringify({
 				message: "invalid basket id",
@@ -54,10 +54,11 @@ export const PUT: APIRoute = async ({ request, params }) => {
 }
 
 export const DELETE: APIRoute = async ({ params }) => {
-	const { id } = params
+	const { id: rawId } = params
 
-	const basket_id = Number(id)
-	if (isNaN(basket_id)) {
+	const { data: basket_id, error } = z.coerce.number().safeParse(rawId)
+
+	if (!basket_id || error) {
 		return new Response(
 			JSON.stringify({
 				message: "invalid basket id",

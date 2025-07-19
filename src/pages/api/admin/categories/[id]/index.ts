@@ -58,9 +58,9 @@ export const PUT: APIRoute = async ({ request, params }) => {
 }
 
 export const DELETE: APIRoute = async ({ params }) => {
-	const { id: inputId } = params
-	const { data: id, error } = z.coerce.number().safeParse(inputId)
-	if (error) {
+	const { id: rawId } = params
+	const { data: id, error } = z.coerce.number().safeParse(rawId)
+	if (!id || error) {
 		return new Response(
 			JSON.stringify({
 				message: "invalid id",
