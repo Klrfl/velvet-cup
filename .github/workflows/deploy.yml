@@ -49,21 +49,22 @@ jobs:
           remote_key: ${{ SECRETS.EC2_PRIVATE_KEY }}
 
       - name: 'Configure SSH to restart app'
+        env:
+          SSH_HOST: ${{ SECRETS.EC2_HOST }}
+          SSH_USER: ${{ SECRETS.EC2_USER }}
+          SSH_KEY: ${{ SECRETS.EC2_PRIVATE_KEY }}
         run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
+          mkdir -p ~/.ssh/ && chmod 700 ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/prod.pem
+          chmod 400 ~/.ssh/prod.pem
+
           cat >>~/.ssh/config <<END
           Host prod
             HostName $SSH_HOST
             User $SSH_USER
-            IdentityFile ~/.ssh/staging.key
+            IdentityFile ~/.ssh/prod.pem
             StrictHostKeyChecking no
           END
-        env:
-          SSH_USER: ${{ SECRETS.EC2_USER }}
-          SSH_KEY: ${{ SECRETS.EC2_PRIVATE_KEY }}
-          SSH_HOST: ${{ SECRETS.EC2_HOST }}
 
       - name: 'Restart app'
         run: |
