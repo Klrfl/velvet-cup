@@ -47,7 +47,7 @@ const session = Astro.locals.session
 			<select
 				id="category"
 				name="category"
-				class="bg-transparent py-2 px-3 text-sm rounded-md border border-1 border-input"
+				class="bg-transparent py-2 px-3 text-sm rounded-md border border-input"
 			>
 				<option selected disabled>Choose a category</option>
 				{
@@ -152,6 +152,7 @@ const session = Astro.locals.session
 </Layout>
 
 <style>
+	@reference "@/styles/globals.css";
 	section {
 		@apply py-12;
 	}

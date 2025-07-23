@@ -39,7 +39,7 @@ const relatedMenus = await menuService.getMenus({ limit: 9, with: ["price"] })
 	</header>
 
 	<section
-		class="app-section main-section details md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid gap-4"
+		class="app-section main-section *:col-span-full md:col-start-6 md:col-end-[-2] grid grid-cols-subgrid gap-4"
 	>
 		<h1 class="text-4xl">{menu.name}</h1>
 		<p>{menu.description}</p>
@@ -62,9 +62,3 @@ const relatedMenus = await menuService.getMenus({ limit: 9, with: ["price"] })
 		</ul>
 	</section>
 </Layout>
-
-<style>
-	.details > * {
-		@apply col-span-full;
-	}
-</style>

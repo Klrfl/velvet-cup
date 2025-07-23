@@ -66,7 +66,7 @@ async function addToCart() {
 	</Tabs>
 
 	<div
-		class="grid grid-cols-3 col-span-2 rounded-lg ring ring-gray-100 has-[:focus-visible]:ring-primary"
+		class="grid grid-cols-3 col-span-2 rounded-lg ring-3 ring-gray-100 has-focus-visible:ring-primary"
 	>
 		<Button
 			variant="ghost"

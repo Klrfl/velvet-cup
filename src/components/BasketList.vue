@@ -142,7 +142,7 @@ const total = computed(() =>
 
 		<Button
 			:disabled="total === 0"
-			:variant="total === 0 ? 'outline' : 'default'"
+			:variant="total === 0 ? 'outline-solid' : 'default'"
 			@click="handleCheckout"
 		>
 			Check out

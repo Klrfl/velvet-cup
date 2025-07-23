@@ -14,7 +14,7 @@ const { status, class: className } = defineProps<Props>()
 	<span
 		:class="[
 			'text-center py-2 px-3 rounded-full',
-			'outline outline-1',
+			'outline-solid outline-1',
 			'block w-full text-sm',
 			{
 				'bg-yellow-200/80 outline-yellow-400': status === 'pending',

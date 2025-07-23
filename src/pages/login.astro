@@ -9,7 +9,7 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 		<label for="sign-up-input" class="hover:cursor-pointer">
 			<input type="radio" name="auth" id="sign-up-input" class="peer hidden" />
 			<span
-				class="block p-4 outline outline-1 outline-primary peer-checked:bg-primary peer-checked:text-white transition-colors rounded-l-lg"
+				class="block p-4 outline-solid outline-1 outline-primary peer-checked:bg-primary peer-checked:text-white transition-colors rounded-l-lg"
 			>
 				Sign up
 			</span>
@@ -24,7 +24,7 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 				checked
 			/>
 			<span
-				class="block p-4 outline outline-1 outline-primary peer-checked:bg-primary peer-checked:text-white transition-colors rounded-r-lg"
+				class="block p-4 outline-solid outline-1 outline-primary peer-checked:bg-primary peer-checked:text-white transition-colors rounded-r-lg"
 			>
 				Log in
 			</span>
@@ -65,6 +65,8 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 </Layout>
 
 <style>
+	@reference "@/styles/globals.css";
+
 	.sep {
 		width: 0.2rem;
 		height: 20vh;

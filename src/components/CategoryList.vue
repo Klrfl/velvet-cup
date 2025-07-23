@@ -130,7 +130,7 @@ async function deleteCategory(id: number) {
 			</Button>
 			<Button
 				variant="ghost"
-				class="outline outline-1 outline-red-400 bg-red-100"
+				class="outline-solid outline-1 outline-red-400 bg-red-100"
 				@click="deleteCategory(category.id)"
 			>
 				Delete
