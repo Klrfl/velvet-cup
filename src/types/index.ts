@@ -33,6 +33,6 @@ export * from "./menu-option"
  * */
 
 export type MenuPrice = Omit<Selectable<MenuVariants>, "menu_id"> & {
-	option_value: string
-	option_name: string
+	option_value?: string
+	option_name?: string
 }

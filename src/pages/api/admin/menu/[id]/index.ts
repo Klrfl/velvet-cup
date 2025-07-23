@@ -4,12 +4,12 @@ import { z } from "astro:content"
 
 export const PUT: APIRoute = async ({ request, params }) => {
 	const { id: rawId } = params
-	const { data: menuId, error: idError } = z.coerce
+	const { data: id, error: idError } = z.coerce
 		.number()
 		.positive()
 		.safeParse(rawId)
 
-	if (idError || !menuId) {
+	if (idError || !id) {
 		console.error(idError)
 
 		return new Response(
