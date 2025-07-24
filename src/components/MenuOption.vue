@@ -14,7 +14,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-	<li class="flex items-center outline outline-slate-100 px-4 py-3 rounded-lg">
+	<li class="flex items-center outline-solid outline-slate-100 px-4 py-3 rounded-lg">
 		<span class="font-bold">
 			{{ option.name }}
 		</span>

@@ -39,7 +39,10 @@ const navLinks: Record<string, string>[] = [
 				navLinks.map((link) => (
 					<li>
 						<a
-							class:list={[{ "font-bold": isCurrentRoute(link.path) }]}
+							class:list={[
+								"p-4 hover:bg-slate-200 transition-colors",
+								{ "font-bold": isCurrentRoute(link.path) },
+							]}
 							href={link.path}
 						>
 							{link.label}
@@ -62,6 +65,5 @@ const navLinks: Record<string, string>[] = [
 
 	.sidebar a {
 		display: block;
-		@apply p-4 hover:bg-slate-200 transition-colors;
 	}
 </style>

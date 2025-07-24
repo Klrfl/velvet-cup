@@ -1,0 +1,21 @@
+---
+import { UserRound } from "lucide-vue-next"
+
+interface Props {
+	label: string
+	link: `/admin/${string}`
+	count: number
+}
+const { count, label, link } = Astro.props
+---
+
+<li class="px-6 py-4 bg-white rounded-lg flex items-center gap-2">
+	<slot name="icon">
+		<UserRound height="50" />
+	</slot>
+
+	<a class="block text-xl" href={link}>
+		<span class="font-bold">{count}</span>
+		{label}
+	</a>
+</li>

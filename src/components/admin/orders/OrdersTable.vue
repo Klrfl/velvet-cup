@@ -183,10 +183,10 @@ const table = useVueTable({
 									:key="detail.id"
 								>
 									<TableCell>{{ detail.menu_name }}</TableCell>
-									<TableCell>{{ detail.quantity }}</TableCell>
 									<TableCell>
 										{{ formatCurrency(Number(detail.price)) }}
 									</TableCell>
+									<TableCell>{{ detail.quantity }}</TableCell>
 									<TableCell>
 										{{ formatCurrency(Number(detail.price) * detail.quantity) }}
 									</TableCell>

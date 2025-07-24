@@ -5,7 +5,7 @@ import node from "@astrojs/node"
 
 import vue from "@astrojs/vue"
 
-import tailwind from "@astrojs/tailwind"
+import tailwindcss from "@tailwindcss/vite"
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,6 +15,9 @@ export default defineConfig({
 		mode: "standalone",
 	}),
 
-	integrations: [vue(), tailwind({ applyBaseStyles: false })],
+	integrations: [vue()],
+	vite: {
+		plugins: [tailwindcss()],
+	},
 	site: "https://velvet-cup.munthe.dev",
 })

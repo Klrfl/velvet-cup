@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { defineMiddleware, sequence } from "astro:middleware"
-import micromatch from "micromatch"
+import match from "picomatch"
 
 const adminMiddleware = defineMiddleware(
 	async ({ request, redirect, url }, next) => {
@@ -16,7 +16,7 @@ const adminMiddleware = defineMiddleware(
 	}
 )
 
-const protectedRoutes = ["/account/**", "/api/**", "/basket/*"] as const
+const protectedRoutes = ["/account/**", "/api/**", "/basket/*"]
 
 /**
  * middleware for both authenticated and anon routes.
@@ -30,9 +30,9 @@ const authMiddleware = defineMiddleware(
 		// if not authenticated
 		if (!session) {
 			// user is trying to authenticate
-			if (micromatch.isMatch(url.pathname, "/api/auth/**")) return next()
+			if (match.isMatch(url.pathname, "/api/auth/**")) return next()
 
-			if (micromatch.isMatch(url.pathname, protectedRoutes)) {
+			if (match.isMatch(url.pathname, protectedRoutes)) {
 				return redirect("/login")
 			}
 		}

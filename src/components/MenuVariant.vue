@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 <template>
 	<li
-		class="grid grid-cols-6 grid-flow-row-dense outline outline-slate-100 px-4 py-3 rounded-lg"
+		class="grid grid-cols-6 grid-flow-row-dense outline-solid outline-slate-100 px-4 py-3 rounded-lg"
 	>
 		<span class="col-span-4">
 			{{ variant.name }} -

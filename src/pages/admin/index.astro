@@ -1,5 +1,11 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro"
+import AdminServiceFactory from "@/lib/factories/admin.factory"
+import { Utensils, Tag, UserRound } from "lucide-vue-next"
+import AdminKPI from "@/components/admin/AdminKPI.astro"
+
+const adminService = await new AdminServiceFactory().getService()
+const metrics = await adminService.getDashboardMetrics()
 ---
 
 <AdminLayout title="Dashboard - Velvet Cup">
@@ -8,6 +14,22 @@ import AdminLayout from "@/layouts/AdminLayout.astro"
 	</header>
 
 	<section class="main-section">
-		<p>Not implemented</p>
+		<ul class="flex gap-4 justify-center">
+			<AdminKPI count={metrics.menu_count} label="Menu" link="/admin/menu">
+				<Utensils slot="icon" height="50" />
+			</AdminKPI>
+
+			<AdminKPI count={metrics.order_count} label="Orders" link="/admin/orders">
+				<Tag slot="icon" height="50" />
+			</AdminKPI>
+
+			<AdminKPI
+				count={metrics.customer_count}
+				label="Customers"
+				link="/admin/customers"
+			>
+				<UserRound slot="icon" height="50" />
+			</AdminKPI>
+		</ul>
 	</section>
 </AdminLayout>
