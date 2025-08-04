@@ -3,7 +3,7 @@ import AdminLayout from "@/layouts/AdminLayout.astro"
 import AdminServiceFactory from "@/lib/factories/admin.factory"
 import { Utensils, Tag, UserRound } from "lucide-vue-next"
 import AdminKPI from "@/components/admin/AdminKPI.astro"
-import ChartBar from "@/components/admin/ChartBar.vue"
+import Chart from "@/components/admin/OrderChart.vue"
 
 const adminService = new AdminServiceFactory().getService()
 const metrics = await adminService.getDashboardMetrics()
@@ -17,16 +17,20 @@ const metrics = await adminService.getDashboardMetrics()
 	<section class="main-section">
 		<h2 class="sr-only">metrics</h2>
 		<ul class="flex gap-4 justify-center">
-			<AdminKPI count={metrics.menu_count} label="Menu" link="/admin/menu">
+			<AdminKPI count={metrics.kpi.menu_count} label="Menu" link="/admin/menu">
 				<Utensils slot="icon" height="50" />
 			</AdminKPI>
 
-			<AdminKPI count={metrics.order_count} label="Orders" link="/admin/orders">
+			<AdminKPI
+				count={metrics.kpi.order_count}
+				label="Orders"
+				link="/admin/orders"
+			>
 				<Tag slot="icon" height="50" />
 			</AdminKPI>
 
 			<AdminKPI
-				count={metrics.customer_count}
+				count={metrics.kpi.customer_count}
 				label="Customers"
 				link="/admin/customers"
 			>
@@ -38,6 +42,6 @@ const metrics = await adminService.getDashboardMetrics()
 	<section class="main-section">
 		<h2 class="sr-only">Chart</h2>
 
-		<ChartBar client:load data={metrics.chart.order_stats} />
+		<Chart client:load data={metrics.chart.order_stats} />
 	</section>
 </AdminLayout>
