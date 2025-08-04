@@ -70,27 +70,6 @@ export class SimpleAdminService implements AdminService {
             	)::date as ordered_at
             )`
 				)
-				.with("orders", (qb) =>
-					qb
-						.selectFrom("orders as o")
-						.select(() => [
-							sql<number>`coalesce(count(o.created_at)::int, 0)`.as(
-								"order_count"
-							),
-							sql<Date>`dates.ordered_at`.as("ordered_at"),
-						])
-						.groupBy(sql`o.created_at::date`)
-				)
-				.with("cancelled_orders", (qb) =>
-					qb
-						.selectFrom("orders as o")
-						.select(() => [
-							sql`coalesce(count(o.created_at)::int, 0)`.as("cancelled_count"),
-							sql<Date>``,
-						])
-						.leftJoin("order_status as os", "os.id", "o.status_id")
-						.where("os.name", "=", "cancelled")
-				)
 				.selectFrom("orders as o")
 				.select(() => [
 					sql<number>`coalesce(count(o.created_at)::int, 0)`.as("order_count"),
