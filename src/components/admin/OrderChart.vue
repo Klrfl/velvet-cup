@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { VisXYContainer, VisLine, VisAxis } from "@unovis/vue"
+import { GroupedBar } from "@unovis/ts"
+import {
+	VisXYContainer,
+	VisLine,
+	VisAxis,
+	VisTooltip,
+	VisGroupedBar,
+} from "@unovis/vue"
 
 type OrderStat = {
 	order_count: number
@@ -16,16 +23,20 @@ const { data, title } = defineProps<Props>()
 const x = (d: OrderStat) => d.ordered_at
 const y = (d: OrderStat) => d.order_count
 
-/**
-TODO: create tooltips to show date of order
-*/
+const triggers = {
+	[GroupedBar.selectors.bar]: (
+		d: OrderStat
+	) => `<span class="bg-white text-xs rounded-lg p-4 px-6">
+${new Date(d.ordered_at).toDateString()}
+</span>`,
+}
 </script>
 
 <template>
-	<h1>{{ title }}</h1>
+	<h2 class="sr-only">{{ title }}</h2>
 
 	<VisXYContainer :data="data">
-		<VisLine :x="x" :y="y" :fallback-value="0" />
+		<VisGroupedBar :x="x" :y="y" />
 		<VisAxis
 			type="x"
 			label="Order date"
@@ -33,5 +44,7 @@ TODO: create tooltips to show date of order
 			:num-ticks="15"
 		/>
 		<VisAxis type="y" label="Amount" />
+
+		<VisTooltip :triggers="triggers" />
 	</VisXYContainer>
 </template>
