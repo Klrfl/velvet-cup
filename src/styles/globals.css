@@ -191,4 +191,8 @@
 	h3 {
 		@apply font-serif text-primary-900;
 	}
+
+	img {
+		@apply rounded-lg;
+	}
 }

@@ -73,7 +73,7 @@ const session = Astro.locals.session
 		</form>
 	</header>
 
-	<section class="bleed-section row-span-4">
+	<section class="bleed-section row-span-4 py-12">
 		<ul class="grid gap-4 md:grid-cols-3">
 			{menus.map((menu) => <MenuItem menu={menu} />)}
 		</ul>
@@ -81,7 +81,7 @@ const session = Astro.locals.session
 		<Button as="a" href="/menu">See our menu</Button>
 	</section>
 
-	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid py-12">
 		<figure class="col-span-full md:col-span-5">
 			<Image
 				src={CoffeeImage}
@@ -106,7 +106,7 @@ const session = Astro.locals.session
 		</div>
 	</section>
 
-	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid py-12">
 		<figure class="col-span-full md:col-span-5">
 			<Image
 				src={AnotherCoffeeImage}
@@ -130,7 +130,7 @@ const session = Astro.locals.session
 		</div>
 	</section>
 
-	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid">
+	<section class="bleed-section md:col-start-3 grid grid-cols-subgrid py-12">
 		<figure class="col-span-full md:col-span-5">
 			<iframe
 				class="max-w-full"
@@ -156,15 +156,6 @@ const session = Astro.locals.session
 </Layout>
 
 <style>
-	@reference "@/styles/globals.css";
-	section {
-		@apply py-12;
-	}
-
-	section img {
-		@apply rounded-lg;
-	}
-
 	section figure + div {
 		@apply flex flex-col gap-4 items-start;
 	}
