@@ -1,5 +1,7 @@
 # ☕ Velvet Cup
 
+To prevent perfectionist meddling, this project's repo is archived and is now read-only.
+
 ![Velvet Cup home page](./public/velvet-cup-screenshot.png)
 
 This repository contains a basic website and web app for Velvet Cup, a fictional
