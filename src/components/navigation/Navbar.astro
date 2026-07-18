@@ -1,7 +1,9 @@
 ---
-import { authClient } from "@/lib/auth-client"
 import { Image } from "astro:assets"
 import { Menu, X } from "lucide-vue-next"
+import NavLink from "@/components/navigation/NavLink.astro"
+
+import { authClient } from "@/lib/auth-client"
 import BasketServiceImpl from "@/lib/services/basket"
 
 interface Props {
@@ -46,21 +48,21 @@ if (session) {
 			<X />
 		</label>
 
-		<li><a href="/">Home</a></li>
-		<li><a href="/menu">Menu</a></li>
+		<li><NavLink href="/">Home</NavLink></li>
+		<li><NavLink href="/menu">Menu</NavLink></li>
 		{
 			isAdmin && (
 				<li>
-					<a href="/admin/">Admin</a>
+					<NavLink href="/admin/">Admin</NavLink>
 				</li>
 			)
 		}
-		<li><a href="/about/">The Cafe</a></li>
+		<li><NavLink href="/about/">The Cafe</NavLink></li>
 		{
 			session ? (
 				<>
 					<li class="relative flex justify-between items-center">
-						<a href="/basket/">Your basket</a>
+						<NavLink href="/basket/">Your basket</NavLink>
 						{basketCount && (
 							<span class="basket-chip block md:absolute md:top-full md:right-0 md:transform md:-translate-y-1/2 px-2 leading-[1.6] bg-red-500 rounded-full text-sm text-white">
 								{basketCount.value}
@@ -68,12 +70,12 @@ if (session) {
 						)}
 					</li>
 					<li>
-						<a href="/account/">Account</a>
+						<NavLink href="/account/">Account</NavLink>
 					</li>
 				</>
 			) : (
 				<li>
-					<a href="/login/">Login</a>
+					<NavLink href="/login/">Login</NavLink>
 				</li>
 			)
 		}
@@ -81,13 +83,6 @@ if (session) {
 </nav>
 
 <style>
-	@reference "@/styles/globals.css";
-
-	ul a {
-		@apply block p-4 hover:bg-slate-200;
-		transition: background-color 100ms ease;
-	}
-
 	@keyframes scale-in {
 		0% {
 			scale: 0;

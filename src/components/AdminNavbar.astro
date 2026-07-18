@@ -1,42 +1,39 @@
 ---
 import { Plus, Tag } from "lucide-vue-next"
+import NavLink from "./navigation/NavLink.astro"
 ---
 
 <nav class="bleed-section bg-white border border-black my-4">
 	<ul class="nav-links flex gap-4">
-		<li><a href="/">home</a></li>
-		<li><a href="/admin/">dashboard</a></li>
+		<li><NavLink href="/">home</NavLink></li>
+		<li><NavLink href="/admin/">dashboard</NavLink></li>
 		<li class="relative">
-			<a class="peer" href="/admin/menu">menu</a>
+			<NavLink class="peer" href="/admin/menu">menu</NavLink>
 
 			<ul
 				class="absolute top-full hidden peer-hover:flex left-0 hover:flex flex-col border border-black bg-white"
 			>
 				<li>
-					<a
+					<NavLink
 						class="flex gap-4 p-4 hover:bg-gray-200"
 						href="/admin/menu/categories"
 					>
 						<Tag />
 						<span>Categories</span>
-					</a>
+					</NavLink>
 				</li>
 				<li>
-					<a class="flex gap-4 p-4 hover:bg-gray-200" href="/admin/menu/add">
+					<NavLink
+						class="flex gap-4 p-4 hover:bg-gray-200"
+						href="/admin/menu/add"
+					>
 						<Plus />
 						<span class="flex-1">Add</span>
-					</a>
+					</NavLink>
 				</li>
 			</ul>
 		</li>
-		<li><a href="/admin/orders">orders</a></li>
-		<li><a href="/admin/customers">customers</a></li>
+		<li><NavLink href="/admin/orders">orders</NavLink></li>
+		<li><NavLink href="/admin/customers">customers</NavLink></li>
 	</ul>
 </nav>
-
-<style>
-	@reference "@/styles/globals.css";
-	.nav-links > li > a {
-		@apply block p-4 hover:bg-slate-200;
-	}
-</style>
