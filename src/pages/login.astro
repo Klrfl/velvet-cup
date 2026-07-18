@@ -40,7 +40,7 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 			<p>And be part of the Velvet Cup family!</p>
 		</header>
 
-		<div class="hidden md:block sep"></div>
+		<div class="hidden md:block bg-gray-200/50 rounded-full"></div>
 
 		<section class="main-section md:col-start-7 md:col-end-[-3] md:self-center">
 			<SignUpForm client:visible />
@@ -65,13 +65,10 @@ import SignUpForm from "@/components/auth/SignUpForm.vue"
 </Layout>
 
 <style>
-	@reference "@/styles/globals.css";
-
 	.sep {
 		width: 0.2rem;
 		height: 20vh;
 		place-self: center;
-		@apply bg-gray-200/50 rounded-full;
 	}
 
 	#login,
